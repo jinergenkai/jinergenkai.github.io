@@ -11,7 +11,7 @@ type Props = {
 
 const { variant: Heading = "h2", featured = false, id, data, filePath } = Astro.props;
 
-const { title, description, ...props } = data;
+const { title, description, lang = "vi", ...props } = data;
 ---
 
 <li
@@ -51,7 +51,12 @@ const { title, description, ...props } = data;
       <span class="absolute -inset-4 sm:-inset-5 z-10" aria-hidden="true"></span>
     </a>
     
-    <Datetime pubDatetime={props.pubDatetime as string | Date} modDatetime={props.modDatetime as string | Date | null | undefined} class="relative z-20 mt-1.5 pointer-events-none" />
+    <div class="relative z-20 mt-1.5 flex items-center gap-2 pointer-events-none">
+      <Datetime pubDatetime={props.pubDatetime as string | Date} modDatetime={props.modDatetime as string | Date | null | undefined} />
+      <span class="lang-badge" aria-label={lang === "en" ? "English" : "Tiếng Việt"}>
+        {lang === "en" ? "🇬🇧 EN" : "🇻🇳 VI"}
+      </span>
+    </div>
     
     <p class="relative z-20 mt-2 line-clamp-2 text-sm leading-relaxed opacity-65 pointer-events-auto select-text">
       {description}
@@ -82,5 +87,22 @@ const { title, description, ...props } = data;
   }
   .group\/card:hover .card-noise {
     opacity: 0.4;
+  }
+
+  .lang-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    font-family: var(--font-cartograph, monospace);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 0.1rem 0.45rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--border) 40%, transparent);
+    background: color-mix(in srgb, var(--muted) 20%, transparent);
+    color: var(--muted-foreground);
+    opacity: 0.7;
+    user-select: none;
   }
 </style>

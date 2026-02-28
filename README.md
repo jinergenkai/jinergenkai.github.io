@@ -1,320 +1,162 @@
-# Devosfera Blog
+# jinergenkai.github.io — Personal Portfolio & Blog
 
-Heavily customized version of the [AstroPaper](https://github.com/satnaing/astro-paper) theme with a **Terminal/Cyberpunk** aesthetic, image galleries, global search modal, and dozens of visual and interactive improvements.
+Personal website of **Nguyễn Mạnh Hùng** (jinergenkai) — Senior Backend Engineer at Nokia FNMS.
 
-**🌐 Live demo:** [devosfera.vercel.app](https://devosfera.vercel.app)
-
-![Devosfera OG](public/devosfera-og.webp)
+**Live:** https://jinergenkai.github.io
 
 ---
 
-## Table of contents
+## Stack
 
-1. [Features](#-features)
-2. [Project structure](#-project-structure)
-3. [Installation & local development](#-installation--local-development)
-4. [Commands](#-commands)
-5. [Creating content](#-creating-content)
-   - [Posts](#posts-srcdatablog)
-   - [Image galleries](#galleries-srcdatagalleries)
-6. [GalleryEmbed component](#%EF%B8%8F-galleryembed-component)
-7. [Configuration](#%EF%B8%8F-configuration)
-8. [Key components](#-key-components)
-9. [Upstream issues resolved](#-upstream-issues-resolved)
-10. [License](#-license)
+| Layer | Tech |
+|-------|------|
+| Framework | [Astro 5](https://astro.build) |
+| Base theme | [Devosfera](https://github.com/0xdres/astro-devosfera) |
+| CSS | Tailwind CSS v4 |
+| Search | Pagefind (static, zero JS bundle) |
+| Deploy | GitHub Actions → GitHub Pages |
+| Package manager | pnpm |
 
 ---
 
-## ✨ Features
-
-### Core (inherited from AstroPaper)
-
-- Type-safe Markdown, 100/100 Lighthouse performance, accessible and responsive
-- Full SEO (meta tags, Open Graph, sitemap, RSS), light/dark mode
-- Dynamically generated OG images with Satori
-
-### Terminal/Cyberpunk design
-
-- Hero with animated prompt `~/ready-to-go $`, shimmer title and `// posts` decorative separators
-- Global backdrop: grid + ambient glow + cursor glow + noise texture (all pages)
-- Glassmorphism on navbar, TOC, cards and modals
-
-### Custom typography
-
-| Role          | Font                      |
-| :------------ | :------------------------ |
-| Body          | `Wotfard` (local)         |
-| Code / Mono   | `Cascadia Code` (local)   |
-| Italics / H3  | `Sriracha` (Google Fonts) |
-
-### Global search (⌘K)
-
-- Modal via `⌘K` / `Ctrl+K` powered by **Pagefind** (static index)
-- Animated aurora, reactive cursor glow, full keyboard navigation
-
-### Image galleries (`/galleries`)
-
-- Albums in `src/data/galleries/<slug>/`; images optimized at build-time (srcset, WebP, lazy)
-- Native lightbox with `<dialog>`, responsive grid 2→4 cols
-- `<GalleryEmbed>` to embed galleries inside MDX posts without importing
-- Controlled by `showGalleries` in `src/config.ts` — see [GALLERIES.md](GALLERIES.md)
-
-### Branded audio player
-
-- Intro audio player in the hero with terminal aesthetic (wave bars, progress bar)
-- Fully togglable and configurable from `src/config.ts`
-
-### Redesigned pages
-
-| Page        | Highlights                                          |
-| :---------- | :-------------------------------------------------- |
-| `/` Home    | Terminal hero, featured grid, section counters      |
-| `/archives` | Vertical timeline with glow                         |
-| `/tags`     | Grid with proportional progress bar                 |
-| `/search`   | Reactive aurora, restyled Pagefind                  |
-| Posts       | Glassmorphism TOC, prev/next navigation with aurora |
-
----
-
-## 🚀 Project structure
+## Project Structure
 
 ```
-/
-├── public/
-│   ├── audio/             # Audio files (intro, etc.)
-│   └── pagefind/          # Search index (generated at build)
-├── src/
-│   ├── assets/            # Local fonts, SVG icons and logo
-│   ├── components/        # Reusable Astro components
-│   ├── data/
-│   │   ├── blog/          # Posts .md / .mdx
-│   │   └── galleries/     # Galleries (one folder per album)
-│   ├── layouts/           # Root layout, PostDetails, etc.
-│   ├── pages/             # Astro routes
-│   ├── styles/            # global.css, typography.css
-│   └── utils/             # Filters, OG with Satori, Shiki transformers
-└── astro.config.ts
+src/
+├── assets/
+│   ├── fonts/          # Wotfard, Cascadia Code, Cartograph CF
+│   ├── icons/          # SVG icons (GitHub, LinkedIn, Mail...)
+│   └── logo/           # devosfera.svg → Jiner{·}Hung logo
+├── components/
+│   ├── sections/       # Portfolio sections
+│   │   ├── Skills.astro
+│   │   ├── Experience.astro
+│   │   ├── Projects.astro
+│   │   └── Achievements.astro
+│   ├── Card.astro      # Blog post card (with lang badge VI/EN)
+│   ├── Header.astro
+│   ├── Footer.astro
+│   └── IntroAudio.astro
+├── data/
+│   ├── blog/           # ← Blog posts go here (.md files)
+│   ├── skills.ts       # Portfolio: skill list
+│   ├── experience.ts   # Portfolio: work history
+│   ├── projects.ts     # Portfolio: project showcase
+│   └── achievements.ts # Portfolio: awards & education
+├── layouts/
+│   ├── Layout.astro    # Base HTML (dark mode, cursor glow, grid bg)
+│   └── PostDetails.astro
+├── pages/
+│   ├── index.astro     # Homepage: portfolio + blog preview
+│   ├── about.md        # About page
+│   ├── posts/          # Blog listing + [slug] routes
+│   ├── tags/           # Tag pages
+│   ├── search.astro    # Pagefind full-text search
+│   └── archives/       # All posts by date
+├── config.ts           # ← Site metadata (name, URL, audio...)
+└── constants.ts        # ← Social links (GitHub, LinkedIn, Email)
+public/
+├── avatar.png          # Profile photo (shown in hero)
+└── audio/
+    └── intro-web.mp3   # Intro audio player in hero
 ```
 
 ---
 
-## 👨🏻‍💻 Installation & local development
+## Adding a Blog Post
 
-**Requirements:** Node.js 20+ and pnpm.
-
-```bash
-# 1. Install dependencies
-pnpm install
-
-# 2. Development server
-pnpm run dev
-# → http://localhost:4321
-```
-
-The Pagefind search index is **only available in the production build**. To test it locally:
-
-```bash
-pnpm run build && pnpm run preview
-```
-
-### Docker
-
-```bash
-docker build -t devosfera-blog .
-docker run -p 4321:80 devosfera-blog
-```
-
----
-
-## 🧞 Commands
-
-| Command            | Action                                                   |
-| :----------------- | :------------------------------------------------------- |
-| `pnpm install`     | Install dependencies                                     |
-| `pnpm run dev`     | Local dev server at `localhost:4321`                     |
-| `pnpm run build`   | Production build (`astro check` + build + Pagefind)      |
-| `pnpm run preview` | Preview the production build                             |
-| `pnpm run format`  | Format with Prettier                                     |
-| `pnpm run lint`    | Lint with ESLint                                         |
-
-> `pnpm run build` internally runs `pagefind --site dist && cp -r dist/pagefind public/`. The search index ends up in `public/pagefind/` ready for preview.
-
----
-
-## 📝 Creating content
-
-### Posts (`src/data/blog/`)
-
-Create a `.md` or `.mdx` file with the following frontmatter:
+1. Create `.md` in `src/data/blog/`
+2. Add frontmatter:
 
 ```yaml
 ---
-title: "Post title"
-pubDatetime: 2026-01-15T10:00:00Z   # required — ISO 8601 with timezone
-description: "Short description for SEO and cards"
-tags: ["astro", "dev"]
-featured: false       # highlight on the home page
-draft: false          # hidden in production
-timezone: "America/Guatemala"  # overrides SITE.timezone
-hideEditPost: false
----
-```
-
-**MDX**: JSX components can be used directly. `<GalleryEmbed>` is available without importing it (see next section).
-
-**Table of Contents**: add `## Table of contents` to the post body to auto-generate the TOC with `remark-toc` + `remark-collapse`.
-
-**Annotated code blocks** (via Shiki transformers):
-
-```
-// [!code highlight]      → highlight the line
-// [!code ++]             → added line (diff)
-// [!code --]             → removed line (diff)
-// fileName: file.ts      → display the filename above the block
-```
-
----
-
-### Galleries (`src/data/galleries/`)
-
-Create a **folder** with the desired slug. Place an `index.md` and image files inside:
-
-```
-src/data/galleries/
-└── my-trip-to-tokyo/
-    ├── index.md
-    ├── 01-shibuya.jpg
-    ├── 02-asakusa.jpg
-    └── 03-fuji.png
-```
-
-The folder name becomes the URL: `/galleries/my-trip-to-tokyo`.
-
-Images are displayed **sorted alphabetically**. Use numeric prefixes (`01-`, `02-`, …) to control the order.
-
-#### Gallery frontmatter
-
-```yaml
----
-title: "My Trip to Tokyo"           # required
-description: "Travel photos..."     # required
-pubDatetime: 2026-01-20T00:00:00Z   # required
-draft: false
-coverImage: ./01-shibuya.jpg        # optional — explicit cover image
+title: "Tiêu đề bài viết"
+description: "Mô tả ngắn cho SEO và card preview"
+pubDatetime: 2026-02-28T09:00:00.000+07:00
 tags:
-  - japan
-  - travel
+  - java
+  - system-design
+featured: false   # true = hiện ở section Featured trên homepage
+draft: false      # true = bỏ qua khi build
+lang: "vi"        # "vi" hoặc "en" — hiện badge trên card
 ---
 ```
 
-> Galleries have no body text; all visual content comes from the images in the folder.
+3. Commit + push → auto deploy (~2 phút)
 
-#### Cover image
+### Publishing from Obsidian Vault
 
-- **With `coverImage`**: Astro resolves and optimizes the relative path. If that image is already in the folder it won't be shown twice on the detail page.
-- **Without `coverImage`**: the first image (alphabetically) is used as the cover in listing cards.
+Vault location: `D:\bestlife\article\`
 
-#### Automatic alt text
-
-The alt text is derived from the filename:
-
-```
-01-sunset-kyoto.jpg     →  "Sunset Kyoto"
-002_fuji_mountain.png   →  "Fuji Mountain"
-IMG_4532.JPG            →  gallery title (fallback)
-```
+Steps:
+1. Copy `.md` từ vault → `src/data/blog/`
+2. Đặt tên file: `ten-bai-viet-khong-dau.md` (slug)
+3. Thêm frontmatter đúng format
+4. `git add . && git commit -m "post: tên bài" && git push`
 
 ---
 
-## 🖼️ GalleryEmbed component
+## Updating Portfolio Data
 
-Embed a gallery inside any `.mdx` post — **no import needed**:
+Chỉnh trực tiếp trong `src/data/*.ts`:
 
-```mdx
-{/* First 6 photos, 3 columns (default) */}
-<GalleryEmbed slug="my-trip-to-tokyo" />
-
-{/* Only 4 photos in 2 columns, no footer link */}
-<GalleryEmbed slug="my-trip-to-tokyo" limit={4} cols={2} showLink={false} />
-
-{/* All photos */}
-<GalleryEmbed slug="my-trip-to-tokyo" limit={0} />
-```
-
-| Prop       | Type          | Default | Description                                               |
-| :--------- | :------------ | :------ | :-------------------------------------------------------- |
-| `slug`     | `string`      | —       | **Required.** Folder name in `src/data/galleries/`        |
-| `limit`    | `number`      | `6`     | Max images to show. `0` = all                             |
-| `showLink` | `boolean`     | `true`  | Show link to the full gallery at the bottom               |
-| `cols`     | `2 \| 3 \| 4` | `3`     | Number of grid columns                                    |
-
-Each `<GalleryEmbed>` creates its own lightbox `<dialog id="ge-lb-{slug}">`, allowing **multiple embeds in the same post** without conflicts. Invalid slugs render a warning block instead of breaking the build.
+- **Skills:** `src/data/skills.ts`
+- **Experience:** `src/data/experience.ts` — thêm job mới vào đầu mảng
+- **Projects:** `src/data/projects.ts` — `featured: true` để hiện ở grid
+- **Achievements:** `src/data/achievements.ts`
 
 ---
 
-## ⚙️ Configuration
-
-All site configuration lives in `src/config.ts` (the `SITE` constant):
+## Key Config (`src/config.ts`)
 
 ```ts
-export const SITE = {
-  website: "https://devosfera.vercel.app/",
-  author: "Andrés",
-  desc: "A space where curiosity turns into code",
-  title: "Devosfera",
-  timezone: "America/Guatemala",  // default timezone for posts
-  showArchives: true,
-  showGalleries: true,   // false → hides /galleries and the nav link
-  showBackButton: true,
-  dynamicOgImage: true,
-  introAudio: {
-    enabled: true,               // show/hide the hero audio player
-    src: "/audio/intro-web.mp3", // path relative to /public
-    label: "INTRO.MP3",
-    duration: 30,                // seconds
-  },
-};
+website: "https://jinergenkai.github.io/"
+author: "Nguyễn Mạnh Hùng"
+lang: "vi"
+timezone: "Asia/Ho_Chi_Minh"
+introAudio.enabled: true          // bật/tắt audio player ở hero
+introAudio.src: "/audio/intro-web.mp3"
+introAudio.duration: 30           // cập nhật nếu đổi file mp3
 ```
 
-Social links and "Share" links are defined in `src/constants.ts`.
-
-> For details on visual effects, typography and the design system see [CUSTOMIZATIONS.md](CUSTOMIZATIONS.md).
+Social links: `src/constants.ts`
 
 ---
 
-## 🧩 Key components
+## Dev Commands
 
-| Component               | Description                                                                      |
-| :---------------------- | :------------------------------------------------------------------------------- |
-| `Header.astro`          | Glassmorphism navbar with animated SVG logo, `⌘K` trigger, fullscreen mobile menu |
-| `SearchModal.astro`     | Global Cmd+K modal with Aurora background, reactive cursor glow and Pagefind     |
-| `GalleryCard.astro`     | Card for the `/galleries` listing with optimized cover image                     |
-| `GalleryEmbed.astro`    | Gallery embed for MDX posts with its own lightbox                                |
-| `Card.astro`            | Post card with reactive cursor glow (`.card-glow-effect`)                        |
-| `BackToTopButton.astro` | `fixed` button with SVG progress ring, unified mobile/desktop design             |
-| `BackButton.astro`      | Glassmorphism pill with inline breadcrumb and chevron animation                  |
-| `ShareLinks.astro`      | Square glassmorphism share buttons, open in new tab                              |
-| `Footer.astro`          | Brand column + social links + copyright, gradient separators                     |
+```bash
+pnpm dev          # http://localhost:4321
+pnpm build        # production build + pagefind index
+pnpm astro check  # TypeScript type check
+```
 
 ---
 
-## 🐛 Upstream issues resolved
+## Current Blog Posts (`src/data/blog/`)
 
-Bugs and feature requests from the official [AstroPaper](https://github.com/satnaing/astro-paper) repository implemented in this version:
-
-| Issue                                                      | Description                                                                                                                                                                                                             | Files                                        | Credits                                                                                                                                                   |
-| :--------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [#614](https://github.com/satnaing/astro-paper/issues/614) | **Back to Top shifts the pagination button** when `ShareLinks` is empty                                                                                                                                                 | `BackToTopButton.astro`                      | —                                                                                                                                                         |
-| [#574](https://github.com/satnaing/astro-paper/issues/574) | **Markdown tables overflow the layout on mobile** — fixed with `w-full table-auto` and `word-wrap` on cells                                                                                                             | `typography.css`                             | [@GladerJ](https://github.com/GladerJ) — [solution](https://github.com/satnaing/astro-paper/issues/574#issuecomment-3427381261)                           |
-| [#569](https://github.com/satnaing/astro-paper/issues/569) | **Back to Top inconsistent on desktop** — unified circular design with progress ring and `fixed` positioning                                                                                                            | `BackToTopButton.astro`, `PostDetails.astro` | —                                                                                                                                                         |
-| [#566](https://github.com/satnaing/astro-paper/issues/566) | **Share links don't open in a new tab** — added `target="_blank"` and `rel="noopener noreferrer"`                                                                                                                       | `ShareLinks.astro`                           | [PR #611](https://github.com/satnaing/astro-paper/pull/611) by [@zerone0x](https://github.com/zerone0x)                                                   |
-| [#131](https://github.com/satnaing/astro-paper/issues/131) | **No MDX support** — added `@astrojs/mdx` integration with `extendMarkdownConfig: true`                                                                                                                                | `astro.config.ts`, `content.config.ts`       | —                                                                                                                                                         |
-| [#495](https://github.com/satnaing/astro-paper/issues/495) | **Inconsistent post filtering by timezone** — fixed using `dayjs` + `utc`/`timezone` plugins; also fixed a bug in the reference solution that used `.millisecond()` instead of `.valueOf()`                            | `postFilter.ts`                              | [@kj-9](https://github.com/kj-9) — [reference fix](https://github.com/satnaing/astro-paper/compare/main...kj-9:astro-paper:fix-post-filter-date)          |
-| [#553](https://github.com/satnaing/astro-paper/issues/553) | **No galleries section** — implemented full `/galleries` section with lightbox, `GalleryEmbed`, image optimization and `showGalleries` flag. See [GALLERIES.md](GALLERIES.md)                                           | multiple — see GALLERIES.md                  | —                                                                                                                                                         |
+| File | Title | Lang | Featured |
+|------|-------|------|----------|
+| `intelligence-triet-hoc-ve-tri-thong-minh.md` | Intelligence: Triết học về Trí thông minh | VI | ✅ |
+| `ci-cd-pipeline-thuc-te-tai-nokia.md` | CI/CD Pipeline thực tế tại Nokia FNMS | VI | ✅ |
+| `tra-loi-3-cau-hoi-ve-intelligence.md` | Trả lời 3 câu hỏi về Intelligence | VI | — |
 
 ---
 
-## 📜 License
+## Vault Articles — Chưa publish (`D:\bestlife\article\`)
 
-Based on [AstroPaper](https://github.com/satnaing/astro-paper) by [Sat Naing](https://satnaing.dev), licensed under MIT.
-Customizations © 0xdres.
+| File | Trạng thái |
+|------|-----------|
+| `CÁCH RESET LẠI TOÀN BỘ CUỘC ĐỜI TRONG 24 GIỜ.md` | Summary @thedankoe — cần thêm attribution rõ |
+| `System/Tại sao Alipay không dùng Oracle...` | Scraped FB group — cần rewrite |
+| `System/Tối ưu hệ thống kiểu lười...` | Viblo (Minh Monmen) — không publish |
+| `# Fizz Buzz in Tensorflow.md` | Joel Grus 2016 — không publish |
+| `# I'm a former CTO...` | Scraped — không publish |
+
+---
+
+## Deployment
+
+Auto via `.github/workflows/deploy.yml` khi push lên `main`.
+
+**Setup:** GitHub repo Settings → Pages → Source: **GitHub Actions**

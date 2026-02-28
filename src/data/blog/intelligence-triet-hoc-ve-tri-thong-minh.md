@@ -9,6 +9,7 @@ tags:
   - mental-models
 featured: true
 draft: false
+lang: "vi"
 ---
 
 > Ghi chú triết học từ cuộc thảo luận ngày 27/01/2026 — về bản chất của trí thông minh.
