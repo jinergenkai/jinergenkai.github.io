@@ -22,8 +22,8 @@ export const SITE = {
   lang: "vi",
   timezone: "Asia/Ho_Chi_Minh",
   introAudio: {
-    enabled: false,
-    src: "/audio/intro.mp3",
+    enabled: true,
+    src: "/audio/intro-web.mp3",
     label: "INTRO.MP3",
     duration: 30,
   },

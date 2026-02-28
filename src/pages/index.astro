@@ -15,6 +15,7 @@ import Skills from "@/components/sections/Skills.astro";
 import Experience from "@/components/sections/Experience.astro";
 import Projects from "@/components/sections/Projects.astro";
 import Achievements from "@/components/sections/Achievements.astro";
+import IntroAudio from "@/components/IntroAudio.astro";
 
 const posts = await getCollection("blog");
 const sortedPosts = getSortedPosts(posts);
@@ -28,56 +29,79 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
   <main id="main-content" data-layout="index" class="relative app-layout">
     <!-- ═══════════════════ HERO ═══════════════════ -->
     <section id="hero" class="hero-section relative pt-10 pb-14 sm:pt-14 sm:pb-20">
-      <div class="relative z-10">
-        <!-- Terminal prompt badge -->
-        <div class="mb-3 inline-flex items-center gap-2 rounded-full border border-border/40 bg-muted/20 px-3.5 py-1.5 font-cartograph text-xs sm:text-sm">
-          <span class="relative flex h-2 w-2">
-            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60"></span>
-            <span class="relative inline-flex h-2 w-2 rounded-full bg-accent"></span>
-          </span>
-          <span class="text-accent">~</span>/senior-backend-engineer
-          <span class="opacity-40">$</span>
+      <div class="relative z-10 flex flex-col-reverse gap-8 sm:flex-row sm:items-start sm:justify-between">
+        <!-- Left: text -->
+        <div class="flex-1">
+          <!-- Terminal prompt badge -->
+          <div class="mb-3 inline-flex items-center gap-2 rounded-full border border-border/40 bg-muted/20 px-3.5 py-1.5 font-cartograph text-xs sm:text-sm">
+            <span class="relative flex h-2 w-2">
+              <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60"></span>
+              <span class="relative inline-flex h-2 w-2 rounded-full bg-accent"></span>
+            </span>
+            <span class="text-accent">~</span>/senior-backend-engineer
+            <span class="opacity-40">$</span>
+          </div>
+
+          <!-- Name -->
+          <h1 class="hero-title mb-2 text-5xl leading-[1.1] font-bold tracking-tight sm:text-6xl lg:text-7xl">
+            Nguyễn Mạnh Hùng
+            <a
+              target="_blank"
+              href="/rss.xml"
+              class="ml-1 inline-block align-middle"
+              aria-label="RSS feed"
+              title="RSS Feed"
+            >
+              <IconRss
+                width={22}
+                height={22}
+                class="stroke-accent stroke-3 opacity-40 transition-opacity duration-300 hover:opacity-100"
+              />
+            </a>
+          </h1>
+
+          <!-- Role / tagline -->
+          <p class="mb-1 font-cartograph text-base text-accent sm:text-lg">
+            Senior Backend Engineer @ Nokia FNMS · TP. Hồ Chí Minh
+          </p>
+
+          <!-- Bio -->
+          <p class="mt-4 max-w-xl text-base leading-relaxed opacity-75 sm:text-lg">
+            Xây dựng hệ thống có thể mở rộng, dạy lại những gì tôi học được.
+            Đam mê competitive programming, AI và tự động hóa mọi thứ có thể tự động hóa.
+          </p>
+
+          <!-- Audio + Social links -->
+          <div class="mt-6 flex flex-col gap-4">
+            {SITE.introAudio.enabled && (
+              <IntroAudio
+                src={SITE.introAudio.src}
+                label={SITE.introAudio.label}
+                duration={SITE.introAudio.duration}
+              />
+            )}
+            <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+              <p class="text-sm opacity-50 flex-shrink-0">Kết nối với tôi</p>
+              {SOCIALS.length > 0 && (
+                <div class="sm:border-l border-border/40 sm:pl-4">
+                  <Socials />
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
-        <!-- Name -->
-        <h1 class="hero-title mb-2 text-5xl leading-[1.1] font-bold tracking-tight sm:text-6xl lg:text-7xl">
-          Nguyễn Mạnh Hùng
-          <a
-            target="_blank"
-            href="/rss.xml"
-            class="ml-1 inline-block align-middle"
-            aria-label="RSS feed"
-            title="RSS Feed"
-          >
-            <IconRss
-              width={22}
-              height={22}
-              class="stroke-accent stroke-3 opacity-40 transition-opacity duration-300 hover:opacity-100"
+        <!-- Right: avatar -->
+        <div class="flex-shrink-0 self-center sm:self-start">
+          <div class="avatar-ring">
+            <img
+              src="/avatar.png"
+              alt="Nguyễn Mạnh Hùng"
+              width="120"
+              height="120"
+              class="avatar-img"
             />
-          </a>
-        </h1>
-
-        <!-- Role / tagline -->
-        <p class="mb-1 font-cartograph text-base text-accent sm:text-lg">
-          Senior Backend Engineer @ Nokia FNMS · TP. Hồ Chí Minh
-        </p>
-
-        <!-- Bio -->
-        <p class="mt-4 max-w-xl text-base leading-relaxed opacity-75 sm:text-lg">
-          Xây dựng hệ thống có thể mở rộng, dạy lại những gì tôi học được.
-          Đam mê competitive programming, AI và tự động hóa mọi thứ có thể tự động hóa.
-        </p>
-
-        <!-- Social links -->
-        <div class="mt-8 flex flex-col sm:flex-row sm:items-center gap-4">
-          <p class="text-sm opacity-50 flex-shrink-0">
-            Kết nối với tôi
-          </p>
-          {SOCIALS.length > 0 && (
-            <div class="sm:border-l border-border/40 sm:pl-4">
-              <Socials />
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </section>
@@ -196,6 +220,35 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
   @keyframes shimmer {
     0%, 100% { background-position: 0% center; }
     50% { background-position: 100% center; }
+  }
+
+  .avatar-ring {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    padding: 3px;
+    background: linear-gradient(
+      135deg,
+      var(--accent),
+      color-mix(in oklab, var(--accent) 40%, transparent)
+    );
+    box-shadow: 0 0 24px -4px color-mix(in oklab, var(--accent) 40%, transparent);
+  }
+
+  .avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--background);
+  }
+
+  @media (min-width: 640px) {
+    .avatar-ring {
+      width: 140px;
+      height: 140px;
+    }
   }
 </style>
 
