@@ -1,0 +1,23 @@
+---
+import { achievements } from "@/data/achievements";
+---
+
+<section id="achievements" class="py-10">
+  <div class="mb-6 flex items-center gap-3">
+    <h2 class="text-sm font-bold tracking-widest text-accent uppercase">Thành tích</h2>
+    <div class="h-px flex-1 bg-border/20"></div>
+  </div>
+
+  <div class="grid gap-3 sm:grid-cols-2">
+    {achievements.map(achievement => (
+      <div class="flex items-start gap-4 rounded-xl border border-border/20 bg-muted/10 p-4 transition-all duration-200 hover:border-accent/20 hover:bg-muted/20">
+        <span class="text-2xl flex-shrink-0" aria-hidden="true">{achievement.icon}</span>
+        <div class="min-w-0">
+          <h3 class="font-semibold text-sm text-foreground leading-snug">{achievement.title}</h3>
+          <p class="mt-0.5 font-cartograph text-xs text-accent">{achievement.organization} · {achievement.year}</p>
+          <p class="mt-1.5 text-xs text-muted-foreground leading-relaxed">{achievement.description}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>

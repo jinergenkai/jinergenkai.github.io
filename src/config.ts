@@ -1,0 +1,30 @@
+export const SITE = {
+  website: "https://hungng.github.io/",
+  author: "Nguyễn Hưng",
+  profile: "https://github.com/hungng",
+  desc: "Senior Backend Engineer | Viết về Java, System Design, DevOps và những gì tôi học được.",
+  title: "Nguyễn Hưng",
+  ogImage: "og-default.png",
+  lightAndDarkMode: true,
+  postPerIndex: 6,
+  postPerPage: 8,
+  scheduledPostMargin: 15 * 60 * 1000, // 15 minutes
+  showArchives: true,
+  showGalleries: false,
+  showBackButton: true,
+  editPost: {
+    enabled: false,
+    text: "Chỉnh sửa bài viết",
+    url: "https://github.com/hungng/hungng.github.io/edit/main/",
+  },
+  dynamicOgImage: true,
+  dir: "ltr",
+  lang: "vi",
+  timezone: "Asia/Ho_Chi_Minh",
+  introAudio: {
+    enabled: false,
+    src: "/audio/intro.mp3",
+    label: "INTRO.MP3",
+    duration: 30,
+  },
+} as const;
