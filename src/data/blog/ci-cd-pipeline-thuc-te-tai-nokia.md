@@ -11,6 +11,7 @@ tags:
 featured: true
 draft: false
 lang: "vi"
+ogImage: "/image/dog2.jpg"
 ---
 
 Khi tôi tiếp quản CI/CD pipeline tại Nokia FNMS, thứ tôi nhận được là một đống Jenkins jobs chồng chất, build time 45 phút, và tỷ lệ flaky test khoảng 15%. Sau 6 tháng, chúng tôi đưa build time xuống còn 18 phút và flaky test về dưới 2%.
