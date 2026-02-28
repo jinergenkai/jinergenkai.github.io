@@ -1,9 +1,9 @@
 export const SITE = {
-  website: "https://hungng.github.io/",
-  author: "Nguyễn Hưng",
-  profile: "https://github.com/hungng",
+  website: "https://jinergenkai.github.io/",
+  author: "Nguyễn Mạnh Hùng",
+  profile: "https://github.com/jinergenkai",
   desc: "Senior Backend Engineer | Viết về Java, System Design, DevOps và những gì tôi học được.",
-  title: "Nguyễn Hưng",
+  title: "Nguyễn Mạnh Hùng",
   ogImage: "og-default.png",
   lightAndDarkMode: true,
   postPerIndex: 6,
@@ -15,7 +15,7 @@ export const SITE = {
   editPost: {
     enabled: false,
     text: "Chỉnh sửa bài viết",
-    url: "https://github.com/hungng/hungng.github.io/edit/main/",
+    url: "https://github.com/jinergenkai/jinergenkai.github.io/edit/main/",
   },
   dynamicOgImage: true,
   dir: "ltr",

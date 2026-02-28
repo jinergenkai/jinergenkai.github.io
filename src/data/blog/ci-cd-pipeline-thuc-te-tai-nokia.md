@@ -140,7 +140,7 @@ Sau 2 tuần tracking, tôi có danh sách top 10 flaky tests. Nguyên nhân ph�
 
 **Thay sleep bằng Awaitility:**
 
-```java
+```java file=java
 // ❌ Không tốt
 Thread.sleep(2000);
 assertThat(result).isNotNull();
@@ -194,6 +194,7 @@ stage('Quality Gate') {
 ```
 
 Quality gate rules của chúng tôi:
+
 - Coverage: ≥ 70% cho code mới
 - Duplications: < 3%
 - Zero critical/blocker issues
@@ -250,4 +251,4 @@ Pipeline này không phải điểm cuối — còn nhiều thứ để cải th
 
 ---
 
-*Nếu bạn đang gặp vấn đề tương tự với CI/CD pipeline của mình, hãy comment bên dưới. Rất vui được trao đổi về các case cụ thể.*
+_Nếu bạn đang gặp vấn đề tương tự với CI/CD pipeline của mình, hãy comment bên dưới. Rất vui được trao đổi về các case cụ thể._

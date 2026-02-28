@@ -3,7 +3,7 @@ layout: ../layouts/AboutLayout.astro
 title: "Về tôi"
 ---
 
-Xin chào! Tôi là **Nguyễn Hưng** — Senior Backend Engineer đang làm việc tại Nokia (Fixed Network Management System), sống và làm việc tại TP. Hồ Chí Minh.
+Xin chào! Tôi là **Nguyễn Mạnh Hùng** — Senior Backend Engineer đang làm việc tại Nokia (Fixed Network Management System), sống và làm việc tại TP. Hồ Chí Minh.
 
 ## Tôi là ai?
 
@@ -39,8 +39,8 @@ Ngoài lập trình, tôi đam mê cầu lông (đang build app tính điểm b�
 
 Nếu bạn muốn nói chuyện về system design, Java, AI, hay bất cứ thứ gì thú vị — tôi luôn sẵn sàng:
 
-- **GitHub**: [github.com/hungng](https://github.com/hungng)
-- **LinkedIn**: [linkedin.com/in/hungng](https://www.linkedin.com/in/hungng)
+- **GitHub**: [github.com/jinergenkai](https://github.com/jinergenkai)
+- **LinkedIn**: [linkedin.com/in/jinergenkai](https://www.linkedin.com/in/jinergenkai)
 - **Email**: hung@example.com
 
 > _"Viết code là dễ. Khó là viết code mà 6 tháng sau đọc lại vẫn hiểu."_
