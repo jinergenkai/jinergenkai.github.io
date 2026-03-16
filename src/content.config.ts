@@ -30,30 +30,19 @@ const thoughts = defineCollection({
 
 const galleries = defineCollection({
   loader: glob({ pattern: "**/index.{md,mdx}", base: `./${GALLERY_PATH}` }),
-  schema: ({ image }) =>
-    z.object({
-      title: z.string(),
-      description: z.string(),
-      pubDatetime: z.date(),
-      draft: z.boolean().optional(),
-      coverImage: image().optional(),
-      tags: z.array(z.string()).default([]),
-    }),
-});
-
-const poetry = defineCollection({
-  loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/data/poetry" }),
   schema: () =>
     z.object({
       title: z.string(),
-      pubDatetime: z.date(),
       description: z.string(),
-      tags: z.array(z.string()).default([]),
-      lang: z.enum(["vi", "en"]).default("vi"),
-      poemType: z.enum(["luc-bat", "tu-do", "free-verse"]).default("tu-do"),
-      audioUrl: z.string().optional(),
+      pubDatetime: z.date(),
       draft: z.boolean().optional(),
       featured: z.boolean().optional(),
+      coverImage: z.string(),
+      tags: z.array(z.string()).default([]),
+      lang: z.enum(["vi", "en"]).default("vi"),
+      galleryType: z.enum(["poem", "quote", "photo", "fun"]).default("photo"),
+      audioUrl: z.string().optional(),
+      source: z.string().optional(),
     }),
 });
 
@@ -73,4 +62,4 @@ const notes = defineCollection({
     }),
 });
 
-export const collections = { thoughts, galleries, poetry, notes };
+export const collections = { thoughts, galleries, notes };

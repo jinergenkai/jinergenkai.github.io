@@ -1,62 +1,31 @@
 ---
-import type { ImageMetadata } from "astro";
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import Breadcrumb from "@/components/Breadcrumb.astro";
-import GalleryCard from "@/components/GalleryCard.astro";
+import Datetime from "@/components/Datetime.astro";
 import { SITE } from "@/config";
 
 if (!SITE.showGalleries) {
   return Astro.redirect("/404");
 }
 
-// Cargar todas las imágenes de todas las galerías en build-time
-const allImages = import.meta.glob<{ default: ImageMetadata }>(
-  "/src/data/galleries/**/*.{jpg,jpeg,png,webp,avif,gif,JPG,JPEG,PNG,WEBP}",
-  { eager: true }
-);
-
-// Helper: extrae el slug del id de la colección (p.ej. "mi-viaje/index.md" → "mi-viaje")
 function getSlug(id: string) {
   return id.replace(/\/index\.(md|mdx)$/, "").replace(/\.(md|mdx)$/, "");
 }
 
-// Obtener imágenes de una galería específica
-function getGalleryImages(slug: string): ImageMetadata[] {
-  return Object.entries(allImages)
-    .filter(
-      ([path]) =>
-        path.startsWith(`/src/data/galleries/${slug}/`) &&
-        !path.endsWith("index.md") &&
-        !path.endsWith("index.mdx")
-    )
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([, mod]) => mod.default);
-}
+const raw = await getCollection("galleries", ({ data }) => !data.draft);
+const galleries = raw
+  .sort((a, b) => new Date(b.data.pubDatetime).getTime() - new Date(a.data.pubDatetime).getTime())
+  .map(g => ({ ...g, slug: getSlug(g.id) }));
 
-const rawGalleries = await getCollection(
-  "galleries",
-  ({ data }) => !data.draft
-);
-
-const galleries = rawGalleries
-  .sort(
-    (a, b) =>
-      new Date(b.data.pubDatetime).getTime() -
-      new Date(a.data.pubDatetime).getTime()
-  )
-  .map(gallery => {
-    const slug = getSlug(gallery.id);
-    const folderImages = getGalleryImages(slug);
-    return {
-      gallery,
-      slug,
-      fallbackImage: folderImages[0],
-      imageCount: folderImages.length,
-    };
-  });
+const typeLabel: Record<string, string> = {
+  poem: "Thơ", quote: "Quote", photo: "Photo", fun: "Fun",
+};
+const typeIcon: Record<string, string> = {
+  poem: "✦", quote: "❝", photo: "◈", fun: "✿",
+};
 ---
 
 <Layout title={`Galleries | ${SITE.title}`}>
@@ -64,51 +33,244 @@ const galleries = rawGalleries
   <Breadcrumb />
   <main id="main-content" class="app-layout pb-12">
     <!-- Hero -->
-    <div class="archive-hero" data-archive-hero>
+    <div class="section-hero">
       <div class="aurora-orb aurora-orb-1"></div>
       <div class="aurora-orb aurora-orb-2"></div>
-      <div class="aurora-orb aurora-orb-3"></div>
-      <div class="aurora-mouse" data-archive-mouse></div>
       <div class="relative z-10">
         <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">
           <span class="glow-text">Galleries</span>
         </h1>
         <p class="mt-3 max-w-lg text-foreground/70 italic">
-          Collections of images — moments and projects.
+          Thơ, quotes, ảnh và những khoảnh khắc muốn giữ lại.
         </p>
         <div class="mt-4 flex flex-wrap items-center gap-2">
-          <span class="hero-badge"
-            >{galleries.length}
-            {galleries.length === 1 ? "gallery" : "galleries"}</span
-          >
+          <span class="hero-badge">{galleries.length} entries</span>
         </div>
       </div>
     </div>
 
-    <!-- Galleries grid -->
-    {
-      galleries.length === 0 ? (
-        <p class="mt-12 text-center text-foreground/50 italic">
-          No galleries published yet.
-        </p>
-      ) : (
-        <ul
-          class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
-          role="list"
-        >
-          {galleries.map(({ gallery, slug, fallbackImage, imageCount }) => (
-            <li>
-              <GalleryCard
-                gallery={gallery}
-                slug={slug}
-                fallbackImage={fallbackImage}
-                imageCount={imageCount}
-              />
-            </li>
-          ))}
-        </ul>
-      )
-    }
+    <!-- Filter bar -->
+    <div class="filter-bar" id="filter-bar">
+      <div class="filter-group">
+        <span class="filter-label">Type</span>
+        <button class="filter-btn active" data-type="all">All</button>
+        <button class="filter-btn" data-type="poem">✦ Thơ</button>
+        <button class="filter-btn" data-type="quote">❝ Quote</button>
+        <button class="filter-btn" data-type="photo">◈ Photo</button>
+        <button class="filter-btn" data-type="fun">✿ Fun</button>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Lang</span>
+        <button class="filter-btn active" data-lang="all">All</button>
+        <button class="filter-btn" data-lang="vi">🇻🇳 VI</button>
+        <button class="filter-btn" data-lang="en">🇬🇧 EN</button>
+      </div>
+    </div>
+
+    <!-- Masonry grid -->
+    {galleries.length === 0 ? (
+      <p class="mt-12 text-center text-foreground/50 italic">No galleries published yet.</p>
+    ) : (
+      <div class="masonry-grid" id="masonry-grid">
+        {galleries.map(g => (
+          <div class="masonry-item" data-type={g.data.galleryType} data-lang={g.data.lang}>
+            <a href={`/galleries/${g.slug}/`} class="gallery-card group">
+              <!-- Cover image -->
+              <div class="card-img-wrap">
+                <img
+                  src={g.data.coverImage}
+                  alt={g.data.title}
+                  class="card-img"
+                  loading="lazy"
+                />
+                <div class="card-img-overlay">
+                  <span class="type-icon">{typeIcon[g.data.galleryType]}</span>
+                </div>
+              </div>
+              <!-- Text -->
+              <div class="card-body">
+                <div class="card-meta">
+                  <span class={`type-badge type-${g.data.galleryType}`}>
+                    {typeLabel[g.data.galleryType]}
+                  </span>
+                  <Datetime pubDatetime={g.data.pubDatetime} size="sm" class="opacity-50" />
+                  <span class="lang-pill">{g.data.lang === "en" ? "🇬🇧" : "🇻🇳"}</span>
+                </div>
+                <h2 class="card-title">{g.data.title}</h2>
+                {g.data.description && (
+                  <p class="card-desc">{g.data.description}</p>
+                )}
+                {g.data.source && (
+                  <p class="card-source">— {g.data.source}</p>
+                )}
+              </div>
+            </a>
+          </div>
+        ))}
+      </div>
+      <p class="empty-filter-msg" id="empty-filter-msg" style="display:none">
+        No entries match the current filter.
+      </p>
+    )}
   </main>
   <Footer />
 </Layout>
+
+<script>
+  function initFilters() {
+    const params = new URLSearchParams(window.location.search);
+    let activeType = params.get("type") || "all";
+    let activeLang = params.get("lang") || "all";
+
+    const items = document.querySelectorAll<HTMLElement>(".masonry-item");
+    const emptyMsg = document.getElementById("empty-filter-msg");
+    const typeBtns = document.querySelectorAll<HTMLButtonElement>("#filter-bar [data-type]");
+    const langBtns = document.querySelectorAll<HTMLButtonElement>("#filter-bar [data-lang]");
+
+    function applyFilter() {
+      let visible = 0;
+      items.forEach(item => {
+        const ok =
+          (activeType === "all" || item.dataset.type === activeType) &&
+          (activeLang === "all" || item.dataset.lang === activeLang);
+        item.style.display = ok ? "" : "none";
+        if (ok) visible++;
+      });
+      if (emptyMsg) emptyMsg.style.display = visible === 0 ? "" : "none";
+      const p = new URLSearchParams();
+      if (activeType !== "all") p.set("type", activeType);
+      if (activeLang !== "all") p.set("lang", activeLang);
+      window.history.replaceState({}, "", p.toString() ? `?${p}` : window.location.pathname);
+    }
+
+    function bindGroup(
+      btns: NodeListOf<HTMLButtonElement>,
+      attr: string,
+      getter: () => string,
+      setter: (v: string) => void
+    ) {
+      btns.forEach(btn => {
+        const val = (btn.dataset as any)[attr];
+        btn.classList.toggle("active", val === getter());
+        btn.addEventListener("click", () => {
+          setter(val);
+          btns.forEach(b => b.classList.toggle("active", (b.dataset as any)[attr] === val));
+          applyFilter();
+        });
+      });
+    }
+
+    bindGroup(typeBtns, "type", () => activeType, v => (activeType = v));
+    bindGroup(langBtns, "lang", () => activeLang, v => (activeLang = v));
+    applyFilter();
+  }
+
+  document.addEventListener("astro:page-load", initFilters);
+</script>
+
+<style>
+  /* Hero */
+  .section-hero {
+    position: relative; overflow: hidden; border-radius: 1.5rem;
+    padding: 2.5rem 2rem; margin-bottom: 2rem;
+    background: color-mix(in srgb, var(--color-foreground) 3%, var(--color-background));
+    border: 1px solid color-mix(in srgb, var(--color-accent) 12%, transparent);
+  }
+  @media (min-width: 640px) { .section-hero { padding: 3rem; } }
+  .aurora-orb { position: absolute; border-radius: 50%; filter: blur(60px); pointer-events: none; }
+  .aurora-orb-1 {
+    width: 280px; height: 280px; top: -40%; left: -10%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--color-accent) 20%, transparent), transparent 70%);
+    animation: orb1 8s ease-in-out infinite alternate;
+  }
+  .aurora-orb-2 {
+    width: 200px; height: 200px; bottom: -30%; right: -5%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--color-border) 15%, transparent), transparent 70%);
+    animation: orb2 10s ease-in-out infinite alternate;
+  }
+  @keyframes orb1 { 0% { transform: translate(0,0); } 100% { transform: translate(40px,25px); } }
+  @keyframes orb2 { 0% { transform: translate(0,0); } 100% { transform: translate(-30px,-20px); } }
+  .glow-text {
+    background: linear-gradient(135deg, var(--color-foreground), var(--color-accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; padding: 0.3rem 0.85rem;
+    border-radius: 999px; font-size: 0.8rem; font-weight: 600;
+    color: var(--color-accent);
+    background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 15%, transparent);
+  }
+
+  /* Filter bar */
+  .filter-bar { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; align-items: center; }
+  .filter-group { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+  .filter-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; opacity: 0.4; text-transform: uppercase; margin-right: 0.2rem; }
+  .filter-btn {
+    padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.78rem;
+    border: 1px solid color-mix(in srgb, var(--border) 30%, transparent);
+    background: transparent; color: var(--foreground); opacity: 0.6; cursor: pointer; transition: all 0.2s ease;
+  }
+  .filter-btn:hover { opacity: 1; border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+  .filter-btn.active {
+    opacity: 1; color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+  }
+
+  /* Masonry */
+  .masonry-grid {
+    columns: 1;
+    column-gap: 1.25rem;
+  }
+  @media (min-width: 540px) { .masonry-grid { columns: 2; } }
+  @media (min-width: 1024px) { .masonry-grid { columns: 3; } }
+
+  .masonry-item { break-inside: avoid; margin-bottom: 1.25rem; }
+
+  /* Gallery card */
+  .gallery-card {
+    display: block; text-decoration: none;
+    border-radius: 1.25rem; overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--border) 20%, transparent);
+    background: color-mix(in srgb, var(--foreground) 2%, var(--background));
+    transition: all 0.3s ease;
+  }
+  .gallery-card:hover {
+    border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px -8px color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+
+  /* Cover image */
+  .card-img-wrap { position: relative; overflow: hidden; }
+  .card-img { width: 100%; display: block; object-fit: cover; transition: transform 0.4s ease; }
+  .gallery-card:hover .card-img { transform: scale(1.04); }
+  .card-img-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.4) 100%);
+    display: flex; align-items: flex-end; padding: 0.75rem;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .gallery-card:hover .card-img-overlay { opacity: 1; }
+  .type-icon { font-size: 1.5rem; color: white; filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5)); }
+
+  /* Card body */
+  .card-body { padding: 1rem 1.25rem 1.25rem; }
+  .card-meta { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+  .type-badge {
+    font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0.1rem 0.45rem; border-radius: 999px; border: 1px solid;
+  }
+  .type-poem   { color: #a78bfa; border-color: #a78bfa40; background: #a78bfa10; }
+  .type-quote  { color: #fbbf24; border-color: #fbbf2440; background: #fbbf2410; }
+  .type-photo  { color: #34d399; border-color: #34d39940; background: #34d39910; }
+  .type-fun    { color: #f472b6; border-color: #f472b640; background: #f472b610; }
+  .lang-pill { font-size: 0.7rem; opacity: 0.5; }
+  .card-title { font-size: 1.05rem; font-weight: 600; color: var(--foreground); margin-bottom: 0.35rem; transition: color 0.2s; line-height: 1.4; }
+  .gallery-card:hover .card-title { color: var(--accent); }
+  .card-desc { font-size: 0.82rem; opacity: 0.55; line-height: 1.55; }
+  .card-source { font-size: 0.75rem; opacity: 0.45; font-style: italic; margin-top: 0.35rem; }
+
+  .empty-filter-msg { text-align: center; padding: 3rem; opacity: 0.5; font-style: italic; }
+</style>
