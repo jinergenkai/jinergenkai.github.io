@@ -21,9 +21,19 @@ html[data-theme="dark"] {
 }
 
 @theme inline {
-  --font-app: var(--font-wotfard);
+  /* ── Body font: uncomment ONE line to switch ───────────────────────
+   * --font-app: var(--font-wotfard);              Wotfard (original)
+   * --font-app: 'JetBrains Mono', monospace;      Techy monospace, good VN
+   * --font-app: 'Be Vietnam Pro', sans-serif;     Designed for Vietnamese
+   * --font-app: 'Plus Jakarta Sans', sans-serif;  Modern clean sans
+   * --font-app: 'Inter', sans-serif;              Neutral, widest coverage
+   * ─────────────────────────────────────────────────────────────────── */
+  --font-app: "Inter", sans-serif;
+  --font-sriracha: "JetBrains Mono", monospace;
+  --font-cartograph: "JetBrains Mono", monospace;
+  /* --font-app: var(--font-wotfard);
   --font-sriracha: var(--font-sriracha);
-  --font-cartograph: var(--font-cartograph);
+  --font-cartograph: var(--font-cartograph); */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
@@ -103,7 +113,8 @@ i {
   background: color-mix(in srgb, var(--foreground) 3%, var(--background));
   padding: 1rem 1rem 1rem 3.5rem;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 20px -5px color-mix(in srgb, var(--background) 50%, transparent);
+  box-shadow: 0 4px 20px -5px
+    color-mix(in srgb, var(--background) 50%, transparent);
 }
 
 .premium-search input.pagefind-ui__search-input:focus-visible {
@@ -171,7 +182,8 @@ i {
   border-color: color-mix(in srgb, var(--accent) 30%, transparent);
   background: color-mix(in srgb, var(--accent) 4%, var(--background));
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px -10px color-mix(in srgb, var(--accent) 15%, transparent);
+  box-shadow: 0 10px 30px -10px
+    color-mix(in srgb, var(--accent) 15%, transparent);
 }
 
 .premium-search .pagefind-ui__result-title a {

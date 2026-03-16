@@ -160,3 +160,7 @@ pnpm astro check  # TypeScript type check
 Auto via `.github/workflows/deploy.yml` khi push lên `main`.
 
 **Setup:** GitHub repo Settings → Pages → Source: **GitHub Actions**
+
+## Notes:
+- https://cloud.umami.is/analytics/us/websites/fe08981d-6292-4978-9f99-970e38d9fe54
+- https://buttondown.com/
