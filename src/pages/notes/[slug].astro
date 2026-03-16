@@ -51,11 +51,17 @@ const h2s = headings.filter(h => h.depth === 2);
       <!-- Main content -->
       <div class="note-main">
         <header class="note-header">
-          <div class="note-meta">
-            <span class="subject-badge">{subjectLabel[subject]}</span>
-            <span class={`diff-badge diff-${difficulty}`}>{difficulty}</span>
-            <Datetime {pubDatetime} size="sm" class="opacity-60" />
-            <span class="lang-pill">{lang === "en" ? "🇬🇧 EN" : "🇻🇳 VI"}</span>
+          <div class="note-header-top">
+            <div class="note-meta">
+              <span class="subject-badge">{subjectLabel[subject]}</span>
+              <span class={`diff-badge diff-${difficulty}`}>{difficulty}</span>
+              <Datetime {pubDatetime} size="sm" class="opacity-60" />
+              <span class="lang-pill">{lang === "en" ? "🇬🇧 EN" : "🇻🇳 VI"}</span>
+            </div>
+            <button class="copy-link-btn" id="copy-link-btn" aria-label="Copy link" type="button">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              <span id="copy-label">Copy link</span>
+            </button>
           </div>
           <h1 class="note-title">{title}</h1>
           {description && <p class="note-desc">{description}</p>}
@@ -83,30 +89,50 @@ const h2s = headings.filter(h => h.depth === 2);
 </Layout>
 
 <script>
-  // Highlight active TOC link on scroll
   function initTOC() {
     const links = document.querySelectorAll<HTMLAnchorElement>(".toc-link");
     if (!links.length) return;
+    const headings = Array.from(links)
+      .map(l => document.getElementById(l.getAttribute("href")!.slice(1)))
+      .filter(Boolean) as HTMLElement[];
 
-    const headings = Array.from(links).map(l => {
-      const id = l.getAttribute("href")!.slice(1);
-      return document.getElementById(id);
-    }).filter(Boolean) as HTMLElement[];
+    function setActive(index: number) {
+      links.forEach(l => l.classList.remove("active"));
+      if (index >= 0) links[index].classList.add("active");
+    }
 
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          links.forEach(l => l.classList.remove("active"));
-          const active = Array.from(links).find(l => l.getAttribute("href") === `#${e.target.id}`);
-          active?.classList.add("active");
-        }
-      });
-    }, { rootMargin: "-20% 0px -70% 0px" });
+    function onScroll() {
+      const nearBottom =
+        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 80;
+      if (nearBottom) { setActive(headings.length - 1); return; }
 
-    headings.forEach(h => obs.observe(h));
+      let active = -1;
+      for (let i = 0; i < headings.length; i++) {
+        if (headings[i].getBoundingClientRect().top <= 120) active = i;
+      }
+      setActive(active);
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
   }
 
-  document.addEventListener("astro:page-load", initTOC);
+  function initCopyLink() {
+    const btn = document.getElementById("copy-link-btn");
+    const label = document.getElementById("copy-label");
+    if (!btn || !label) return;
+    btn.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(window.location.href);
+      label.textContent = "Copied!";
+      btn.classList.add("copied");
+      setTimeout(() => {
+        label.textContent = "Copy link";
+        btn.classList.remove("copied");
+      }, 2000);
+    });
+  }
+
+  document.addEventListener("astro:page-load", () => { initTOC(); initCopyLink(); });
 </script>
 
 <style>
@@ -191,4 +217,19 @@ const h2s = headings.filter(h => h.depth === 2);
   .note-back { margin-top: 2rem; }
   .back-link { font-size: 0.85rem; color: var(--accent); opacity: 0.7; text-decoration: none; transition: opacity 0.2s; }
   .back-link:hover { opacity: 1; }
+
+  /* Copy link */
+  .note-header-top {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 1rem; margin-bottom: 0.75rem;
+  }
+  .copy-link-btn {
+    display: inline-flex; align-items: center; gap: 0.35rem; flex-shrink: 0;
+    padding: 0.3rem 0.7rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600;
+    color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    background: color-mix(in srgb, var(--accent) 6%, transparent);
+    cursor: pointer; transition: all 0.2s ease;
+  }
+  .copy-link-btn:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+  .copy-link-btn.copied { color: #4ade80; border-color: #4ade8040; background: #4ade8010; }
 </style>
