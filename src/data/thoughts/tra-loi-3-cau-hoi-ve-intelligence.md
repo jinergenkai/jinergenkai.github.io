@@ -9,9 +9,10 @@ tags:
 featured: false
 draft: false
 lang: "vi"
+audience: ["life", "learning"]
 ---
 
-> Tiếp nối từ bài [Intelligence: Triết học về Trí thông minh](/posts/intelligence-triet-hoc-ve-tri-thong-minh).
+> Tiếp nối từ bài [Intelligence: Triết học về Trí thông minh](/thoughts/intelligence-triet-hoc-ve-tri-thong-minh).
 
 ---
 

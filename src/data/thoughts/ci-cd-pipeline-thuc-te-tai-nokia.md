@@ -11,6 +11,7 @@ tags:
 featured: true
 draft: false
 lang: "vi"
+audience: ["tech"]
 ogImage: "/image/dog2.jpg"
 ---
 

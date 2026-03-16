@@ -7,7 +7,7 @@ import Datetime from "./Datetime.astro";
 type Props = {
   variant?: "h2" | "h3";
   featured?: boolean;
-} & CollectionEntry<"blog">;
+} & CollectionEntry<"thoughts">;
 
 const {
   variant: Heading = "h2",
@@ -15,12 +15,14 @@ const {
   id,
   data,
   filePath,
+  ...attrs
 } = Astro.props;
 
 const { title, description, lang = "vi", ogImage, ...props } = data;
 ---
 
 <li
+  {...attrs}
   class:list={[
     "card-glow group/card relative my-3 rounded-2xl overflow-hidden",
     "border border-border/25",

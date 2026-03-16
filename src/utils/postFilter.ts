@@ -7,7 +7,7 @@ import timezone from "dayjs/plugin/timezone";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const postFilter = ({ data }: CollectionEntry<"blog">) => {
+const postFilter = ({ data }: CollectionEntry<"thoughts">) => {
   const pubDatetime = dayjs(data.pubDatetime).tz(
     data.timezone || SITE.timezone
   );

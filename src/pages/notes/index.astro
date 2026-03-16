@@ -1,0 +1,201 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Datetime from "@/components/Datetime.astro";
+import { SITE } from "@/config";
+
+const allNotes = await getCollection("notes", ({ data }) => !data.draft);
+const sorted = allNotes.sort(
+  (a, b) => new Date(b.data.pubDatetime).getTime() - new Date(a.data.pubDatetime).getTime()
+);
+
+const subjectLabel: Record<string, string> = {
+  gmat: "GMAT", english: "English", java: "Java", other: "Other",
+};
+---
+
+<Layout title={`Notes | ${SITE.title}`}>
+  <Header />
+  <Breadcrumb />
+  <main id="main-content" class="app-layout pb-12">
+    <div class="section-hero">
+      <div class="aurora-orb aurora-orb-1"></div>
+      <div class="aurora-orb aurora-orb-2"></div>
+      <div class="relative z-10">
+        <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">
+          <span class="glow-text">Notes</span>
+        </h1>
+        <p class="mt-3 max-w-lg text-foreground/70 italic">
+          Ghi chú học tập — GMAT, English, Java và những thứ đang học.
+        </p>
+        <div class="mt-3 flex flex-wrap items-center gap-2">
+          <span class="hero-badge">{sorted.length} notes</span>
+          <span class="notice">These notes are shared for learning purposes</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-bar">
+      <div class="filter-group">
+        <span class="filter-label">Lang</span>
+        <button class="filter-btn active" data-lang="all">All</button>
+        <button class="filter-btn" data-lang="vi">🇻🇳 VI</button>
+        <button class="filter-btn" data-lang="en">🇬🇧 EN</button>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Subject</span>
+        <button class="filter-btn active" data-subject="all">All</button>
+        <button class="filter-btn" data-subject="gmat">GMAT</button>
+        <button class="filter-btn" data-subject="english">English</button>
+        <button class="filter-btn" data-subject="java">Java</button>
+        <button class="filter-btn" data-subject="other">Other</button>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Level</span>
+        <button class="filter-btn active" data-difficulty="all">All</button>
+        <button class="filter-btn" data-difficulty="beginner">Beginner</button>
+        <button class="filter-btn" data-difficulty="intermediate">Intermediate</button>
+        <button class="filter-btn" data-difficulty="advanced">Advanced</button>
+      </div>
+    </div>
+
+    <!-- Notes list -->
+    <ul class="notes-list" id="notes-list">
+      {sorted.map(note => (
+        <li class="note-card" data-lang={note.data.lang} data-subject={note.data.subject} data-difficulty={note.data.difficulty}>
+          <a href={`/notes/${note.id}/`} class="note-link">
+            <div class="note-meta">
+              <span class="subject-badge">{subjectLabel[note.data.subject]}</span>
+              <span class={`diff-badge diff-${note.data.difficulty}`}>{note.data.difficulty}</span>
+              <Datetime pubDatetime={note.data.pubDatetime} size="sm" class="opacity-60" />
+              <span class="lang-pill">{note.data.lang === "en" ? "🇬🇧 EN" : "🇻🇳 VI"}</span>
+            </div>
+            <h2 class="note-title">{note.data.title}</h2>
+            <p class="note-desc">{note.data.description}</p>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  function initFilters() {
+    const params = new URLSearchParams(window.location.search);
+    let activeLang = params.get("lang") || "all";
+    let activeSubject = params.get("subject") || "all";
+    let activeDifficulty = params.get("difficulty") || "all";
+
+    const items = document.querySelectorAll<HTMLElement>(".note-card");
+
+    function applyFilter() {
+      items.forEach(item => {
+        const ok =
+          (activeLang === "all" || item.dataset.lang === activeLang) &&
+          (activeSubject === "all" || item.dataset.subject === activeSubject) &&
+          (activeDifficulty === "all" || item.dataset.difficulty === activeDifficulty);
+        item.style.display = ok ? "" : "none";
+      });
+      const p = new URLSearchParams();
+      if (activeLang !== "all") p.set("lang", activeLang);
+      if (activeSubject !== "all") p.set("subject", activeSubject);
+      if (activeDifficulty !== "all") p.set("difficulty", activeDifficulty);
+      window.history.replaceState({}, "", p.toString() ? `?${p}` : window.location.pathname);
+    }
+
+    function bindGroup(attr: string, getter: () => string, setter: (v: string) => void) {
+      document.querySelectorAll<HTMLButtonElement>(`[data-${attr}]`).forEach(btn => {
+        const val = btn.dataset[attr]!;
+        btn.classList.toggle("active", val === getter());
+        btn.addEventListener("click", () => {
+          setter(val);
+          document.querySelectorAll<HTMLButtonElement>(`[data-${attr}]`).forEach(b =>
+            b.classList.toggle("active", b.dataset[attr] === val)
+          );
+          applyFilter();
+        });
+      });
+    }
+
+    bindGroup("lang", () => activeLang, v => (activeLang = v));
+    bindGroup("subject", () => activeSubject, v => (activeSubject = v));
+    bindGroup("difficulty", () => activeDifficulty, v => (activeDifficulty = v));
+    applyFilter();
+  }
+
+  document.addEventListener("astro:page-load", initFilters);
+</script>
+
+<style>
+  .section-hero {
+    position: relative; overflow: hidden; border-radius: 1.5rem;
+    padding: 2.5rem 2rem; margin-bottom: 2rem;
+    background: color-mix(in srgb, var(--color-foreground) 3%, var(--color-background));
+    border: 1px solid color-mix(in srgb, var(--color-accent) 12%, transparent);
+  }
+  .aurora-orb { position: absolute; border-radius: 50%; filter: blur(60px); pointer-events: none; }
+  .aurora-orb-1 {
+    width: 250px; height: 250px; top: -40%; left: -10%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--color-accent) 20%, transparent), transparent 70%);
+    animation: orb1 8s ease-in-out infinite alternate;
+  }
+  .aurora-orb-2 {
+    width: 180px; height: 180px; bottom: -30%; right: -5%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--color-border) 18%, transparent), transparent 70%);
+    animation: orb2 10s ease-in-out infinite alternate;
+  }
+  @keyframes orb1 { 0% { transform: translate(0,0); } 100% { transform: translate(40px, 25px); } }
+  @keyframes orb2 { 0% { transform: translate(0,0); } 100% { transform: translate(-30px, -20px); } }
+  .glow-text {
+    background: linear-gradient(135deg, var(--color-foreground), var(--color-accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; padding: 0.3rem 0.85rem;
+    border-radius: 999px; font-size: 0.8rem; font-weight: 600; color: var(--color-accent);
+    background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 15%, transparent);
+  }
+  .notice {
+    font-size: 0.75rem; opacity: 0.5; font-style: italic;
+  }
+
+  .filter-bar { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; align-items: center; }
+  .filter-group { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+  .filter-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; opacity: 0.4; text-transform: uppercase; margin-right: 0.2rem; }
+  .filter-btn {
+    padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.78rem;
+    border: 1px solid color-mix(in srgb, var(--border) 30%, transparent);
+    background: transparent; color: var(--foreground); opacity: 0.6; cursor: pointer; transition: all 0.2s ease;
+  }
+  .filter-btn:hover { opacity: 1; border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+  .filter-btn.active { opacity: 1; color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, transparent); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+
+  .notes-list { display: flex; flex-direction: column; gap: 1rem; list-style: none; padding: 0; margin: 0; }
+  .note-card { border-radius: 1rem; border: 1px solid color-mix(in srgb, var(--border) 20%, transparent); transition: all 0.25s ease; }
+  .note-card:hover { border-color: color-mix(in srgb, var(--accent) 30%, transparent); background: color-mix(in srgb, var(--accent) 3%, transparent); transform: translateY(-1px); }
+  .note-link { display: block; padding: 1.25rem 1.5rem; text-decoration: none; }
+  .note-meta { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+  .subject-badge {
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+    padding: 0.1rem 0.5rem; border-radius: 999px;
+  }
+  .diff-badge {
+    font-size: 0.65rem; font-weight: 600; padding: 0.1rem 0.45rem; border-radius: 999px;
+    border: 1px solid; text-transform: capitalize;
+  }
+  .diff-beginner { color: #4ade80; border-color: #4ade8040; background: #4ade8010; }
+  .diff-intermediate { color: #fbbf24; border-color: #fbbf2440; background: #fbbf2410; }
+  .diff-advanced { color: #f87171; border-color: #f8717140; background: #f8717110; }
+  .lang-pill { font-size: 0.65rem; font-weight: 600; padding: 0.1rem 0.4rem; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--border) 40%, transparent); opacity: 0.6; }
+  .note-title { font-size: 1.1rem; font-weight: 600; color: var(--foreground); margin-bottom: 0.35rem; transition: color 0.2s; }
+  .note-card:hover .note-title { color: var(--accent); }
+  .note-desc { font-size: 0.875rem; opacity: 0.6; line-height: 1.6; }
+</style>

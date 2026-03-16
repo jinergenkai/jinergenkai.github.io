@@ -2,11 +2,11 @@ import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 import { SITE } from "@/config";
 
-export const BLOG_PATH = "src/data/blog";
+export const THOUGHTS_PATH = "src/data/thoughts";
 export const GALLERY_PATH = "src/data/galleries";
 
-const blog = defineCollection({
-  loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: `./${BLOG_PATH}` }),
+const thoughts = defineCollection({
+  loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: `./${THOUGHTS_PATH}` }),
   schema: () =>
     z.object({
       author: z.string().default(SITE.author),
@@ -22,6 +22,9 @@ const blog = defineCollection({
       hideEditPost: z.boolean().optional(),
       timezone: z.string().optional(),
       lang: z.enum(["vi", "en"]).default("vi"),
+      audience: z
+        .array(z.enum(["tech", "business", "life", "learning"]))
+        .default(["tech"]),
     }),
 });
 
@@ -38,4 +41,36 @@ const galleries = defineCollection({
     }),
 });
 
-export const collections = { blog, galleries };
+const poetry = defineCollection({
+  loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/data/poetry" }),
+  schema: () =>
+    z.object({
+      title: z.string(),
+      pubDatetime: z.date(),
+      description: z.string(),
+      tags: z.array(z.string()).default([]),
+      lang: z.enum(["vi", "en"]).default("vi"),
+      poemType: z.enum(["luc-bat", "tu-do", "free-verse"]).default("tu-do"),
+      audioUrl: z.string().optional(),
+      draft: z.boolean().optional(),
+      featured: z.boolean().optional(),
+    }),
+});
+
+const notes = defineCollection({
+  loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/data/notes" }),
+  schema: () =>
+    z.object({
+      title: z.string(),
+      pubDatetime: z.date(),
+      description: z.string(),
+      tags: z.array(z.string()).default([]),
+      lang: z.enum(["vi", "en"]).default("vi"),
+      subject: z.enum(["gmat", "english", "java", "other"]).default("other"),
+      difficulty: z.enum(["beginner", "intermediate", "advanced"]).default("beginner"),
+      draft: z.boolean().optional(),
+      featured: z.boolean().optional(),
+    }),
+});
+
+export const collections = { thoughts, galleries, poetry, notes };

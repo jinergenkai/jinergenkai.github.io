@@ -4,7 +4,9 @@
       "Bash(node:*)",
       "Bash(npm install:*)",
       "Bash(pnpm:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(find:*)",
+      "Bash(cd:*)"
     ]
   }
 }

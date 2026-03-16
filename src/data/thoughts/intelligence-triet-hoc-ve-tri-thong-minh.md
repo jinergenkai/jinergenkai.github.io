@@ -10,6 +10,7 @@ tags:
 featured: true
 draft: false
 lang: "vi"
+audience: ["life", "learning"]
 ogImage: "/image/dog1.jpg"
 ---
 

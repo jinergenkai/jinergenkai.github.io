@@ -17,7 +17,7 @@ import Projects from "@/components/sections/Projects.astro";
 import Achievements from "@/components/sections/Achievements.astro";
 import IntroAudio from "@/components/IntroAudio.astro";
 
-const posts = await getCollection("blog");
+const posts = await getCollection("thoughts");
 const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
 const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
@@ -186,7 +186,7 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 
         <div class="mt-8 mb-4 flex justify-center w-full">
           <LinkButton
-            href="/posts/"
+            href="/thoughts/"
             class="group inline-flex items-center w-full sm:w-auto justify-center gap-2 rounded-xl border border-accent/20 bg-accent/10 px-8 py-4 text-base font-bold text-accent transition-all duration-300 hover:border-accent hover:bg-accent/20 hover:shadow-xl hover:shadow-accent/20 hover:-translate-y-0.5"
           >
             Xem tất cả bài viết

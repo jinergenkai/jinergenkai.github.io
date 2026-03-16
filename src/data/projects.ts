@@ -18,7 +18,7 @@ export const projects: Project[] = [
       'Pipeline tạo nội dung đa nền tảng sử dụng ComfyUI, tích hợp chatbot AI trên Zalo OA để tự động phân phối và tương tác với người dùng.',
     technologies: ['ComfyUI', 'Python', 'Zalo OA API', 'LLM', 'Stable Diffusion'],
     status: 'active',
-    links: { github: 'https://github.com/hungng', article: '/posts/ai-content-factory' },
+    links: { github: 'https://github.com/hungng', article: '/thoughts/ai-content-factory' },
     featured: true,
   },
   {
