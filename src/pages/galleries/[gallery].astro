@@ -34,7 +34,7 @@ const isLucBat = tags.some(t => t === "luc-bat");
 <Layout title={`${title} | Galleries | ${SITE.title}`} description={description}>
   <Header />
   <Breadcrumb />
-  <main id="main-content" class="pb-16">
+  <main id="main-content" class="pb-16" data-pagefind-body>
     <!-- Full-width cover image -->
     <div class="cover-wrap">
       <img src={coverImage} alt={title} class="cover-img" loading="eager" />

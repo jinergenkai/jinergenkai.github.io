@@ -28,7 +28,7 @@ const h2s = headings.filter(h => h.depth === 2);
 <Layout title={`${title} | Notes | ${SITE.title}`} description={description}>
   <Header />
   <Breadcrumb />
-  <main id="main-content" class="app-layout pb-12">
+  <main id="main-content" class="app-layout pb-12" data-pagefind-body>
     <div class="notes-layout">
       <!-- Sticky TOC sidebar -->
       {h2s.length > 0 && (
