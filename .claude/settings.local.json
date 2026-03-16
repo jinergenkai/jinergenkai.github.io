@@ -6,7 +6,9 @@
       "Bash(pnpm:*)",
       "Bash(cat:*)",
       "Bash(find:*)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(ls:*)",
+      "Bash(rm:*)"
     ]
   }
 }

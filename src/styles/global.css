@@ -145,12 +145,26 @@ i {
 }
 
 .premium-search .pagefind-ui__result {
-  padding: 1.25rem;
+  padding: 0;
   border: 1px solid color-mix(in srgb, var(--border) 30%, transparent);
   border-radius: 1rem;
   background: color-mix(in srgb, var(--foreground) 2%, var(--background));
   transition: all 0.2s ease;
   margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.premium-search .pagefind-ui__result-inner {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.premium-search .pagefind-ui__result-nested {
+  padding: 0.75rem 1.5rem;
+  border-top: 1px solid color-mix(in srgb, var(--border) 20%, transparent);
+  background: color-mix(in srgb, var(--foreground) 1%, transparent);
 }
 
 .premium-search .pagefind-ui__result:hover {
