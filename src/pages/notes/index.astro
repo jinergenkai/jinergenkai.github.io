@@ -41,12 +41,6 @@ const subjectLabel: Record<string, string> = {
     <!-- Filters -->
     <div class="filter-bar">
       <div class="filter-group">
-        <span class="filter-label">Lang</span>
-        <button class="filter-btn active" data-lang="all">All</button>
-        <button class="filter-btn" data-lang="vi">🇻🇳 VI</button>
-        <button class="filter-btn" data-lang="en">🇬🇧 EN</button>
-      </div>
-      <div class="filter-group">
         <span class="filter-label">Subject</span>
         <button class="filter-btn active" data-subject="all">All</button>
         <button class="filter-btn" data-subject="gmat">GMAT</button>
@@ -87,7 +81,6 @@ const subjectLabel: Record<string, string> = {
 <script>
   function initFilters() {
     const params = new URLSearchParams(window.location.search);
-    let activeLang = params.get("lang") || "all";
     let activeSubject = params.get("subject") || "all";
     let activeDifficulty = params.get("difficulty") || "all";
 
@@ -96,13 +89,11 @@ const subjectLabel: Record<string, string> = {
     function applyFilter() {
       items.forEach(item => {
         const ok =
-          (activeLang === "all" || item.dataset.lang === activeLang) &&
           (activeSubject === "all" || item.dataset.subject === activeSubject) &&
           (activeDifficulty === "all" || item.dataset.difficulty === activeDifficulty);
         item.style.display = ok ? "" : "none";
       });
       const p = new URLSearchParams();
-      if (activeLang !== "all") p.set("lang", activeLang);
       if (activeSubject !== "all") p.set("subject", activeSubject);
       if (activeDifficulty !== "all") p.set("difficulty", activeDifficulty);
       window.history.replaceState({}, "", p.toString() ? `?${p}` : window.location.pathname);
@@ -122,7 +113,6 @@ const subjectLabel: Record<string, string> = {
       });
     }
 
-    bindGroup("lang", () => activeLang, v => (activeLang = v));
     bindGroup("subject", () => activeSubject, v => (activeSubject = v));
     bindGroup("difficulty", () => activeDifficulty, v => (activeDifficulty = v));
     applyFilter();
@@ -167,6 +157,11 @@ const subjectLabel: Record<string, string> = {
 
   .filter-bar { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; align-items: center; }
   .filter-group { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+  @media (max-width: 639px) {
+    .filter-bar { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 4px; }
+    .filter-bar::-webkit-scrollbar { display: none; }
+    .filter-group { flex-shrink: 0; flex-wrap: nowrap; }
+  }
   .filter-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; opacity: 0.4; text-transform: uppercase; margin-right: 0.2rem; }
   .filter-btn {
     padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.78rem;

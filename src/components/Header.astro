@@ -83,6 +83,22 @@ const isActive = (path: string) => {
               >Notes</a
             >
           </li>
+          {
+            SITE.showGalleries && (
+              <li>
+                <a
+                  href="/galleries"
+                  class:list={["nav-link", { "nav-active": isActive("/galleries") }]}
+                >Galleries</a>
+              </li>
+            )
+          }
+
+          <!-- Separator -->
+          <li class="flex items-center px-1" aria-hidden="true">
+            <div class="h-4 w-px bg-border/30"></div>
+          </li>
+
           <li>
             <a
               href="/tags"
@@ -95,13 +111,6 @@ const isActive = (path: string) => {
               href="/about"
               class:list={["nav-link", { "nav-active": isActive("/about") }]}
               >About</a
-            >
-          </li>
-          <li class="flex items-center">
-            <a
-              href="/search"
-              class:list={["nav-link", { "nav-active": isActive("/search") }]}
-              title="Go to search">Search</a
             >
           </li>
           {
@@ -118,24 +127,6 @@ const isActive = (path: string) => {
                 >
                   <IconArchive class="hidden sm:inline-block" />
                   <span class="sm:sr-only">Archives</span>
-                </LinkButton>
-              </li>
-            )
-          }
-          {
-            SITE.showGalleries && (
-              <li>
-                <LinkButton
-                  href="/galleries"
-                  class:list={[
-                    "nav-link",
-                    { "nav-active": isActive("/galleries") },
-                  ]}
-                  title="Galleries"
-                  aria-label="galleries"
-                >
-                  <IconGallery class="hidden sm:inline-block" />
-                  <span class="sm:sr-only">Galleries</span>
                 </LinkButton>
               </li>
             )
@@ -205,10 +196,22 @@ const isActive = (path: string) => {
               <span class="mobile-nav-indicator"></span>
               <span>Notes</span>
             </a>
+            {
+              SITE.showGalleries && (
+                <a
+                  href="/galleries"
+                  class:list={["mobile-nav-link", { active: isActive("/galleries") }]}
+                  style="--i:2"
+                >
+                  <span class="mobile-nav-indicator" />
+                  <span>Galleries</span>
+                </a>
+              )
+            }
             <a
               href="/tags"
               class:list={["mobile-nav-link", { active: isActive("/tags") }]}
-              style="--i:2"
+              style="--i:3"
             >
               <span class="mobile-nav-indicator"></span>
               <span>Tags</span>
@@ -216,7 +219,7 @@ const isActive = (path: string) => {
             <a
               href="/about"
               class:list={["mobile-nav-link", { active: isActive("/about") }]}
-              style="--i:3"
+              style="--i:4"
             >
               <span class="mobile-nav-indicator"></span>
               <span>About</span>
@@ -229,25 +232,10 @@ const isActive = (path: string) => {
                     "mobile-nav-link",
                     { active: isActive("/archives") },
                   ]}
-                  style="--i:6"
+                  style="--i:5"
                 >
                   <span class="mobile-nav-indicator" />
                   <span>Archives</span>
-                </a>
-              )
-            }
-            {
-              SITE.showGalleries && (
-                <a
-                  href="/galleries"
-                  class:list={[
-                    "mobile-nav-link",
-                    { active: isActive("/galleries") },
-                  ]}
-                  style="--i:7"
-                >
-                  <span class="mobile-nav-indicator" />
-                  <span>Galleries</span>
                 </a>
               )
             }

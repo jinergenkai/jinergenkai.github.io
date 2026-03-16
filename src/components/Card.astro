@@ -19,12 +19,23 @@ const {
 } = Astro.props;
 
 const { title, description, lang = "vi", ogImage, ...props } = data;
+
+const placeholders = [
+  "celebration",
+  "favorites",
+  "gratitude",
+  "identity",
+  "truth",
+  "wisdom",
+];
+const placeholderImg = `/image/temp/${placeholders[id.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % placeholders.length]}.png`;
+const coverImage = ogImage ?? placeholderImg;
 ---
 
 <li
   {...attrs}
   class:list={[
-    "card-glow group/card relative my-3 rounded-2xl overflow-hidden",
+    "card-glow group/card relative my-3 overflow-hidden rounded-2xl",
     "border border-border/25",
     "transition-all duration-300 ease-out",
     "hover:border-accent/40 hover:bg-accent/5",
@@ -35,12 +46,10 @@ const { title, description, lang = "vi", ogImage, ...props } = data;
   ]}
 >
   <!-- Cover image strip (top, separated from text) -->
-  {ogImage && (
-    <div class="card-img-strip" aria-hidden="true">
-      <img src={ogImage} alt="" class="card-img" />
-      <div class="card-img-fade"></div>
-    </div>
-  )}
+  <div class="card-img-strip" aria-hidden="true">
+    <img src={coverImage} alt="" class="card-img" />
+    <div class="card-img-fade"></div>
+  </div>
   <!-- Cursor-following glow -->
   <div
     class="card-glow-effect pointer-events-none absolute inset-0 z-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover/card:opacity-100"

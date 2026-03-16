@@ -51,12 +51,6 @@ const totalPosts = page.total;
         <button class="filter-btn" data-audience="life">Life</button>
         <button class="filter-btn" data-audience="learning">Learning</button>
       </div>
-      <div class="filter-group">
-        <span class="filter-label">Lang</span>
-        <button class="filter-btn active" data-lang="all">All</button>
-        <button class="filter-btn" data-lang="vi">🇻🇳 VI</button>
-        <button class="filter-btn" data-lang="en">🇬🇧 EN</button>
-      </div>
     </div>
 
     <!-- Posts Grid -->
@@ -72,7 +66,6 @@ const totalPosts = page.total;
             {page.data.map((post: any) => (
               <Card
                 {...post}
-                data-lang={post.data.lang}
                 data-audience={JSON.stringify(post.data.audience ?? ["tech"])}
               />
             ))}
@@ -92,22 +85,17 @@ const totalPosts = page.total;
   function initFilters() {
     const params = new URLSearchParams(window.location.search);
     let activeAudience = params.get("audience") || "all";
-    let activeLang = params.get("lang") || "all";
 
     const items = document.querySelectorAll<HTMLElement>("#thoughts-grid [data-audience]");
     const emptyMsg = document.getElementById("empty-filter-msg");
     const countBadge = document.getElementById("visible-count");
     const audienceBtns = document.querySelectorAll<HTMLButtonElement>("#filter-bar [data-audience]");
-    const langBtns = document.querySelectorAll<HTMLButtonElement>("#filter-bar [data-lang]");
 
     function applyFilter() {
       let visible = 0;
       items.forEach(item => {
-        const lang = item.dataset.lang;
         const audiences: string[] = JSON.parse(item.dataset.audience || '["tech"]');
-        const matchLang = activeLang === "all" || lang === activeLang;
-        const matchAudience = activeAudience === "all" || audiences.includes(activeAudience);
-        const show = matchLang && matchAudience;
+        const show = activeAudience === "all" || audiences.includes(activeAudience);
         item.style.display = show ? "" : "none";
         if (show) visible++;
       });
@@ -117,7 +105,6 @@ const totalPosts = page.total;
 
       const p = new URLSearchParams();
       if (activeAudience !== "all") p.set("audience", activeAudience);
-      if (activeLang !== "all") p.set("lang", activeLang);
       window.history.replaceState({}, "", p.toString() ? `?${p}` : window.location.pathname);
     }
 
@@ -139,7 +126,6 @@ const totalPosts = page.total;
     }
 
     bindGroup(audienceBtns, "audience", () => activeAudience, v => (activeAudience = v));
-    bindGroup(langBtns, "lang", () => activeLang, v => (activeLang = v));
     applyFilter();
   }
 
@@ -210,6 +196,11 @@ const totalPosts = page.total;
     margin-bottom: 2rem; align-items: center;
   }
   .filter-group { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+  @media (max-width: 639px) {
+    .filter-bar { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 4px; }
+    .filter-bar::-webkit-scrollbar { display: none; }
+    .filter-group { flex-shrink: 0; flex-wrap: nowrap; }
+  }
   .filter-label {
     font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em;
     opacity: 0.4; text-transform: uppercase; margin-right: 0.2rem;
