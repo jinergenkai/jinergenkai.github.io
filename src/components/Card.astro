@@ -9,22 +9,36 @@ type Props = {
   featured?: boolean;
 } & CollectionEntry<"blog">;
 
-const { variant: Heading = "h2", featured = false, id, data, filePath } = Astro.props;
+const {
+  variant: Heading = "h2",
+  featured = false,
+  id,
+  data,
+  filePath,
+} = Astro.props;
 
-const { title, description, lang = "vi", ...props } = data;
+const { title, description, lang = "vi", ogImage, ...props } = data;
 ---
 
 <li
   class:list={[
-    "card-glow group/card relative my-3 rounded-2xl p-4 sm:p-5",
+    "card-glow group/card relative my-3 rounded-2xl overflow-hidden",
     "border border-border/25",
     "transition-all duration-300 ease-out",
     "hover:border-accent/40 hover:bg-accent/5",
     "hover:-translate-y-0.5",
     "hover:shadow-lg hover:shadow-accent/10",
-    featured && "border-accent/40 bg-accent/5 shadow-[0_0_20px_-5px_rgba(var(--accent),0.15)]",
+    featured &&
+      "border-accent/40 bg-accent/5 shadow-[0_0_20px_-5px_rgba(var(--accent),0.15)]",
   ]}
 >
+  <!-- Cover image strip (top, separated from text) -->
+  {ogImage && (
+    <div class="card-img-strip" aria-hidden="true">
+      <img src={ogImage} alt="" class="card-img" />
+      <div class="card-img-fade"></div>
+    </div>
+  )}
   <!-- Cursor-following glow -->
   <div
     class="card-glow-effect pointer-events-none absolute inset-0 z-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover/card:opacity-100"
@@ -38,33 +52,74 @@ const { title, description, lang = "vi", ...props } = data;
   >
   </div>
 
-  <div class="relative z-5">
+  <div class="relative z-5 p-4 sm:p-5">
     <a
       href={getPath(id, filePath)}
-      class="text-lg font-semibold text-foreground transition-colors duration-200 group-hover/card:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm"
-      style={{ viewTransitionName: slugifyStr(String(title).replaceAll(".", "-")) }}
+      class="rounded-sm text-lg font-semibold text-foreground transition-colors duration-200 group-hover/card:text-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
+      style={{
+        viewTransitionName: slugifyStr(String(title).replaceAll(".", "-")),
+      }}
     >
       <Heading>
         {title}
       </Heading>
       <!-- Expand clickable area to whole card on top of everything, minus the description -->
-      <span class="absolute -inset-4 sm:-inset-5 z-10" aria-hidden="true"></span>
+      <span class="absolute inset-0 z-10" aria-hidden="true"></span>
     </a>
-    
-    <div class="relative z-20 mt-1.5 flex items-center gap-2 pointer-events-none">
-      <Datetime pubDatetime={props.pubDatetime as string | Date} modDatetime={props.modDatetime as string | Date | null | undefined} />
-      <span class="lang-badge" aria-label={lang === "en" ? "English" : "Tiếng Việt"}>
+
+    <div
+      class="pointer-events-none relative z-20 mt-1.5 flex items-center gap-2"
+    >
+      <Datetime
+        pubDatetime={props.pubDatetime as string | Date}
+        modDatetime={props.modDatetime as string | Date | null | undefined}
+      />
+      <span
+        class="lang-badge"
+        aria-label={lang === "en" ? "English" : "Tiếng Việt"}
+      >
         {lang === "en" ? "🇬🇧 EN" : "🇻🇳 VI"}
       </span>
     </div>
-    
-    <p class="relative z-20 mt-2 line-clamp-2 text-sm leading-relaxed opacity-65 pointer-events-auto select-text">
+
+    <p
+      class="pointer-events-auto relative z-20 mt-2 line-clamp-2 text-sm leading-relaxed opacity-65 select-text"
+    >
       {description}
     </p>
   </div>
 </li>
 
 <style>
+  /* Image strip at top */
+  .card-img-strip {
+    position: relative;
+    width: 100%;
+    height: 140px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+    display: block;
+  }
+  .group\/card:hover .card-img {
+    transform: scale(1.04);
+  }
+  /* Fade strip into card background at bottom */
+  .card-img-fade {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(to bottom, transparent, var(--background));
+    pointer-events: none;
+  }
+
   .card-glow-effect {
     background: radial-gradient(
       350px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),

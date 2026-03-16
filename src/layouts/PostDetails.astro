@@ -89,89 +89,66 @@ const nextPost =
     <!-- Post header section -->
     <header class="post-header relative mb-10 text-center">
       <div class="post-hero-bg"></div>
-      <div class="relative z-10 rounded-3xl border border-border/20 bg-muted/5 px-6 py-8 backdrop-blur-md sm:px-10 sm:py-12">
-        <!-- Title -->
-        <h1
-          transition:name={slugifyStr(title.replaceAll(".", "-"))}
-          class="post-title text-3xl leading-tight font-bold tracking-tight sm:text-4xl lg:text-[2.75rem]"
-        >
-          {title}
-        </h1>
+      <div class="relative z-10 overflow-hidden rounded-3xl border border-border/20 bg-muted/5 backdrop-blur-md">
+        {/* Image strip at top — fully separated from text */}
+        {ogImageUrl && (
+          <div class="post-img-strip" aria-hidden="true">
+            <img src={ogImageUrl} alt="" class="post-cover-img" />
+            <div class="post-cover-fade"></div>
+          </div>
+        )}
 
-        <!-- Tags as badges -->
-        <div class="mt-4 flex flex-wrap justify-center gap-2">
-          {
-            tags.map((tag: string) => (
-              <a
-                href={`/tags/${slugifyStr(tag)}/`}
-                class="post-tag-badge inline-flex items-center gap-1 rounded-full border border-accent/20 bg-accent/5 px-2.5 py-0.5 font-cartograph text-xs text-accent transition-all duration-200 hover:border-accent/40 hover:bg-accent/10 hover:shadow-sm hover:shadow-accent/10"
-              >
-                <span class="opacity-50">#</span>
-                {tag}
-              </a>
-            ))
-          }
-        </div>
-
-        <!-- Metadata row -->
-        <div
-          class="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm"
-        >
-          <!-- Author chip -->
-          <div
-            class="inline-flex items-center gap-1.5 rounded-lg border border-border/25 bg-muted/10 px-2.5 py-1 backdrop-blur-sm"
+        {/* Text content — always clean background */}
+        <div class="px-6 py-8 sm:px-10 sm:py-12">
+          <!-- Title -->
+          <h1
+            transition:name={slugifyStr(title.replaceAll(".", "-"))}
+            class="post-title text-3xl leading-tight font-bold tracking-tight sm:text-4xl lg:text-[2.75rem]"
           >
-            <svg
-              class="size-3.5 text-accent/70"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-            <span class="opacity-70">{author}</span>
+            {title}
+          </h1>
+
+          <!-- Tags as badges -->
+          <div class="mt-4 flex flex-wrap justify-center gap-2">
+            {
+              tags.map((tag: string) => (
+                <a
+                  href={`/tags/${slugifyStr(tag)}/`}
+                  class="post-tag-badge inline-flex items-center gap-1 rounded-full border border-accent/20 bg-accent/5 px-2.5 py-0.5 font-cartograph text-xs text-accent transition-all duration-200 hover:border-accent/40 hover:bg-accent/10 hover:shadow-sm hover:shadow-accent/10"
+                >
+                  <span class="opacity-50">#</span>
+                  {tag}
+                </a>
+              ))
+            }
           </div>
 
-          <!-- Date chip -->
-          <div
-            class="inline-flex items-center gap-1.5 rounded-lg border border-border/25 bg-muted/10 px-2.5 py-1 backdrop-blur-sm"
-          >
-            <svg
-              class="size-3.5 text-accent/70"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-            </svg>
-            <Datetime
-              {pubDatetime}
-              {modDatetime}
-              {timezone}
-              size="sm"
-              class="opacity-70 [&>svg]:hidden"
-            />
+          <!-- Metadata row -->
+          <div class="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm">
+            <!-- Author chip -->
+            <div class="inline-flex items-center gap-1.5 rounded-lg border border-border/25 bg-muted/10 px-2.5 py-1 backdrop-blur-sm">
+              <svg class="size-3.5 text-accent/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span class="opacity-70">{author}</span>
+            </div>
+
+            <!-- Date chip -->
+            <div class="inline-flex items-center gap-1.5 rounded-lg border border-border/25 bg-muted/10 px-2.5 py-1 backdrop-blur-sm">
+              <svg class="size-3.5 text-accent/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              <Datetime {pubDatetime} {modDatetime} {timezone} size="sm" class="opacity-70 [&>svg]:hidden" />
+            </div>
+
+            <!-- Edit post -->
+            <EditPost {hideEditPost} {post} class="hidden rounded-lg border border-border/25 bg-muted/10 px-2.5 py-1 opacity-70 backdrop-blur-sm transition-all duration-200 hover:border-accent/30 hover:opacity-100 sm:flex [&>svg]:size-3.5" />
           </div>
-
-          <!-- Edit post -->
-          <EditPost
-            {hideEditPost}
-            {post}
-            class="hidden rounded-lg border border-border/25 bg-muted/10 px-2.5 py-1 opacity-70 backdrop-blur-sm transition-all duration-200 hover:border-accent/30 hover:opacity-100 sm:flex [&>svg]:size-3.5"
-          />
         </div>
-
-
       </div>
     </header>
 
@@ -425,6 +402,34 @@ const nextPost =
 </script>
 
 <style>
+  /* Image strip — sits above text, no overlap */
+  .post-img-strip {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  @media (min-width: 640px) {
+    .post-img-strip { height: 280px; }
+  }
+  .post-cover-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  /* Fade bottom of image into panel background */
+  .post-cover-fade {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60%;
+    background: linear-gradient(to bottom, transparent, var(--background));
+    pointer-events: none;
+  }
+
   .post-title {
     background: linear-gradient(
       135deg,
