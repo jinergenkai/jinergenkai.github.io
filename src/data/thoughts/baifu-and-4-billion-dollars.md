@@ -7,7 +7,7 @@ lang: "vi"
 audience: ["tech", "business"]
 featured: true
 draft: false
-ogImage: "/images/baifu.png"
+ogImage: "/image/baifu.png"
 ---
 # Một cậu sinh viên, Cursor, và 4 triệu USD: Câu chuyện "làm giàu không khó" (với người khác)
 

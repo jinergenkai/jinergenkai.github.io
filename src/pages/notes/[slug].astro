@@ -5,6 +5,8 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import Breadcrumb from "@/components/Breadcrumb.astro";
 import Datetime from "@/components/Datetime.astro";
+import BackToTopButton from "@/components/BackToTopButton.astro";
+import ShareLinks from "@/components/ShareLinks.astro";
 import { SITE } from "@/config";
 
 export async function getStaticPaths() {
@@ -75,9 +77,13 @@ const h2s = headings.filter(h => h.depth === 2);
           </div>
         </header>
 
-        <article class="note-content app-prose">
+        <article class="note-content app-prose prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)">
           <Content />
         </article>
+
+        <div class="mt-8 mb-4">
+          <ShareLinks />
+        </div>
 
         <div class="note-back">
           <a href="/notes" class="back-link">← Back to Notes</a>
@@ -85,8 +91,37 @@ const h2s = headings.filter(h => h.depth === 2);
       </div>
     </div>
   </main>
+  <BackToTopButton />
   <Footer />
 </Layout>
+
+<script is:inline data-astro-rerun>
+  function createProgressBar() {
+    const progressContainer = document.createElement("div");
+    progressContainer.className = "progress-container fixed top-0 z-50 h-1 w-full bg-background";
+    const progressBar = document.createElement("div");
+    progressBar.className = "progress-bar h-1 w-0 bg-accent";
+    progressBar.id = "myBar";
+    progressContainer.appendChild(progressBar);
+    document.body.appendChild(progressContainer);
+  }
+  createProgressBar();
+
+  function updateScrollProgress() {
+    document.addEventListener("scroll", () => {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      const myBar = document.getElementById("myBar");
+      if (myBar) myBar.style.width = scrolled + "%";
+    });
+  }
+  updateScrollProgress();
+
+  document.addEventListener("astro:after-swap", () =>
+    window.scrollTo({ left: 0, top: 0, behavior: "instant" })
+  );
+</script>
 
 <script>
   function initTOC() {
@@ -132,7 +167,49 @@ const h2s = headings.filter(h => h.depth === 2);
     });
   }
 
-  document.addEventListener("astro:page-load", () => { initTOC(); initCopyLink(); });
+  function addHeadingLinks() {
+    const headings = Array.from(document.querySelectorAll(".note-content h2, .note-content h3, .note-content h4, .note-content h5, .note-content h6"));
+    for (const heading of headings) {
+      heading.classList.add("group");
+      const link = document.createElement("a");
+      link.className = "heading-link ms-2 no-underline opacity-75 md:opacity-0 md:group-hover:opacity-100 md:focus:opacity-100";
+      link.href = "#" + (heading as HTMLElement).id;
+      const span = document.createElement("span");
+      span.ariaHidden = "true";
+      span.innerText = "#";
+      link.appendChild(span);
+      link.ariaLabel = "link to heading";
+      heading.appendChild(link);
+    }
+  }
+
+  function attachCopyButtons() {
+    const copyButtonLabel = "Copy";
+    const codeBlocks = Array.from(document.querySelectorAll(".note-content pre"));
+    for (const codeBlock of codeBlocks) {
+      const wrapper = document.createElement("div");
+      wrapper.style.position = "relative";
+      const computedStyle = getComputedStyle(codeBlock);
+      const hasFileNameOffset = computedStyle.getPropertyValue("--file-name-offset").trim() !== "";
+      const topClass = hasFileNameOffset ? "top-(--file-name-offset)" : "-top-3";
+      const copyButton = document.createElement("button");
+      copyButton.className = `copy-code absolute end-3 ${topClass} rounded bg-muted border border-muted px-2 py-1 text-xs leading-4 text-foreground font-medium`;
+      copyButton.innerHTML = copyButtonLabel;
+      codeBlock.setAttribute("tabindex", "0");
+      codeBlock.appendChild(copyButton);
+      codeBlock?.parentNode?.insertBefore(wrapper, codeBlock);
+      wrapper.appendChild(codeBlock);
+      copyButton.addEventListener("click", async () => {
+        const code = codeBlock.querySelector("code");
+        const text = code?.innerText;
+        await navigator.clipboard.writeText(text ?? "");
+        copyButton.innerText = "Copied";
+        setTimeout(() => { copyButton.innerText = copyButtonLabel; }, 700);
+      });
+    }
+  }
+
+  document.addEventListener("astro:page-load", () => { initTOC(); initCopyLink(); addHeadingLinks(); attachCopyButtons(); });
 </script>
 
 <style>
