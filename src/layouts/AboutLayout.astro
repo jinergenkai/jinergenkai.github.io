@@ -4,6 +4,7 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import Breadcrumb from "@/components/Breadcrumb.astro";
 import Layout from "./Layout.astro";
+import SubscribeForm from "@/components/SubscribeForm.astro";
 import { SITE } from "@/config";
 
 type Props = MarkdownLayoutProps<{ title: string }>;
@@ -42,10 +43,14 @@ const { frontmatter } = Astro.props;
 
     <section
       id="about"
-      class="about-content app-prose mb-28 max-w-app prose-img:border-0"
+      class="about-content app-prose max-w-app prose-img:border-0"
     >
       <slot />
     </section>
+
+    <div class="max-w-app mb-28">
+      <SubscribeForm title="Stay updated" desc="New posts on backend engineering, AI, and things I'm learning — straight to your inbox." />
+    </div>
   </main>
   <Footer />
 </Layout>

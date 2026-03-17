@@ -21,6 +21,7 @@ export const SITE = {
   dir: "ltr",
   lang: "vi",
   timezone: "Asia/Ho_Chi_Minh",
+  buttondownUsername: "jinergenkai",
   introAudio: {
     enabled: true,
     src: "/audio/intro-web.mp3",

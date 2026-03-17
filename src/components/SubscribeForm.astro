@@ -1,0 +1,349 @@
+---
+import { SITE } from "@/config";
+
+interface Props {
+  title?: string;
+  desc?: string;
+}
+
+const {
+  title = "Enjoyed this?",
+  desc = "Get new posts straight to your inbox — no spam, unsubscribe anytime.",
+} = Astro.props;
+
+const action = `https://buttondown.com/api/emails/embed-subscribe/${SITE.buttondownUsername}`;
+---
+
+<div class="subscribe-wrap">
+  <div class="subscribe-card">
+    <div class="subscribe-glow" aria-hidden="true"></div>
+    <div class="subscribe-body">
+      <span class="subscribe-icon" aria-hidden="true">✦</span>
+      <div class="subscribe-text">
+        <p class="subscribe-title">{title}</p>
+        <p class="subscribe-desc">{desc}</p>
+      </div>
+      <form class="subscribe-form" action={action} method="post" data-subscribe-form>
+        <input type="hidden" value="1" name="embed" />
+        <div class="subscribe-row">
+          <input
+            type="email"
+            name="email"
+            placeholder="your@email.com"
+            required
+            class="subscribe-input"
+            autocomplete="email"
+          />
+          <button type="submit" class="subscribe-btn" data-subscribe-btn>
+            <span class="btn-label">Subscribe</span>
+            <svg class="btn-spinner" viewBox="0 0 16 16" fill="none" aria-hidden="true" hidden>
+              <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" stroke-dasharray="28" stroke-dashoffset="10" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Toast — rendered once, shared across all forms on page -->
+<div class="toast" id="subscribe-toast" aria-live="assertive" aria-atomic="true" hidden>
+  <div class="toast-icon" id="subscribe-toast-icon"></div>
+  <p class="toast-msg" id="subscribe-toast-msg"></p>
+  <button class="toast-close" id="subscribe-toast-close" aria-label="Dismiss">
+    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <path d="M1 1l10 10M11 1L1 11"/>
+    </svg>
+  </button>
+</div>
+
+<script>
+  let toastTimer: ReturnType<typeof setTimeout> | null = null;
+
+  function showToast(type: "success" | "error" | "info", msg: string) {
+    const toast = document.getElementById("subscribe-toast") as HTMLElement;
+    const icon  = document.getElementById("subscribe-toast-icon") as HTMLElement;
+    const text  = document.getElementById("subscribe-toast-msg") as HTMLElement;
+
+    if (!toast) return;
+
+    // SVG icons — no emoji
+    const icons = {
+      success: `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="7"/><path d="M5 8.5l2 2 4-4"/></svg>`,
+      error:   `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="8" cy="8" r="7"/><path d="M8 5v3.5M8 11h.01"/></svg>`,
+      info:    `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="8" cy="8" r="7"/><path d="M8 11V7.5M8 5h.01"/></svg>`,
+    };
+    icon.innerHTML = icons[type];
+
+    text.textContent = msg;
+    toast.dataset.type = type;
+    toast.hidden = false;
+
+    // Force reflow to restart animation
+    toast.classList.remove("toast-show");
+    void toast.offsetWidth;
+    toast.classList.add("toast-show");
+
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => dismissToast(), 4500);
+  }
+
+  function dismissToast() {
+    const toast = document.getElementById("subscribe-toast") as HTMLElement;
+    if (!toast) return;
+    toast.classList.remove("toast-show");
+    toast.addEventListener("transitionend", () => { toast.hidden = true; }, { once: true });
+    if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+  }
+
+  document.addEventListener("astro:page-load", () => {
+    document.getElementById("subscribe-toast-close")?.addEventListener("click", dismissToast);
+
+    document.querySelectorAll("[data-subscribe-form]").forEach(form => {
+      form.addEventListener("submit", async e => {
+        e.preventDefault();
+        const f = e.currentTarget as HTMLFormElement;
+        const btn = f.querySelector("[data-subscribe-btn]") as HTMLButtonElement;
+        const label = btn.querySelector(".btn-label") as HTMLElement;
+        const spinner = btn.querySelector(".btn-spinner") as HTMLElement;
+
+        btn.disabled = true;
+        label.hidden = true;
+        spinner.hidden = false;
+
+        try {
+          const res = await fetch(f.action, { method: "POST", body: new FormData(f) });
+          if (res.ok || res.status === 201) {
+            showToast("success", "Check your inbox to confirm your subscription!");
+            f.reset();
+          } else if (res.status === 400) {
+            const body = await res.json().catch(() => ({}));
+            const msg: string = JSON.stringify(body).toLowerCase();
+            if (msg.includes("already subscribed") || msg.includes("already exists")) {
+              showToast("info", "You're already on the list!");
+            } else {
+              showToast("error", "Something went wrong. Please try again.");
+            }
+          } else {
+            showToast("error", "Something went wrong. Please try again.");
+          }
+        } catch {
+          showToast("error", "Something went wrong. Please try again.");
+        } finally {
+          btn.disabled = false;
+          label.hidden = false;
+          spinner.hidden = true;
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .subscribe-wrap {
+    margin: 2.5rem 0;
+  }
+
+  .subscribe-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.25rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border) 30%);
+    background: color-mix(in srgb, var(--accent) 3%, var(--background));
+    backdrop-filter: blur(12px);
+  }
+
+  .subscribe-glow {
+    position: absolute;
+    inset: -1px;
+    background: radial-gradient(
+      ellipse 80% 60% at 10% 50%,
+      color-mix(in srgb, var(--accent) 10%, transparent),
+      transparent 60%
+    );
+    pointer-events: none;
+  }
+
+  .subscribe-body {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    padding: 1.25rem 1.5rem;
+  }
+
+  .subscribe-icon {
+    font-size: 1.25rem;
+    color: var(--accent);
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+
+  .subscribe-text {
+    flex: 1;
+    min-width: 160px;
+  }
+
+  .subscribe-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0 0 0.15rem;
+  }
+
+  .subscribe-desc {
+    font-size: 0.78rem;
+    color: var(--foreground);
+    opacity: 0.5;
+    margin: 0;
+  }
+
+  .subscribe-form { flex-shrink: 0; }
+
+  .subscribe-row {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .subscribe-input {
+    padding: 0.45rem 0.75rem;
+    border-radius: 0.6rem;
+    border: 1px solid color-mix(in srgb, var(--border) 40%, transparent);
+    background: color-mix(in srgb, var(--foreground) 4%, var(--background));
+    color: var(--foreground);
+    font-size: 0.8rem;
+    width: 190px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .subscribe-input:focus {
+    border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  }
+
+  .subscribe-input::placeholder { opacity: 0.35; }
+
+  .subscribe-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.45rem 1rem;
+    border-radius: 0.6rem;
+    background: var(--accent);
+    color: var(--background);
+    font-size: 0.8rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    min-width: 88px;
+    transition: opacity 0.2s, transform 0.15s;
+    flex-shrink: 0;
+  }
+
+  .subscribe-btn:hover:not(:disabled) {
+    opacity: 0.88;
+    transform: translateY(-1px);
+  }
+
+  .subscribe-btn:disabled { opacity: 0.6; cursor: default; }
+
+  .btn-spinner {
+    width: 14px;
+    height: 14px;
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Toast ─────────────────────────────────── */
+  .toast {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(calc(100% + 1.5rem));
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.65rem 1rem 0.65rem 0.85rem;
+    border-radius: 0.85rem;
+    border: 1px solid transparent;
+    background: color-mix(in srgb, var(--background) 90%, transparent);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 1px 0 rgba(255,255,255,0.05) inset;
+    min-width: 240px;
+    max-width: min(380px, calc(100vw - 2rem));
+    opacity: 0;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .toast.toast-show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .toast[data-type="success"] {
+    border-color: color-mix(in srgb, #4ade80 25%, transparent);
+  }
+
+  .toast[data-type="error"] {
+    border-color: color-mix(in srgb, #f87171 25%, transparent);
+  }
+
+  .toast[data-type="info"] {
+    border-color: color-mix(in srgb, var(--accent) 25%, transparent);
+  }
+
+  .toast-icon {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .toast-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .toast[data-type="success"] .toast-icon { color: #4ade80; }
+  .toast[data-type="error"]   .toast-icon { color: #f87171; }
+  .toast[data-type="info"]    .toast-icon { color: var(--accent); }
+
+  .toast-msg {
+    flex: 1;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--foreground);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .toast-close {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    opacity: 0.4;
+    transition: opacity 0.15s;
+    padding: 0;
+    color: var(--foreground);
+  }
+
+  .toast-close:hover { opacity: 0.8; }
+  .toast-close svg { width: 10px; height: 10px; }
+</style>

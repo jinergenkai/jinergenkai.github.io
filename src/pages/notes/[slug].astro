@@ -6,6 +6,7 @@ import Footer from "@/components/Footer.astro";
 import Breadcrumb from "@/components/Breadcrumb.astro";
 import Datetime from "@/components/Datetime.astro";
 import BackToTopButton from "@/components/BackToTopButton.astro";
+import SubscribeForm from "@/components/SubscribeForm.astro";
 import ShareLinks from "@/components/ShareLinks.astro";
 import { slugifyStr } from "@/utils/slugify";
 import { SITE } from "@/config";
@@ -81,6 +82,8 @@ const h2s = headings.filter(h => h.depth === 2);
         <article class="note-content app-prose prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)">
           <Content />
         </article>
+
+        <SubscribeForm />
 
         <div class="mt-8 mb-4">
           <ShareLinks />
