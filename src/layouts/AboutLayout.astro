@@ -6,6 +6,7 @@ import Breadcrumb from "@/components/Breadcrumb.astro";
 import Layout from "./Layout.astro";
 import SubscribeForm from "@/components/SubscribeForm.astro";
 import { SITE } from "@/config";
+import { SOCIALS, CONTACT } from "@/constants";
 
 type Props = MarkdownLayoutProps<{ title: string }>;
 
@@ -48,8 +49,67 @@ const { frontmatter } = Astro.props;
       <slot />
     </section>
 
-    <div class="max-w-app mb-28">
-      <SubscribeForm title="Stay updated" desc="New posts on backend engineering, AI, and things I'm learning — straight to your inbox." />
+    <!-- Get in touch -->
+    <section class="contact-section mt-12 mb-8 max-w-app">
+      <h2 class="contact-heading">Get in touch</h2>
+      <p class="contact-sub">
+        Tôi luôn sẵn sàng nói chuyện về system design, Java, AI, hay bất cứ thứ
+        gì thú vị.
+      </p>
+      <div class="contact-grid">
+        {
+          SOCIALS.filter(s => s.name !== "BuyMeACoffee").map(s => (
+            <a
+              href={s.href}
+              class="contact-link"
+              title={s.linkTitle}
+              target={s.href.startsWith("mailto") ? undefined : "_blank"}
+              rel="noopener noreferrer"
+            >
+              <s.icon class="contact-icon" />
+              <span>{s.name === "Mail" ? "Email" : s.name}</span>
+            </a>
+          ))
+        }
+        <div class="contact-link contact-phone">
+          <svg
+            class="contact-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5-2.5l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"
+            ></path>
+          </svg>
+          <span>{CONTACT.phone}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Support - Do not remove this / hide for late -->
+    <!--
+    <section class="support-section max-w-app mb-12">
+      <h2 class="contact-heading">Support my work</h2>
+      <p class="contact-sub">Nếu những gì tôi chia sẻ có ích cho bạn, một ly cà phê sẽ giúp tôi tiếp tục viết.</p>
+      <a href={CONTACT.buymeacoffee} target="_blank" rel="noopener noreferrer" class="bmc-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bmc-icon">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M3 10h14v5a6 6 0 0 1-6 6H9a6 6 0 0 1-6-6v-5z"/>
+          <path d="M17 10a3 3 0 1 0 0 6"/>
+          <path d="M8 10V7"/><path d="M12 10V7"/>
+        </svg>
+        Buy me a coffee
+      </a>
+    </section> -->
+    <div class="mb-28 max-w-app">
+      <SubscribeForm
+        title="Stay updated"
+        desc="New posts on backend engineering, AI, and things I'm learning — straight to your inbox."
+      />
     </div>
   </main>
   <Footer />
@@ -403,6 +463,85 @@ const { frontmatter } = Astro.props;
 
   .badge:hover::before {
     opacity: 1;
+  }
+
+  /* ── Contact & Support sections ── */
+  .contact-heading {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    color: var(--color-foreground);
+  }
+  .contact-sub {
+    font-size: 0.875rem;
+    opacity: 0.55;
+    margin-bottom: 1.25rem;
+    line-height: 1.6;
+  }
+  .contact-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .contact-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+    text-decoration: none;
+    border: 1px solid color-mix(in srgb, var(--color-border) 30%, transparent);
+    background: color-mix(in srgb, var(--color-foreground) 3%, transparent);
+    transition: all 0.2s ease;
+  }
+  .contact-link:hover {
+    color: var(--color-accent);
+    border-color: color-mix(in srgb, var(--color-accent) 35%, transparent);
+    background: color-mix(in srgb, var(--color-accent) 6%, transparent);
+    transform: translateY(-1px);
+  }
+  .contact-phone {
+    cursor: default;
+  }
+  .contact-phone:hover {
+    transform: none;
+    color: var(--color-foreground);
+    border-color: color-mix(in srgb, var(--color-border) 30%, transparent);
+    background: color-mix(in srgb, var(--color-foreground) 3%, transparent);
+  }
+  .contact-icon {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+  }
+
+  .bmc-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 1.4rem;
+    border-radius: 0.85rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-background);
+    background: var(--color-accent);
+    text-decoration: none;
+    border: none;
+    transition:
+      opacity 0.2s,
+      transform 0.15s;
+  }
+  .bmc-btn:hover {
+    opacity: 0.88;
+    transform: translateY(-2px);
+  }
+  .bmc-icon {
+    width: 1.1rem;
+    height: 1.1rem;
+    flex-shrink: 0;
   }
 
   /* Content styling */

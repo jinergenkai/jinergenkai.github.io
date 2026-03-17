@@ -2,6 +2,7 @@ import type { Props } from "astro";
 import IconMail from "@/assets/icons/IconMail.svg";
 import IconGitHub from "@/assets/icons/IconGitHub.svg";
 import IconLinkedin from "@/assets/icons/IconLinkedin.svg";
+// import IconCoffee from "@/assets/icons/IconCoffee.svg";
 import { SITE } from "@/config";
 
 interface Social {
@@ -13,24 +14,38 @@ interface Social {
 
 export const SOCIALS: Social[] = [
   {
-    name: "GitHub",
-    href: "https://github.com/jinergenkai",
-    linkTitle: `${SITE.title} trên GitHub`,
-    icon: IconGitHub,
-  },
-  {
     name: "LinkedIn",
     href: "https://www.linkedin.com/in/jinergenkai",
     linkTitle: `${SITE.title} trên LinkedIn`,
     icon: IconLinkedin,
   },
   {
+    name: "GitHub",
+    href: "https://github.com/jinergenkai",
+    linkTitle: `${SITE.title} trên GitHub`,
+    icon: IconGitHub,
+  },
+  {
     name: "Mail",
-    href: "mailto:hung@example.com",
-    linkTitle: `Gửi email cho ${SITE.title}`,
+    href: "mailto:jinergenkai@gmail.com",
+    linkTitle: `Send email to ${SITE.title}`,
     icon: IconMail,
   },
+  //   for later use, if you want to add more contact methods, just uncomment and fill in the details
+  // {
+  //   name: "BuyMeACoffee",
+  //   href: "https://buymeacoffee.com/USERNAME",
+  //   linkTitle: `Mua cà phê cho ${SITE.title}`,
+  //   icon: IconCoffee,
+  // },
 ] as const;
+
+export const CONTACT = {
+  phone: "+84 xxx xxx xxx",
+  zalo: "https://zalo.me/0000000000",
+  buymeacoffee: "https://buymeacoffee.com/USERNAME",
+  substack: "https://USERNAME.substack.com",
+};
 
 import IconWhatsapp from "@/assets/icons/IconWhatsapp.svg";
 import IconFacebook from "@/assets/icons/IconFacebook.svg";

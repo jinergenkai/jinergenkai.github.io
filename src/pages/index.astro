@@ -28,22 +28,34 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 
   <main id="main-content" data-layout="index" class="relative app-layout">
     <!-- ═══════════════════ HERO ═══════════════════ -->
-    <section id="hero" class="hero-section relative pt-10 pb-14 sm:pt-14 sm:pb-20">
-      <div class="relative z-10 flex flex-col-reverse gap-8 sm:flex-row sm:items-start sm:justify-between">
+    <section
+      id="hero"
+      class="hero-section relative pt-10 pb-14 sm:pt-14 sm:pb-20"
+    >
+      <div
+        class="relative z-10 flex flex-col-reverse gap-8 sm:flex-row sm:items-start sm:justify-between"
+      >
         <!-- Left: text -->
         <div class="flex-1">
           <!-- Terminal prompt badge -->
-          <div class="mb-3 inline-flex items-center gap-2 rounded-full border border-border/40 bg-muted/20 px-3.5 py-1.5 font-cartograph text-xs sm:text-sm">
+          <div
+            class="mb-3 inline-flex items-center gap-2 rounded-full border border-border/40 bg-muted/20 px-3.5 py-1.5 font-cartograph text-xs sm:text-sm"
+          >
             <span class="relative flex h-2 w-2">
-              <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60"></span>
-              <span class="relative inline-flex h-2 w-2 rounded-full bg-accent"></span>
+              <span
+                class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60"
+              ></span>
+              <span class="relative inline-flex h-2 w-2 rounded-full bg-accent"
+              ></span>
             </span>
-            <span class="text-accent">~</span>/senior-backend-engineer
+            <span class="text-accent">~</span>/JinerGenkai
             <span class="opacity-40">$</span>
           </div>
 
           <!-- Name -->
-          <h1 class="hero-title mb-2 text-5xl leading-[1.1] font-bold tracking-tight sm:text-6xl lg:text-7xl">
+          <h1
+            class="hero-title mb-2 text-5xl leading-[1.1] font-bold tracking-tight sm:text-6xl lg:text-7xl"
+          >
             Nguyễn Mạnh Hùng
             <a
               target="_blank"
@@ -66,27 +78,34 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
           </p>
 
           <!-- Bio -->
-          <p class="mt-4 max-w-xl text-base leading-relaxed opacity-75 sm:text-lg">
-            Xây dựng hệ thống có thể mở rộng, dạy lại những gì tôi học được.
-            Đam mê competitive programming, AI và tự động hóa mọi thứ có thể tự động hóa.
+          <p
+            class="mt-4 max-w-xl text-base leading-relaxed opacity-75 sm:text-lg"
+          >
+            Xây dựng hệ thống có thể mở rộng, dạy lại những gì tôi học được. Đam
+            mê competitive programming, AI và tự động hóa mọi thứ có thể tự động
+            hóa.
           </p>
 
           <!-- Audio + Social links -->
           <div class="mt-6 flex flex-col gap-4">
-            {SITE.introAudio.enabled && (
-              <IntroAudio
-                src={SITE.introAudio.src}
-                label={SITE.introAudio.label}
-                duration={SITE.introAudio.duration}
-              />
-            )}
-            <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-              <p class="text-sm opacity-50 flex-shrink-0">Kết nối với tôi</p>
-              {SOCIALS.length > 0 && (
-                <div class="sm:border-l border-border/40 sm:pl-4">
-                  <Socials />
-                </div>
-              )}
+            {
+              SITE.introAudio.enabled && (
+                <IntroAudio
+                  src={SITE.introAudio.src}
+                  label={SITE.introAudio.label}
+                  duration={SITE.introAudio.duration}
+                />
+              )
+            }
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
+              <p class="flex-shrink-0 text-sm opacity-50">Kết nối với tôi</p>
+              {
+                SOCIALS.length > 0 && (
+                  <div class="border-border/40 sm:border-l sm:pl-4">
+                    <Socials />
+                  </div>
+                )
+              }
             </div>
           </div>
         </div>
@@ -109,28 +128,39 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
     <!-- ═══════════════════ ABOUT ═══════════════════ -->
     <section id="about" class="py-10">
       <div class="mb-6 flex items-center gap-3">
-        <h2 class="text-sm font-bold tracking-widest text-accent uppercase">Về tôi</h2>
+        <h2 class="text-sm font-bold tracking-widest text-accent uppercase">
+          Về tôi
+        </h2>
         <div class="h-px flex-1 bg-border/20"></div>
         <LinkButton
           href="/about"
-          class="font-cartograph text-xs text-muted-foreground hover:text-accent transition-colors"
+          class="text-muted-foreground font-cartograph text-xs transition-colors hover:text-accent"
         >
           Chi tiết →
         </LinkButton>
       </div>
-      <div class="max-w-2xl space-y-3 text-sm text-muted-foreground leading-relaxed sm:text-base">
+      <div
+        class="text-muted-foreground max-w-2xl space-y-3 text-sm leading-relaxed sm:text-base"
+      >
         <p>
-          Tôi là Software Engineer với nền tảng mạnh về <strong class="text-foreground">Java &amp; Spring Boot</strong>,
-          hiện đang làm việc tại <strong class="text-foreground">Nokia</strong> trong dự án Fixed Network Management System (FNMS) —
-          phần mềm quản lý mạng viễn thông doanh nghiệp quy mô lớn.
+          Tôi là Software Engineer với nền tảng mạnh về <strong
+            class="text-foreground">Java &amp; Spring Boot</strong
+          >, hiện đang làm việc tại <strong class="text-foreground"
+            >Nokia</strong
+          > trong dự án Fixed Network Management System (FNMS) — phần mềm quản lý
+          mạng viễn thông doanh nghiệp quy mô lớn.
         </p>
         <p>
-          Bên cạnh công việc, tôi đam mê <strong class="text-foreground">competitive programming</strong>
+          Bên cạnh công việc, tôi đam mê <strong class="text-foreground"
+            >competitive programming</strong
+          >
           (ICPC, Meta Hacker Cup), nghiên cứu AI thực dụng (ComfyUI, Local LLM, automation),
-          và đang theo học <strong class="text-foreground">MBA tại UEH</strong> để phát triển tư duy kinh doanh.
+          và đang theo học <strong class="text-foreground">MBA tại UEH</strong> để
+          phát triển tư duy kinh doanh.
         </p>
         <p>
-          Blog này là nơi tôi chia sẻ những gì học được — từ system design, Java internals, đến triết học về trí tuệ và năng suất.
+          Blog này là nơi tôi chia sẻ những gì học được — từ system design, Java
+          internals, đến triết học về trí tuệ và năng suất.
         </p>
       </div>
     </section>
@@ -148,53 +178,65 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
     <Achievements />
 
     <!-- ═══════════════════ FEATURED POSTS ═══════════════════ -->
-    {featuredPosts.length > 0 && (
-      <section id="featured" class="py-10">
-        <div class="mb-6 flex items-center gap-3">
-          <h2 class="flex items-center gap-2 text-sm font-bold tracking-widest text-accent uppercase">
-            <svg class="size-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-            </svg>
-            Bài viết nổi bật
-          </h2>
-          <div class="h-px flex-1 bg-border/20"></div>
-        </div>
-        <ul class="grid gap-4 sm:grid-cols-2 [&>li]:my-0">
-          {featuredPosts.map(data => (
-            <Card variant="h3" featured={true} {...data} />
-          ))}
-        </ul>
-      </section>
-    )}
+    {
+      featuredPosts.length > 0 && (
+        <section id="featured" class="py-10">
+          <div class="mb-6 flex items-center gap-3">
+            <h2 class="flex items-center gap-2 text-sm font-bold tracking-widest text-accent uppercase">
+              <svg
+                class="size-4"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                aria-hidden="true"
+              >
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+              Bài viết nổi bật
+            </h2>
+            <div class="h-px flex-1 bg-border/20" />
+          </div>
+          <ul class="grid gap-4 sm:grid-cols-2 [&>li]:my-0">
+            {featuredPosts.map(data => (
+              <Card variant="h3" featured={true} {...data} />
+            ))}
+          </ul>
+        </section>
+      )
+    }
 
     <!-- ═══════════════════ RECENT POSTS ═══════════════════ -->
-    {recentPosts.length > 0 && (
-      <section id="recent-posts" class="py-6 pb-10">
-        <div class="mb-6 flex items-center gap-3">
-          <h2 class="text-sm font-bold tracking-widest uppercase">Bài viết gần đây</h2>
-          <div class="h-px flex-1 bg-border/20"></div>
-          <span class="font-cartograph text-xs text-accent/40 select-none">
-            [{recentPosts.slice(0, SITE.postPerIndex).length}/{recentPosts.length}]
-          </span>
-        </div>
-        <ul>
-          {recentPosts.map(
-            (data, index) =>
-              index < SITE.postPerIndex && <Card variant="h3" {...data} />
-          )}
-        </ul>
+    {
+      recentPosts.length > 0 && (
+        <section id="recent-posts" class="py-6 pb-10">
+          <div class="mb-6 flex items-center gap-3">
+            <h2 class="text-sm font-bold tracking-widest uppercase">
+              Bài viết gần đây
+            </h2>
+            <div class="h-px flex-1 bg-border/20" />
+            <span class="font-cartograph text-xs text-accent/40 select-none">
+              [{recentPosts.slice(0, SITE.postPerIndex).length}/
+              {recentPosts.length}]
+            </span>
+          </div>
+          <ul>
+            {recentPosts.map(
+              (data, index) =>
+                index < SITE.postPerIndex && <Card variant="h3" {...data} />
+            )}
+          </ul>
 
-        <div class="mt-8 mb-4 flex justify-center w-full">
-          <LinkButton
-            href="/thoughts/"
-            class="group inline-flex items-center w-full sm:w-auto justify-center gap-2 rounded-xl border border-accent/20 bg-accent/10 px-8 py-4 text-base font-bold text-accent transition-all duration-300 hover:border-accent hover:bg-accent/20 hover:shadow-xl hover:shadow-accent/20 hover:-translate-y-0.5"
-          >
-            Xem tất cả bài viết
-            <IconArrowRight class="inline-block transition-transform duration-300 group-hover:translate-x-1 rtl:-rotate-180" />
-          </LinkButton>
-        </div>
-      </section>
-    )}
+          <div class="mt-8 mb-4 flex w-full justify-center">
+            <LinkButton
+              href="/thoughts/"
+              class="group inline-flex w-full items-center justify-center gap-2 rounded-xl border border-accent/20 bg-accent/10 px-8 py-4 text-base font-bold text-accent transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:bg-accent/20 hover:shadow-xl hover:shadow-accent/20 sm:w-auto"
+            >
+              Xem tất cả bài viết
+              <IconArrowRight class="inline-block transition-transform duration-300 group-hover:translate-x-1 rtl:-rotate-180" />
+            </LinkButton>
+          </div>
+        </section>
+      )
+    }
   </main>
   <Footer />
 </Layout>
@@ -218,8 +260,13 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
   }
 
   @keyframes shimmer {
-    0%, 100% { background-position: 0% center; }
-    50% { background-position: 100% center; }
+    0%,
+    100% {
+      background-position: 0% center;
+    }
+    50% {
+      background-position: 100% center;
+    }
   }
 
   .avatar-ring {
@@ -233,7 +280,8 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
       var(--accent),
       color-mix(in oklab, var(--accent) 40%, transparent)
     );
-    box-shadow: 0 0 24px -4px color-mix(in oklab, var(--accent) 40%, transparent);
+    box-shadow: 0 0 24px -4px
+      color-mix(in oklab, var(--accent) 40%, transparent);
   }
 
   .avatar-img {
