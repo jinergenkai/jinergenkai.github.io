@@ -8,7 +8,8 @@
       "Bash(find:*)",
       "Bash(cd:*)",
       "Bash(ls:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(grep -r \"^##.*\" /home/jinergenkai/astro/src/data/thoughts/*.md | head -20)"
     ]
   }
 }
