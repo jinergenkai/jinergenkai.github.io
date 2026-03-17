@@ -7,6 +7,7 @@ import Breadcrumb from "@/components/Breadcrumb.astro";
 import Datetime from "@/components/Datetime.astro";
 import BackToTopButton from "@/components/BackToTopButton.astro";
 import ShareLinks from "@/components/ShareLinks.astro";
+import { slugifyStr } from "@/utils/slugify";
 import { SITE } from "@/config";
 
 export async function getStaticPaths() {
@@ -65,7 +66,7 @@ const h2s = headings.filter(h => h.depth === 2);
               <span id="copy-label">Copy link</span>
             </button>
           </div>
-          <h1 class="note-title">{title}</h1>
+          <h1 class="note-title" transition:name={slugifyStr(title.replaceAll(".", "-"))}>{title}</h1>
           {description && <p class="note-desc">{description}</p>}
           {tags.length > 0 && (
             <div class="note-tags">
