@@ -49,23 +49,15 @@ const subjectLabel: Record<string, string> = {
         <button class="filter-btn" data-subject="java">Java</button>
         <button class="filter-btn" data-subject="other">Other</button>
       </div>
-      <div class="filter-group">
-        <span class="filter-label">Level</span>
-        <button class="filter-btn active" data-difficulty="all">All</button>
-        <button class="filter-btn" data-difficulty="beginner">Beginner</button>
-        <button class="filter-btn" data-difficulty="intermediate">Intermediate</button>
-        <button class="filter-btn" data-difficulty="advanced">Advanced</button>
-      </div>
     </div>
 
     <!-- Notes list -->
     <ul class="notes-list" id="notes-list">
       {sorted.map(note => (
-        <li class="note-card" data-lang={note.data.lang} data-subject={note.data.subject} data-difficulty={note.data.difficulty}>
+        <li class="note-card" data-lang={note.data.lang} data-subject={note.data.subject}>
           <a href={`/notes/${note.id}/`} class="note-link">
             <div class="note-meta">
               <span class="subject-badge">{subjectLabel[note.data.subject]}</span>
-              <span class={`diff-badge diff-${note.data.difficulty}`}>{note.data.difficulty}</span>
               <Datetime pubDatetime={note.data.pubDatetime} size="sm" class="opacity-60" />
               <span class="lang-pill">{note.data.lang === "en" ? "🇬🇧 EN" : "🇻🇳 VI"}</span>
             </div>
@@ -83,20 +75,16 @@ const subjectLabel: Record<string, string> = {
   function initFilters() {
     const params = new URLSearchParams(window.location.search);
     let activeSubject = params.get("subject") || "all";
-    let activeDifficulty = params.get("difficulty") || "all";
 
     const items = document.querySelectorAll<HTMLElement>(".note-card");
 
     function applyFilter() {
       items.forEach(item => {
-        const ok =
-          (activeSubject === "all" || item.dataset.subject === activeSubject) &&
-          (activeDifficulty === "all" || item.dataset.difficulty === activeDifficulty);
+        const ok = activeSubject === "all" || item.dataset.subject === activeSubject;
         item.style.display = ok ? "" : "none";
       });
       const p = new URLSearchParams();
       if (activeSubject !== "all") p.set("subject", activeSubject);
-      if (activeDifficulty !== "all") p.set("difficulty", activeDifficulty);
       window.history.replaceState({}, "", p.toString() ? `?${p}` : window.location.pathname);
     }
 
@@ -115,7 +103,6 @@ const subjectLabel: Record<string, string> = {
     }
 
     bindGroup("subject", () => activeSubject, v => (activeSubject = v));
-    bindGroup("difficulty", () => activeDifficulty, v => (activeDifficulty = v));
     applyFilter();
   }
 
@@ -183,13 +170,6 @@ const subjectLabel: Record<string, string> = {
     border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
     padding: 0.1rem 0.5rem; border-radius: 999px;
   }
-  .diff-badge {
-    font-size: 0.65rem; font-weight: 600; padding: 0.1rem 0.45rem; border-radius: 999px;
-    border: 1px solid; text-transform: capitalize;
-  }
-  .diff-beginner { color: #4ade80; border-color: #4ade8040; background: #4ade8010; }
-  .diff-intermediate { color: #fbbf24; border-color: #fbbf2440; background: #fbbf2410; }
-  .diff-advanced { color: #f87171; border-color: #f8717140; background: #f8717110; }
   .lang-pill { font-size: 0.65rem; font-weight: 600; padding: 0.1rem 0.4rem; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--border) 40%, transparent); opacity: 0.6; }
   .note-title { font-size: 1.1rem; font-weight: 600; color: var(--foreground); margin-bottom: 0.35rem; transition: color 0.2s; }
   .note-card:hover .note-title { color: var(--accent); }

@@ -11,8 +11,8 @@ export interface Experience {
 
 export const experiences: Experience[] = [
   {
-    company: 'Nokia',
-    role: 'Senior Backend Engineer',
+    company: 'TMA Solutions',
+    role: 'Software Engineer (Contractor · Nokia)',
     period: '2024 - Hiện tại',
     location: 'TP. Hồ Chí Minh',
     description: 'Fixed Network Management System (FNMS) — phần mềm quản lý mạng viễn thông doanh nghiệp.',

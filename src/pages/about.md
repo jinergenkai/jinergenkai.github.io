@@ -3,11 +3,11 @@ layout: ../layouts/AboutLayout.astro
 title: "Về tôi"
 ---
 
-Xin chào! Tôi là **Nguyễn Mạnh Hùng** — Senior Backend Engineer đang làm việc tại Nokia (Fixed Network Management System), sống và làm việc tại TP. Hồ Chí Minh.
+Xin chào! Tôi là **Nguyễn Mạnh Hùng** — Software Engineer, backend-focused, đang làm việc tại Nokia (Fixed Network Management System), sống và làm việc tại TP. Hồ Chí Minh.
 
 ## Tôi là ai?
 
-Tôi bắt đầu con đường lập trình từ những ngày ngồi giải bài tập competitive programming thâu đêm ở FPT University. Từ đó đến nay, tôi đã trải qua nhiều vai trò — từ sinh viên giải ICPC, developer tại FPT Software, đến Senior Engineer tại Nokia xây dựng hệ thống quản lý mạng viễn thông quy mô lớn.
+Tôi bắt đầu con đường lập trình từ những ngày ngồi giải bài tập competitive programming thâu đêm ở FPT University. Từ đó đến nay, tôi đã trải qua nhiều vai trò — từ sinh viên giải ICPC, developer tại FPT Software, đến Software Engineer tại Nokia xây dựng hệ thống quản lý mạng viễn thông quy mô lớn.
 
 Điều tôi thích nhất trong công việc: **thiết kế hệ thống có thể mở rộng**, viết code sạch, và giải quyết những bài toán khó mà người khác bỏ qua.
 

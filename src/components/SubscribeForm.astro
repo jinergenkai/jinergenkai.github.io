@@ -23,7 +23,12 @@ const action = `https://buttondown.com/api/emails/embed-subscribe/${SITE.buttond
         <p class="subscribe-title">{title}</p>
         <p class="subscribe-desc">{desc}</p>
       </div>
-      <form class="subscribe-form" action={action} method="post" data-subscribe-form>
+      <form
+        class="subscribe-form"
+        action={action}
+        method="post"
+        data-subscribe-form
+      >
         <input type="hidden" value="1" name="embed" />
         <div class="subscribe-row">
           <input
@@ -36,8 +41,22 @@ const action = `https://buttondown.com/api/emails/embed-subscribe/${SITE.buttond
           />
           <button type="submit" class="subscribe-btn" data-subscribe-btn>
             <span class="btn-label">Subscribe</span>
-            <svg class="btn-spinner" viewBox="0 0 16 16" fill="none" aria-hidden="true" hidden>
-              <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" stroke-dasharray="28" stroke-dashoffset="10" stroke-linecap="round"/>
+            <svg
+              class="btn-spinner"
+              viewBox="0 0 16 16"
+              fill="none"
+              aria-hidden="true"
+              style="display:none"
+            >
+              <circle
+                cx="8"
+                cy="8"
+                r="6"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-dasharray="28"
+                stroke-dashoffset="10"
+                stroke-linecap="round"></circle>
             </svg>
           </button>
         </div>
@@ -47,12 +66,24 @@ const action = `https://buttondown.com/api/emails/embed-subscribe/${SITE.buttond
 </div>
 
 <!-- Toast — rendered once, shared across all forms on page -->
-<div class="toast" id="subscribe-toast" aria-live="assertive" aria-atomic="true" hidden>
+<div
+  class="toast"
+  id="subscribe-toast"
+  aria-live="assertive"
+  aria-atomic="true"
+  hidden
+>
   <div class="toast-icon" id="subscribe-toast-icon"></div>
   <p class="toast-msg" id="subscribe-toast-msg"></p>
   <button class="toast-close" id="subscribe-toast-close" aria-label="Dismiss">
-    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-      <path d="M1 1l10 10M11 1L1 11"/>
+    <svg
+      viewBox="0 0 12 12"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+    >
+      <path d="M1 1l10 10M11 1L1 11"></path>
     </svg>
   </button>
 </div>
@@ -62,16 +93,16 @@ const action = `https://buttondown.com/api/emails/embed-subscribe/${SITE.buttond
 
   function showToast(type: "success" | "error" | "info", msg: string) {
     const toast = document.getElementById("subscribe-toast") as HTMLElement;
-    const icon  = document.getElementById("subscribe-toast-icon") as HTMLElement;
-    const text  = document.getElementById("subscribe-toast-msg") as HTMLElement;
+    const icon = document.getElementById("subscribe-toast-icon") as HTMLElement;
+    const text = document.getElementById("subscribe-toast-msg") as HTMLElement;
 
     if (!toast) return;
 
     // SVG icons — no emoji
     const icons = {
       success: `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="7"/><path d="M5 8.5l2 2 4-4"/></svg>`,
-      error:   `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="8" cy="8" r="7"/><path d="M8 5v3.5M8 11h.01"/></svg>`,
-      info:    `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="8" cy="8" r="7"/><path d="M8 11V7.5M8 5h.01"/></svg>`,
+      error: `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="8" cy="8" r="7"/><path d="M8 5v3.5M8 11h.01"/></svg>`,
+      info: `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="8" cy="8" r="7"/><path d="M8 11V7.5M8 5h.01"/></svg>`,
     };
     icon.innerHTML = icons[type];
 
@@ -92,18 +123,31 @@ const action = `https://buttondown.com/api/emails/embed-subscribe/${SITE.buttond
     const toast = document.getElementById("subscribe-toast") as HTMLElement;
     if (!toast) return;
     toast.classList.remove("toast-show");
-    toast.addEventListener("transitionend", () => { toast.hidden = true; }, { once: true });
-    if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+    toast.addEventListener(
+      "transitionend",
+      () => {
+        toast.hidden = true;
+      },
+      { once: true }
+    );
+    if (toastTimer) {
+      clearTimeout(toastTimer);
+      toastTimer = null;
+    }
   }
 
   document.addEventListener("astro:page-load", () => {
-    document.getElementById("subscribe-toast-close")?.addEventListener("click", dismissToast);
+    document
+      .getElementById("subscribe-toast-close")
+      ?.addEventListener("click", dismissToast);
 
     document.querySelectorAll("[data-subscribe-form]").forEach(form => {
       form.addEventListener("submit", async e => {
         e.preventDefault();
         const f = e.currentTarget as HTMLFormElement;
-        const btn = f.querySelector("[data-subscribe-btn]") as HTMLButtonElement;
+        const btn = f.querySelector(
+          "[data-subscribe-btn]"
+        ) as HTMLButtonElement;
         const label = btn.querySelector(".btn-label") as HTMLElement;
         const spinner = btn.querySelector(".btn-spinner") as HTMLElement;
 
@@ -112,14 +156,23 @@ const action = `https://buttondown.com/api/emails/embed-subscribe/${SITE.buttond
         spinner.hidden = false;
 
         try {
-          const res = await fetch(f.action, { method: "POST", body: new FormData(f) });
+          const res = await fetch(f.action, {
+            method: "POST",
+            body: new FormData(f),
+          });
           if (res.ok || res.status === 201) {
-            showToast("success", "Check your inbox to confirm your subscription!");
+            showToast(
+              "success",
+              "Check your inbox to confirm your subscription!"
+            );
             f.reset();
           } else if (res.status === 400) {
             const body = await res.json().catch(() => ({}));
             const msg: string = JSON.stringify(body).toLowerCase();
-            if (msg.includes("already subscribed") || msg.includes("already exists")) {
+            if (
+              msg.includes("already subscribed") ||
+              msg.includes("already exists")
+            ) {
               showToast("info", "You're already on the list!");
             } else {
               showToast("error", "Something went wrong. Please try again.");
@@ -200,7 +253,9 @@ const action = `https://buttondown.com/api/emails/embed-subscribe/${SITE.buttond
     margin: 0;
   }
 
-  .subscribe-form { flex-shrink: 0; }
+  .subscribe-form {
+    flex-shrink: 0;
+  }
 
   .subscribe-row {
     display: flex;
@@ -223,7 +278,9 @@ const action = `https://buttondown.com/api/emails/embed-subscribe/${SITE.buttond
     border-color: color-mix(in srgb, var(--accent) 50%, transparent);
   }
 
-  .subscribe-input::placeholder { opacity: 0.35; }
+  .subscribe-input::placeholder {
+    opacity: 0.35;
+  }
 
   .subscribe-btn {
     display: inline-flex;
@@ -240,7 +297,9 @@ const action = `https://buttondown.com/api/emails/embed-subscribe/${SITE.buttond
     cursor: pointer;
     white-space: nowrap;
     min-width: 88px;
-    transition: opacity 0.2s, transform 0.15s;
+    transition:
+      opacity 0.2s,
+      transform 0.15s;
     flex-shrink: 0;
   }
 
@@ -249,7 +308,10 @@ const action = `https://buttondown.com/api/emails/embed-subscribe/${SITE.buttond
     transform: translateY(-1px);
   }
 
-  .subscribe-btn:disabled { opacity: 0.6; cursor: default; }
+  .subscribe-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
 
   .btn-spinner {
     width: 14px;
@@ -258,7 +320,11 @@ const action = `https://buttondown.com/api/emails/embed-subscribe/${SITE.buttond
     flex-shrink: 0;
   }
 
-  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
 
   /* ── Toast ─────────────────────────────────── */
   .toast {
@@ -275,11 +341,15 @@ const action = `https://buttondown.com/api/emails/embed-subscribe/${SITE.buttond
     border: 1px solid transparent;
     background: color-mix(in srgb, var(--background) 90%, transparent);
     backdrop-filter: blur(16px);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 1px 0 rgba(255,255,255,0.05) inset;
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.18),
+      0 1px 0 rgba(255, 255, 255, 0.05) inset;
     min-width: 240px;
     max-width: min(380px, calc(100vw - 2rem));
     opacity: 0;
-    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+    transition:
+      transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 0.3s ease;
     pointer-events: none;
   }
 
@@ -315,9 +385,15 @@ const action = `https://buttondown.com/api/emails/embed-subscribe/${SITE.buttond
     height: 16px;
   }
 
-  .toast[data-type="success"] .toast-icon { color: #4ade80; }
-  .toast[data-type="error"]   .toast-icon { color: #f87171; }
-  .toast[data-type="info"]    .toast-icon { color: var(--accent); }
+  .toast[data-type="success"] .toast-icon {
+    color: #4ade80;
+  }
+  .toast[data-type="error"] .toast-icon {
+    color: #f87171;
+  }
+  .toast[data-type="info"] .toast-icon {
+    color: var(--accent);
+  }
 
   .toast-msg {
     flex: 1;
@@ -344,6 +420,11 @@ const action = `https://buttondown.com/api/emails/embed-subscribe/${SITE.buttond
     color: var(--foreground);
   }
 
-  .toast-close:hover { opacity: 0.8; }
-  .toast-close svg { width: 10px; height: 10px; }
+  .toast-close:hover {
+    opacity: 0.8;
+  }
+  .toast-close svg {
+    width: 10px;
+    height: 10px;
+  }
 </style>

@@ -20,19 +20,19 @@ featured: false
 
 ```yaml
 ---
-title: "Tiêu đề bài viết"           # bắt buộc
-pubDatetime: 2026-03-17T09:00:00.000+07:00  # bắt buộc
-modDatetime: 2026-03-20T12:00:00.000+07:00  # tuỳ chọn — ngày cập nhật
-description: "Mô tả ngắn, hiện ở card và SEO"  # bắt buộc
-tags: [ai, startup, tech]            # tuỳ chọn, mặc định ["others"]
-lang: "vi"                           # "vi" | "en", mặc định "vi"
-audience: ["tech", "business"]       # ["tech"|"business"|"life"|"learning"]
-featured: true                       # nổi bật trên trang chủ
-draft: false                         # true = không publish
-ogImage: "/images/cover.jpg"         # ảnh thumbnail OG/card
-author: "tên tác giả"               # tuỳ chọn, mặc định SITE.author
-hideEditPost: true                   # ẩn nút "Edit post"
-timezone: "Asia/Ho_Chi_Minh"        # timezone hiển thị ngày
+title: "Tiêu đề bài viết" # bắt buộc
+pubDatetime: 2026-03-17T09:00:00.000+07:00 # bắt buộc
+modDatetime: 2026-03-20T12:00:00.000+07:00 # tuỳ chọn — ngày cập nhật
+description: "Mô tả ngắn, hiện ở card và SEO" # bắt buộc
+tags: [ai, startup, tech] # tuỳ chọn, mặc định ["others"]
+lang: "vi" # "vi" | "en", mặc định "vi"
+audience: ["tech", "business"] # ["tech"|"business"|"life"|"learning"]
+featured: true # nổi bật trên trang chủ
+draft: false # true = không publish
+ogImage: "/images/cover.jpg" # ảnh thumbnail OG/card
+author: "tên tác giả" # tuỳ chọn, mặc định SITE.author
+hideEditPost: true # ẩn nút "Edit post"
+timezone: "Asia/Ho_Chi_Minh" # timezone hiển thị ngày
 ---
 ```
 
@@ -40,13 +40,13 @@ timezone: "Asia/Ho_Chi_Minh"        # timezone hiển thị ngày
 
 ```yaml
 ---
-title: "Tiêu đề ghi chú"            # bắt buộc
-pubDatetime: 2026-03-17T09:00:00.000+07:00  # bắt buộc
-description: "Mô tả ngắn"           # bắt buộc
-tags: [linux, terminal]              # tuỳ chọn
-lang: "vi"                           # "vi" | "en"
-subject: "other"                     # "gmat"|"english"|"java"|"other"
-difficulty: "beginner"               # "beginner"|"intermediate"|"advanced"
+title: "Tiêu đề ghi chú" # bắt buộc
+pubDatetime: 2026-03-17T09:00:00.000+07:00 # bắt buộc
+description: "Mô tả ngắn" # bắt buộc
+tags: [linux, terminal] # tuỳ chọn
+lang: "vi" # "vi" | "en"
+subject: "other" # "gmat"|"english"|"java"|"other"
+difficulty: "beginner" # "beginner"|"intermediate"|"advanced"
 draft: false
 featured: false
 ---
@@ -56,17 +56,17 @@ featured: false
 
 ```yaml
 ---
-title: "Tên bộ sưu tập"             # bắt buộc
-description: "Mô tả"                 # bắt buộc
-pubDatetime: 2026-03-17T09:00:00.000+07:00  # bắt buộc
-coverImage: "/images/cover.jpg"      # bắt buộc
-galleryType: "photo"                 # "poem"|"quote"|"photo"|"fun"
+title: "Tên bộ sưu tập" # bắt buộc
+description: "Mô tả" # bắt buộc
+pubDatetime: 2026-03-17T09:00:00.000+07:00 # bắt buộc
+coverImage: "/images/cover.jpg" # bắt buộc
+galleryType: "photo" # "poem"|"quote"|"photo"|"fun"
 tags: [travel, saigon]
 lang: "vi"
 draft: false
 featured: false
-audioUrl: "/audio/ambient.mp3"       # tuỳ chọn — nhạc nền
-source: "Nguồn ảnh"                  # tuỳ chọn
+audioUrl: "/audio/ambient.mp3" # tuỳ chọn — nhạc nền
+source: "Nguồn ảnh" # tuỳ chọn
 ---
 ```
 
@@ -177,12 +177,12 @@ Nhúng gallery ảnh vào giữa bài viết. File phải đổi đuôi thành `
 <GalleryEmbed slug="ten-gallery" limit={6} showLink={true} cols={3} />
 ```
 
-| Prop | Type | Default | Mô tả |
-|---|---|---|---|
-| `slug` | string | bắt buộc | Tên folder trong `src/data/galleries/` |
-| `limit` | number | 6 | Số ảnh tối đa (0 = tất cả) |
-| `showLink` | boolean | true | Hiện link "Xem đầy đủ" |
-| `cols` | 2 \| 3 \| 4 | 3 | Số cột grid |
+| Prop       | Type        | Default  | Mô tả                                  |
+| ---------- | ----------- | -------- | -------------------------------------- |
+| `slug`     | string      | bắt buộc | Tên folder trong `src/data/galleries/` |
+| `limit`    | number      | 6        | Số ảnh tối đa (0 = tất cả)             |
+| `showLink` | boolean     | true     | Hiện link "Xem đầy đủ"                 |
+| `cols`     | 2 \| 3 \| 4 | 3        | Số cột grid                            |
 
 ---
 
@@ -203,10 +203,10 @@ Nhúng gallery ảnh vào giữa bài viết. File phải đổi đuôi thành `
 ### Bảng
 
 ```markdown
-| Cột 1 | Cột 2 | Cột 3 |
-|---|---|---|
-| A | B | C |
-| D | `inline code` | **bold** |
+| Cột 1 | Cột 2         | Cột 3    |
+| ----- | ------------- | -------- |
+| A     | B             | C        |
+| D     | `inline code` | **bold** |
 ```
 
 ### Heading
@@ -225,7 +225,7 @@ Dùng `backtick` cho code, command, tên file, tên biến.
 
 ```markdown
 [text hiển thị](https://url.com)
-[Link nội bộ](#ten-heading)         ← anchor đến section trong bài
+[Link nội bộ](#ten-heading) ← anchor đến section trong bài
 ```
 
 ### Ảnh
@@ -255,6 +255,7 @@ Dùng `backtick` cho code, command, tên file, tên biến.
 ## Table of contents
 
 ## Intro / Context
+
 Đoạn mở đầu không cần heading.
 
 ## Section 1

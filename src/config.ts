@@ -2,7 +2,7 @@ export const SITE = {
   website: "https://jinergenkai.github.io/",
   author: "Nguyễn Mạnh Hùng",
   profile: "https://github.com/jinergenkai",
-  desc: "Senior Backend Engineer | Viết về Java, System Design, DevOps và những gì tôi học được.",
+  desc: "Software Engineer, backend-focused · Currently at Nokia · Viết về Java, System Design, DevOps và những gì tôi học được.",
   title: "Nguyễn Mạnh Hùng",
   ogImage: "og-default.png",
   lightAndDarkMode: true,
