@@ -35,7 +35,26 @@ export const transformerFileName = ({
 
     const file = metaMap.get("file");
 
-    if (!file) return;
+    // Fall back to language name if no file= specified
+    const label = file || this.options.lang;
+
+    if (!label) return;
+
+    // Only add margin/style tweaks when there's a file name (not plain lang label)
+    if (!file) {
+      node.children.push({
+        type: "element",
+        tagName: "span",
+        properties: {
+          class: [
+            "absolute py-1 px-2 text-foreground/40 text-xs font-medium leading-4 font-mono",
+            "left-2 top-(--file-name-offset) rounded-md",
+          ],
+        },
+        children: [{ type: "text", value: label }],
+      });
+      return;
+    }
 
     // Add additional margin to code block
     this.addClassToHast(
