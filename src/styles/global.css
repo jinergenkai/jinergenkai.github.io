@@ -29,7 +29,7 @@ html[data-theme="dark"] {
    * --font-app: 'Inter', sans-serif;              Neutral, widest coverage
    * ─────────────────────────────────────────────────────────────────── */
   --font-app: "Inter", sans-serif;
-  --font-sriracha: "JetBrains Mono", monospace;
+  --font-sriracha: "Inter", sans-serif;
   --font-cartograph: "JetBrains Mono", monospace;
   /* --font-app: var(--font-wotfard);
   --font-sriracha: var(--font-sriracha);
