@@ -29,7 +29,7 @@ html[data-theme="dark"] {
    * --font-app: 'Inter', sans-serif;              Neutral, widest coverage
    * ─────────────────────────────────────────────────────────────────── */
   --font-app: "Inter", sans-serif;
-  --font-sriracha: "Inter", sans-serif;
+  --font-sriracha: "JetBrains Mono", sans-serif;
   --font-cartograph: "JetBrains Mono", monospace;
   /* --font-app: var(--font-wotfard);
   --font-sriracha: var(--font-sriracha);
@@ -45,12 +45,12 @@ html[data-theme="dark"] {
 .prose em,
 em,
 i {
-  font-family: var(--font-sriracha);
   font-style: italic;
 }
 
 .spicy {
   font-family: var(--font-sriracha);
+  font-style: italic;
 }
 
 @layer base {
