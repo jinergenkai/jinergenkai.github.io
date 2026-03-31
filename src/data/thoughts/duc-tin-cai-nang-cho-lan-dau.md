@@ -1,7 +1,7 @@
 ---
-title: "Đức Tin — cái nạng cho lần đầu tiên"
+title: "Đức Tin - cái nạng cho lần đầu tiên"
 pubDatetime: 2026-03-31T09:00:00.000+07:00
-description: "Tarot, tử vi, AI, hay Chúa — tất cả đều phục vụ một nhu cầu giống nhau: dám bước khi chưa có đủ data. Nhưng sau lần đầu tiên, nạng phải được bỏ xuống."
+description: "Tarot, tử vi, AI, hay Chúa - tất cả đều phục vụ một nhu cầu giống nhau: dám bước khi chưa có đủ data. Nhưng sau lần đầu tiên, nạng phải được bỏ xuống."
 tags: [life, philosophy, reflection, faith]
 lang: "vi"
 audience: ["life"]

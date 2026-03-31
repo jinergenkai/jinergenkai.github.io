@@ -1,7 +1,7 @@
 ---
 title: "Nếu cả đời không rực rỡ thì sao?"
 pubDatetime: 2026-03-18T09:00:00.000+07:00
-description: "Câu hỏi lan khắp mạng xã hội, và những câu trả lời dễ chịu — nhưng có thật sự trả lời đúng không? Vài suy nghĩ từ một người bình thường."
+description: "Câu hỏi lan khắp mạng xã hội, và những câu trả lời dễ chịu - nhưng có thật sự trả lời đúng không? Vài suy nghĩ từ một người bình thường."
 tags: [life, reflection, philosophy]
 lang: "vi"
 audience: ["life"]
