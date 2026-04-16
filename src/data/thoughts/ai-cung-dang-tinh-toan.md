@@ -1,3 +1,17 @@
+---
+title: "Ai cũng đang tính toán, chỉ có người tốt quá là không biết mình đang lỗ"
+pubDatetime: 2026-04-10T09:00:00.000+07:00
+description: "Mọi mối quan hệ đều là giao dịch, chỉ khác loại tiền tệ. Vấn đề không phải là có đếm hay không — mà là đếm trong sáng hay đếm trong bóng tối."
+tags: [life, philosophy, psychology, relationships]
+lang: "vi"
+audience: ["life"]
+featured: false
+draft: false
+ogImage: ""
+---
+
+## Table of contents
+
 # Ai cũng đang tính toán, chỉ có người tốt quá là không biết mình đang lỗ
 
 Con mèo của tôi không đọc sách kinh tế, nhưng nó đếm giỏi hơn tôi nhiều.

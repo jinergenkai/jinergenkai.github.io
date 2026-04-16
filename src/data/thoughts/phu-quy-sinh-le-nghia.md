@@ -1,13 +1,13 @@
 ---
-title: "Đức Tin - cái nạng cho lần đầu tiên"
-pubDatetime: 2026-03-31T09:00:00.000+07:00
-description: "Tarot, tử vi, AI, hay Chúa - tất cả đều phục vụ một nhu cầu giống nhau: dám bước khi chưa có đủ data. Nhưng sau lần đầu tiên, nạng phải được bỏ xuống."
-tags: [life, philosophy, reflection, faith]
+title: "Phú quý sinh lễ nghĩa, và cái giá của việc tốt quá"
+pubDatetime: 2026-04-10T09:00:00.000+07:00
+description: "Khi cho đi quá nhiều trở thành thói quen, lòng tốt không còn là đức hạnh — nó thành sự bào mòn. Người cho vượt biên độ không tử tế hơn người biết dừng, chỉ mệt hơn."
+tags: [life, philosophy, psychology, reflection]
 lang: "vi"
 audience: ["life"]
 featured: false
 draft: false
-ogImage: "/image/three-crosses-monument.png"
+ogImage: ""
 ---
 
 ## Table of contents
