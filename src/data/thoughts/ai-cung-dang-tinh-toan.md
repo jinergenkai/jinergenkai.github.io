@@ -12,8 +12,6 @@ ogImage: ""
 
 ## Table of contents
 
-# Ai cũng đang tính toán, chỉ có người tốt quá là không biết mình đang lỗ
-
 Con mèo của tôi không đọc sách kinh tế, nhưng nó đếm giỏi hơn tôi nhiều.
 
 Khi tôi đi làm về mệt, nó cạ lưng vừa đủ để tôi đổ thức ăn vào bát — không cạ thêm một cái nào thừa. Cho ăn đúng giờ xong, nó biến mất. Tôi xoa đầu nó không đúng lúc thì nó hất tay ra, như kiểu *anh làm ơn tôn trọng giờ nghỉ của tôi chứ*. Nó biết chính xác khi nào cần nũng nịu, khi nào cần giả vờ cao quý, khi nào nên biến mất. Cán cân của nó chính xác đến đáng ghen tị.
@@ -110,11 +108,13 @@ Tính toán là *keo kiệt từng hạt*. Cho một đòi hai. Không cho gì m
 
 Người đếm có thể rất hào phóng. Họ biết mình đang cho, biết rõ mình có thể không nhận lại, và vẫn chọn cho vì thấy đáng. Quyết định ấy *mới* là lòng tốt thật sự — vì nó có nhận thức, có lựa chọn, có sự trưởng thành.
 
-Người tốt quá thì ngược lại. Họ tưởng mình không đếm — nhưng thực ra họ đang đếm trong bóng tối, không dám bật đèn để nhìn sổ nợ của chính mình. Và khi cán cân nghiêng quá sâu, họ vỡ ra trong cơn giận dữ không ai hiểu — kể cả chính họ. Không phải họ đổi tính. Là cuối cùng họ bật đèn, và ánh sáng tháng mười năm trời chiếu vào một lúc.
+Người tốt quá thì ngược lại. Họ tưởng mình không đếm — nhưng thực ra họ đang đếm trong bóng tối, không dám bật đèn để nhìn sổ nợ của chính mình. Và khi cán cân nghiêng quá sâu, họ vỡ ra trong cơn giận dữ không ai hiểu — kể cả chính họ. Không phải họ đổi tính. Là cuối cùng họ bật đèn, và ánh sáng tích tụ mười năm trời chiếu vào một lúc.
 
 Đếm không làm tình cảm mất đi. Nó chỉ làm tình cảm không bị bào mòn trong im lặng.
 
 Người sống bền không phải người không đếm — là người đếm, mà vẫn chọn cho.
+
+Có câu "sống đơn giản cho đời thảnh thơi". Ta hay hiểu đơn giản là không đếm. Thực ra đơn giản là đã đếm xong, đã thấy hết, và không còn phải lăn tăn nữa. Người thảnh thơi thật sự không phải người ngây thơ — là người đã hiểu đủ để không còn bị bất ngờ.
 
 ---
 
@@ -126,6 +126,6 @@ Nó đếm, không giấu. Nó biết cạ lưng đổi được thức ăn, và
 
 Con mèo sống đúng với bản chất của giao dịch. Con người thì giả vờ mình ở trên bản chất đó, và thường trả giá bằng chính sức khỏe tinh thần của mình.
 
-Tôi không bảo bạn phải thực dụng như con mèo. Tôi chỉ bảo bạn *đừng ngây thơ hơn nó*.
+Tôi không bảo bạn phải thực dụng như con mèo. Tôi chỉ bảo bạn *đừng ngây thơ hơn nó*. Vì cái giá của sự ngây thơ, thường không rẻ.
 
 *Vậy lần cuối bạn nhìn vào sổ nợ tình cảm của mình là khi nào? Hay bạn vẫn đang làm kế toán theo cách sếp cũ của tôi từng làm — nhắm mắt và hy vọng cuối năm tự khớp?*
