@@ -18,17 +18,17 @@ featured: false
 
 ## 1. Tổng quan — Cài gì, tại sao
 
-|Thành phần|Vai trò|Tại sao|
-|---|---|---|
-|**Zsh**|Shell thay thế Bash|Tương thích ~99% Bash script, autocomplete thông minh hơn|
-|**Oh My Zsh**|Framework quản lý config|Plugin/theme ecosystem lớn nhất|
-|**Powerlevel10k**|Theme|Đẹp, cực nhanh, hiện git/docker/k8s/time|
-|**zsh-autosuggestions**|Gợi ý command từ history|Gõ vài ký tự → hint mờ → nhấn → accept|
-|**zsh-syntax-highlighting**|Tô màu command real-time|Đúng = xanh, sai = đỏ|
-|**fzf**|Fuzzy finder|Tìm history/file/folder cực nhanh|
-|**z**|Smart cd|Nhớ folder hay dùng, gõ tên ngắn là nhảy tới|
-|**bat**|Thay `cat`|Syntax highlighting + line number|
-|**eza**|Thay `ls`|Icon, màu sắc, git status|
+| Thành phần                  | Vai trò                  | Tại sao                                                   |
+| --------------------------- | ------------------------ | --------------------------------------------------------- |
+| **Zsh**                     | Shell thay thế Bash      | Tương thích ~99% Bash script, autocomplete thông minh hơn |
+| **Oh My Zsh**               | Framework quản lý config | Plugin/theme ecosystem lớn nhất                           |
+| **Powerlevel10k**           | Theme                    | Đẹp, cực nhanh, hiện git/docker/k8s/time                  |
+| **zsh-autosuggestions**     | Gợi ý command từ history | Gõ vài ký tự → hint mờ → nhấn → accept                    |
+| **zsh-syntax-highlighting** | Tô màu command real-time | Đúng = xanh, sai = đỏ                                     |
+| **fzf**                     | Fuzzy finder             | Tìm history/file/folder cực nhanh                         |
+| **z**                       | Smart cd                 | Nhớ folder hay dùng, gõ tên ngắn là nhảy tới              |
+| **bat**                     | Thay `cat`               | Syntax highlighting + line number                         |
+| **eza**                     | Thay `ls`                | Icon, màu sắc, git status                                 |
 
 **Thứ tự cài:** Font → Zsh + Oh My Zsh → Powerlevel10k → Plugins → Tools → Config
 
@@ -52,13 +52,13 @@ mkdir -p ~/.local/share/fonts && cd ~/.local/share/fonts \
 
 ### Set font trong Terminal Emulator
 
-|Terminal|Cách set|
-|---|---|
-|**GNOME Terminal**|Hamburger menu ☰ → Preferences → chọn Profile → Text → tick Custom font → chọn `JetBrainsMono Nerd Font`|
-|**Konsole (KDE)**|Settings → Edit Current Profile → Appearance → Font → `JetBrainsMono Nerd Font`|
-|**Tilix**|Hamburger menu ☰ → Preferences → chọn Profile → General → Font → `JetBrainsMono Nerd Font`|
-|**Windows Terminal**|Settings → chọn Profile → Appearance → Font face → `JetBrainsMono Nerd Font`|
-|**VS Code Terminal**|Settings → tìm `terminal font` → Terminal > Integrated: Font Family → gõ `'JetBrainsMono Nerd Font'`|
+| Terminal             | Cách set                                                                                                  |
+| -------------------- | --------------------------------------------------------------------------------------------------------- |
+| **GNOME Terminal**   | Hamburger menu ☰ → Preferences → chọn Profile → Text → tick Custom font → chọn `JetBrainsMono Nerd Font` |
+| **Konsole (KDE)**    | Settings → Edit Current Profile → Appearance → Font → `JetBrainsMono Nerd Font`                           |
+| **Tilix**            | Hamburger menu ☰ → Preferences → chọn Profile → General → Font → `JetBrainsMono Nerd Font`               |
+| **Windows Terminal** | Settings → chọn Profile → Appearance → Font face → `JetBrainsMono Nerd Font`                              |
+| **VS Code Terminal** | Settings → tìm `terminal font` → Terminal > Integrated: Font Family → gõ `'JetBrainsMono Nerd Font'`      |
 
 > 📸 **Hình minh hoạ:** Mở terminal settings → tìm mục Font → chọn font có chữ "Nerd" trong tên.
 
@@ -217,10 +217,10 @@ source ~/.zshrc
 
 Các tool ở mục 5 là đủ cho hầu hết người dùng. Nếu muốn thêm:
 
-|Tool|Mô tả|Cài|
-|---|---|---|
-|**fd**|Thay `find`, nhanh hơn, tự bỏ qua `.gitignore`|`sudo apt install fd-find -y && mkdir -p ~/.local/bin && ln -s $(which fdfind) ~/.local/bin/fd`|
-|**ripgrep**|Thay `grep`, nhanh hơn nhiều lần|`sudo apt install ripgrep -y` — dùng: `rg "pattern"`|
+| Tool        | Mô tả                                          | Cài                                                                                             |
+| ----------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **fd**      | Thay `find`, nhanh hơn, tự bỏ qua `.gitignore` | `sudo apt install fd-find -y && mkdir -p ~/.local/bin && ln -s $(which fdfind) ~/.local/bin/fd` |
+| **ripgrep** | Thay `grep`, nhanh hơn nhiều lần               | `sudo apt install ripgrep -y` — dùng: `rg "pattern"`                                            |
 
 ---
 
@@ -491,7 +491,7 @@ z nokia camp    # → nhiều từ = chính xác hơn
 
 #### `Ctrl+R` — tìm history (dùng nhiều nhất)
 
-```
+```bash
 Nhấn Ctrl+R → popup xuất hiện → gõ "kafka" → filter tất cả command kafka
 ↑↓ chọn → Enter chạy lại
 
@@ -825,17 +825,17 @@ chsh -s $(which bash)
 
 ## Tài liệu tham khảo
 
-|Resource|Link|
-|---|---|
-|Oh My Zsh|https://github.com/ohmyzsh/ohmyzsh|
-|Oh My Zsh Plugins|https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins|
-|Powerlevel10k|https://github.com/romkatv/powerlevel10k|
-|zsh-autosuggestions|https://github.com/zsh-users/zsh-autosuggestions|
-|zsh-syntax-highlighting|https://github.com/zsh-users/zsh-syntax-highlighting|
-|fzf|https://github.com/junegunn/fzf|
-|bat|https://github.com/sharkdp/bat|
-|eza|https://github.com/eza-community/eza|
-|Nerd Fonts|https://www.nerdfonts.com|
+| Resource                | Link                                                 |
+| ----------------------- | ---------------------------------------------------- |
+| Oh My Zsh               | https://github.com/ohmyzsh/ohmyzsh                   |
+| Oh My Zsh Plugins       | https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins      |
+| Powerlevel10k           | https://github.com/romkatv/powerlevel10k             |
+| zsh-autosuggestions     | https://github.com/zsh-users/zsh-autosuggestions     |
+| zsh-syntax-highlighting | https://github.com/zsh-users/zsh-syntax-highlighting |
+| fzf                     | https://github.com/junegunn/fzf                      |
+| bat                     | https://github.com/sharkdp/bat                       |
+| eza                     | https://github.com/eza-community/eza                 |
+| Nerd Fonts              | https://www.nerdfonts.com                            |
 
 ---
 
@@ -843,19 +843,19 @@ chsh -s $(which bash)
 
 Bản wiki này bao gồm nền tảng đủ dùng hàng ngày. Dưới đây là lộ trình nếu muốn đi xa hơn, chia thành các bài riêng:
 
-### Phase 2 — TUI Tools *(bài tiếp theo)*
+### Phase 2 — TUI Tools _(bài tiếp theo)_
 
 Công cụ giao diện text thay thế hoàn toàn GUI cho các tác vụ dev thường gặp:
 
-| Tool | Thay thế | Mô tả |
-|---|---|---|
-| **lazygit** | `git` CLI / GitKraken | Git TUI — stage, commit, rebase bằng phím tắt |
-| **lazydocker** | `docker` CLI / Portainer | Docker TUI — xem container, log, restart |
-| **k9s** | `kubectl` CLI / Lens | Kubernetes TUI — xem pod, exec, log realtime |
-| **fzf advanced** | — | Pipe patterns: `fzf \| xargs`, `fshow` (git log fuzzy) |
-| **tldr** | `man` | Man page tóm tắt — ví dụ thực tế thay vì lý thuyết |
-| **ncdu** | `du` | Xem dung lượng disk dạng tree, xoá nhanh |
-| **btop** | `htop` / `top` | Monitor CPU/RAM/disk/network đẹp, realtime |
+| Tool             | Thay thế                 | Mô tả                                                  |
+| ---------------- | ------------------------ | ------------------------------------------------------ |
+| **lazygit**      | `git` CLI / GitKraken    | Git TUI — stage, commit, rebase bằng phím tắt          |
+| **lazydocker**   | `docker` CLI / Portainer | Docker TUI — xem container, log, restart               |
+| **k9s**          | `kubectl` CLI / Lens     | Kubernetes TUI — xem pod, exec, log realtime           |
+| **fzf advanced** | —                        | Pipe patterns: `fzf \| xargs`, `fshow` (git log fuzzy) |
+| **tldr**         | `man`                    | Man page tóm tắt — ví dụ thực tế thay vì lý thuyết     |
+| **ncdu**         | `du`                     | Xem dung lượng disk dạng tree, xoá nhanh               |
+| **btop**         | `htop` / `top`           | Monitor CPU/RAM/disk/network đẹp, realtime             |
 
 ### Phase 3 — Editor + Multiplexer
 

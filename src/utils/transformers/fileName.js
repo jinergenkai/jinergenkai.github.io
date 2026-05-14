@@ -23,17 +23,16 @@ export const transformerFileName = ({
 
     const raw = this.options.meta?.__raw?.split(" ");
 
-    if (!raw) return;
-
-    const metaMap = new Map();
-
-    for (const item of raw) {
-      const [key, value] = item.split("=");
-      if (!key || !value) continue;
-      metaMap.set(key, value.replace(/["'`]/g, ""));
+    let file;
+    if (raw) {
+      const metaMap = new Map();
+      for (const item of raw) {
+        const [key, value] = item.split("=");
+        if (!key || !value) continue;
+        metaMap.set(key, value.replace(/["'`]/g, ""));
+      }
+      file = metaMap.get("file") || undefined;
     }
-
-    const file = metaMap.get("file");
 
     // Fall back to language name if no file= specified
     const label = file || this.options.lang;

@@ -9,7 +9,8 @@
       "Bash(cd:*)",
       "Bash(ls:*)",
       "Bash(rm:*)",
-      "Bash(grep -r \"^##.*\" /home/jinergenkai/astro/src/data/thoughts/*.md | head -20)"
+      "Bash(grep -r \"^##.*\" /home/jinergenkai/astro/src/data/thoughts/*.md | head -20)",
+      "Bash(grep -r highlighted D:/project/astro/dist/_astro/*.css)"
     ]
   }
 }
