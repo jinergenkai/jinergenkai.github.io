@@ -10,7 +10,10 @@
       "Bash(ls:*)",
       "Bash(rm:*)",
       "Bash(grep -r \"^##.*\" /home/jinergenkai/astro/src/data/thoughts/*.md | head -20)",
-      "Bash(grep -r highlighted D:/project/astro/dist/_astro/*.css)"
+      "Bash(grep -r highlighted D:/project/astro/dist/_astro/*.css)",
+      "Bash(grep -oh .line.highlighted[^}]*} D:/project/astro/dist/_astro/*.css)",
+      "Bash(node -p \"require\\(''./node_modules/@shikijs/transformers/package.json''\\).version\")",
+      "Bash(node -p \"require\\(''./node_modules/@shikijs/transformers/package.json''\\).peerDependencies\")"
     ]
   }
 }
