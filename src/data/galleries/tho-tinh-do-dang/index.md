@@ -1,10 +1,10 @@
 ---
 title: "Thơ Tình Dở Dang"
 description: "Bản nháp viết giữa cơn mơ, đền thờ và một bóng hiền thục."
-pubDatetime: 2026-06-11T21:00:00.000+07:00
+pubDatetime: 2026-04-04T21:01:42.000+07:00
 coverImage: "/image/dark-cathedral.jpg"
 lang: "vi"
-featured: false
+featured: true
 draft: false
 ---
 

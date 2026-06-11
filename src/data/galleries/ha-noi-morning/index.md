@@ -10,7 +10,7 @@ tags:
   - street
   - morning
 featured: false
-draft: false
+draft: true
 ---
 
 6 giờ sáng. Phố Hàng Bông còn mờ sương.

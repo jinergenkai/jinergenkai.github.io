@@ -11,9 +11,9 @@ tags:
   - triet-hoc
   - mental-models
 featured: false
-draft: false
+draft: true
 ---
 
 Bạn có sức mạnh đối với tâm trí mình — không phải đối với các sự kiện bên ngoài. Hãy nhận ra điều này và bạn sẽ tìm thấy sức mạnh.
 
-*You have power over your mind — not outside events. Realize this, and you will find strength.*
+_You have power over your mind — not outside events. Realize this, and you will find strength._
