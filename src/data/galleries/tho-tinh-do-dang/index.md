@@ -17,7 +17,7 @@ Hiền thục u mê, ta dại khờ
 Chẳng còn tâm tính để vần thơ.
 
 Đập vỡ ngôi đền, ta chẳng sợ  
-Không mang đức tin lấy làm cớ
-Nguyện làm quỷ dữ, giữ nàng thơ
-Giữa lời thánh ca, cướp lấy vợ
+Không mang đức tin lấy làm cớ  
+Nguyện làm quỷ dữ, giữ nàng thơ  
+Giữa lời thánh ca, cướp lấy vợ  
 Đổi cả thiên đường lấy giấc mơ.
