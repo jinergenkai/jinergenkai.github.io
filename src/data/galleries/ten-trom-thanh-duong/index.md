@@ -1,8 +1,8 @@
 ---
-title: "Thơ Tình Dở Dang"
+title: "Tên Trộm Thánh Đường"
 description: "Bản nháp viết giữa cơn mơ, đền thờ và một bóng hiền thục."
 pubDatetime: 2026-04-04T21:01:42.000+07:00
-coverImage: "/image/dark-cathedral.jpg"
+coverImage: "/image/galleries/dark-cathedral.jpg"
 lang: "vi"
 featured: true
 draft: false
