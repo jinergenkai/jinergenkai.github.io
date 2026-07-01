@@ -14,7 +14,8 @@
       "Bash(grep -oh .line.highlighted[^}]*} D:/project/astro/dist/_astro/*.css)",
       "Bash(node -p \"require\\(''./node_modules/@shikijs/transformers/package.json''\\).version\")",
       "Bash(node -p \"require\\(''./node_modules/@shikijs/transformers/package.json''\\).peerDependencies\")",
-      "PowerShell(Get-ChildItem -Path \"D:\\\\project\\\\astro\\\\src\\\\data\\\\galleries\" -Recurse -Filter \"index.md\" | ForEach-Object { $date = \\(Get-Content $_.FullName | Select-String \"pubDatetime\" | Select-Object -First 1\\).ToString\\(\\).Trim\\(\\); \"$\\($_.Directory.Name\\): $date\" })"
+      "PowerShell(Get-ChildItem -Path \"D:\\\\project\\\\astro\\\\src\\\\data\\\\galleries\" -Recurse -Filter \"index.md\" | ForEach-Object { $date = \\(Get-Content $_.FullName | Select-String \"pubDatetime\" | Select-Object -First 1\\).ToString\\(\\).Trim\\(\\); \"$\\($_.Directory.Name\\): $date\" })",
+      "Bash(git mv *)"
     ]
   }
 }

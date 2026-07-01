@@ -1,0 +1,63 @@
+---
+/**
+ * SideImage — ảnh nổi (float) bám lề trái/phải, text các đoạn sau tự chảy
+ * lấp phần còn lại — không cần bọc children. Đặt như một thẻ độc lập, tự
+ * đóng, ngay trước (hoặc giữa) các đoạn text muốn nó tràn quanh. Dùng trong
+ * file .mdx.
+ *
+ * Uso:
+ *   <SideImage image="/image/ten-anh.jpg" alt="mô tả ảnh" />
+ *
+ *   Đoạn text này sẽ tự chảy quanh ảnh, không cần nằm trong tag nào cả.
+ *
+ * Props:
+ *   image — đường dẫn ảnh (bắt buộc)
+ *   alt   — alt text cho ảnh (bắt buộc)
+ *   side  — "right" (default) | "left" — ảnh bám lề nào
+ *   width — % bề ngang tối đa ảnh được chiếm, cap cứng ở 50% (default: 42)
+ */
+type Props = {
+  image: string;
+  alt: string;
+  side?: "left" | "right";
+  width?: number;
+};
+
+const { image, alt, side = "right", width = 42 } = Astro.props;
+const cappedWidth = Math.min(width, 50);
+---
+
+<img
+  src={image}
+  alt={alt}
+  loading="lazy"
+  class:list={["side-image-float", { "side-image-left": side === "left" }]}
+  style={`--w:${cappedWidth}%`}
+/>
+
+<style>
+  .side-image-float {
+    max-width: min(var(--w), 50%);
+    width: auto;
+    height: auto;
+    max-height: clamp(220px, 50vh, 480px);
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+    float: right;
+    margin: 0.25rem 0 1.25rem 1.75rem;
+  }
+
+  .side-image-float.side-image-left {
+    float: left;
+    margin: 0.25rem 1.75rem 1.25rem 0;
+  }
+
+  @media (max-width: 640px) {
+    .side-image-float {
+      float: none;
+      display: block;
+      max-width: 100%;
+      margin-inline: auto;
+    }
+  }
+</style>
