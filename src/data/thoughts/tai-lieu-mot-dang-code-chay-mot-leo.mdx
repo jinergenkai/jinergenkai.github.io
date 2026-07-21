@@ -1,0 +1,127 @@
+---
+title: "Tài liệu nói một đằng, code chạy một nẻo"
+pubDatetime: 2025-06-12T09:00:00.000+07:00
+description: "Wiki do PO viết. Dev implement. Dev viết lại docs. Người review thấy dài quá nên lướt. Ba bước, ba lần lệch, và không ai làm sai cả."
+tags: [enterprise, documentation, engineering-culture]
+lang: "vi"
+audience: ["tech"]
+featured: false
+draft: false
+ogImage: "/image/wiki-vs-code.png"
+toc: true
+---
+
+Tuần thứ hai ở Aikon, tôi được giao một task nhỏ: thêm một điều kiện lọc vào luồng xử lý thông báo từ thiết bị. Có sẵn trang wiki mô tả luồng đó. Bốn mươi trang, sơ đồ đẹp, đánh số mục rõ ràng, cập nhật lần cuối cách đây mười một tháng.
+
+Tôi đọc hai ngày. Vẽ lại sơ đồ vào sổ. Tự tin lắm.
+
+Rồi tôi mở code.
+
+Cái bước số 4 trong sơ đồ, cái bước mà tôi cần chèn điều kiện lọc vào, không tồn tại. Không phải đổi tên. Không phải chuyển sang service khác. Nó bị xoá. Có ai đó, ở một thời điểm nào đó, đã quyết định gộp nó vào bước 3, và cái quyết định ấy không để lại dấu vết nào ngoài một commit message ba chữ.
+
+Tôi đi hỏi. Người trả lời được đã chuyển team từ năm ngoái.
+
+---
+
+## Ba bước, ba lần lệch
+
+Sau vài lần như vậy, tôi bắt đầu để ý cái quy trình sinh ra tình trạng này. Ở Aikon nó diễn ra thế này:
+
+![Sơ đồ bốn bước: spec, implement, cập nhật docs, review, mỗi bước lệch thêm một chút](/image/three-steps-drift.png)
+
+**Bước một.** PO viết spec. Họ mô tả cái _nên_ xảy ra, theo góc nhìn nghiệp vụ, theo cái khách hàng yêu cầu. Trang wiki ra đời ở đây, và ở khoảnh khắc này nó đúng.
+
+**Bước hai.** Dev implement. Và trong lúc implement, dev phát hiện những thứ spec không biết: cái API kia không trả về field đó, cái thao tác này không idempotent nên không retry được, cái thư viện dùng chung không cho phép làm theo cách sạch. Nên dev chọn cách khác. Cách chạy được. Spec bây giờ đã lệch, nhưng chưa ai thấy vì code chạy đúng.
+
+**Bước ba.** Dev quay lại cập nhật wiki. Nhưng dev viết cái mình _nhớ_ là đã làm, không phải cái mình đã làm. Và dev viết bằng ngôn ngữ của người biết rồi, bỏ qua những chỗ hiển nhiên với mình mà không hiển nhiên với người sau.
+
+**Bước bốn**, cái bước ít ai nói tới. Trang wiki đó được đưa đi review. Nó dài bốn mươi trang. Người review có bảy trang đang chờ, một buổi họp lúc hai giờ, và một sprint sắp đóng. Họ đọc kỹ ba trang đầu, lướt phần giữa, đọc kết luận, rồi bấm Approve.
+
+Đó là chỗ tôi muốn dừng lại lâu hơn một chút.
+
+---
+
+## Không ai làm sai cả
+
+Lần đầu gặp chuyện này, phản xạ của tôi là đi tìm người có lỗi. PO viết ẩu? Dev lười cập nhật? Reviewer làm cho có?
+
+Không ai trong số đó cả.
+
+PO viết đúng cái họ biết ở thời điểm đó. Dev chọn đúng cái khả thi trong ràng buộc thật. Người review lướt bốn mươi trang là quyết định hợp lý: nếu họ đọc kỹ mọi tài liệu được gửi tới, họ sẽ không làm được việc gì khác, và mọi người sẽ chuyển sang gửi tài liệu cho người khác review.
+
+Từng quyết định đều hợp lý ở góc nhìn của người ra quyết định. Kết quả tập thể thì sai.
+
+Đây không phải chuyện đạo đức nghề nghiệp. Đây là một failure mode có cấu trúc, và cấu trúc thì không sửa được bằng cách nhắc nhau cố gắng hơn. Cái quy trình ấy sẽ tái tạo lại chính nó với bất kỳ đội ngũ nào bạn thay vào.
+
+Có một câu tôi nghe được ở nhiều nơi, gần như nguyên văn: _"đừng tin wiki."_ Nó không phải lời than. Nó là tri thức vận hành. Đội ngũ đã học được, qua đau thương, rằng đọc code nhanh hơn đọc tài liệu về code. Và một khi người ta ngừng tin tài liệu, người ta cũng ngừng cập nhật nó, vì cập nhật một thứ không ai đọc là công việc vô nghĩa. Vòng lặp tự khép lại.
+
+Điều oái oăm: tài liệu sai còn tệ hơn không có tài liệu. Không có tài liệu thì bạn biết mình không biết, bạn đi hỏi, bạn đọc code. Có tài liệu sai thì bạn tin, bạn xây tiếp trên giả định hỏng, và bạn phát hiện ra ở production.
+
+---
+
+## Năm 1985 có người đã nói trước rồi
+
+Tôi tưởng đây là vấn đề của quy trình cho tới khi đọc một bài của Peter Naur viết năm 1985, tên là _Programming as Theory Building_.
+
+<SideImage
+  image="/image/naur-theory-building.webp"
+  alt="Trang bìa bài Programming as Theory Building của Peter Naur, 1985"
+/>
+
+Luận điểm của ông: **sản phẩm thật của việc lập trình không phải là code, mà là cái "theory" nằm trong đầu người viết**, tức là hiểu biết về chuyện thế giới thật ánh xạ vào chương trình như thế nào, chỗ nào được phép đụng, chỗ nào chạm vào là vỡ, và vì sao lại thiết kế như vậy chứ không phải cách khác. Code chỉ là một bản ghi có tổn hao của cái theory đó.
+
+Và Naur nói thẳng một câu khá phũ: khôi phục lại theory của một chương trình _chỉ từ tài liệu_ là chuyện bất khả thi về nguyên tắc. Không phải khó. Bất khả thi. Vì phần quan trọng nhất của theory (cảm giác về chỗ nào quan trọng, chỗ nào mong manh, vì sao đường này bị loại) không phải là mệnh đề để chép ra giấy.
+
+Nếu ông ấy đúng, thì cái tôi vẫn nghĩ là lỗi quy trình thực ra là **giới hạn vật lý**. Tài liệu không lệch khỏi code vì ai đó lười. Nó lệch vì nó _không thể không lệch_. Bạn đang cố đóng gói một thứ liên tục biến đổi vào một thứ đứng yên, và bạn ghi lại nó _sau khi_ đã hiểu, nên nó là ghi chú nhắc lại cho người đã biết, chứ không phải công cụ học cho người chưa biết.
+
+Nói cách khác: tài liệu là ngón tay chỉ mặt trăng. Vấn đề bắt đầu khi ta tưởng ngón tay là mặt trăng.
+
+---
+
+## Vậy làm gì?
+
+Tôi không định kết bài bằng "hãy dùng docs-as-code" hay "hãy để AI tự sinh tài liệu". Mấy thứ đó có ích, nhưng chúng chữa triệu chứng: chúng làm phần _what_ và _how_ tự cập nhật, còn phần khó nhất, phần _why_, vẫn nằm trong đầu người ta.
+
+Cái thay đổi thật sự với tôi không phải là cách viết tài liệu. Là **cách đọc**.
+
+**Coi tài liệu là giả thuyết, không phải sự thật.** Đọc wiki để biết người ta _định_ làm gì. Đọc code để biết cái gì _đang_ chạy. Đừng nhầm hai cái đó, và đừng bao giờ để tài liệu là nguồn cuối cùng cho một quyết định kỹ thuật.
+
+**Xếp hạng tài liệu theo tốc độ mục.** Không phải trang nào cũng lệch bằng nhau. Ranh giới nghiệp vụ và ý định thiết kế thì sống lâu: vì sao hệ thống chia thành các domain này, ràng buộc nào không được vi phạm, những thứ đó vài năm mới đổi. Còn tên field, tham số cấu hình, thứ tự các bước, tên endpoint thì mục theo sprint. Đọc trang đầu để lấy bối cảnh; đừng bao giờ tin trang sau.
+
+**Đi tìm bản ghi của quyết định, không phải bản mô tả kết quả.** Commit message, mô tả pull request, bình luận trong ticket, đó mới là chỗ _why_ còn sống sót, vì chúng được viết đúng lúc quyết định đang xảy ra và không ai quay lại sửa chúng. Trang wiki là ảnh chụp; lịch sử git là đoạn phim.
+
+Và đây là thứ tôi mất khá lâu mới nhận ra:
+
+**Chỗ lệch không phải là nhiễu. Nó là dữ liệu.**
+
+Cái bước số 4 bị xoá trong câu chuyện đầu bài, sau này tôi tìm ra lý do. Nó bị gộp vào bước 3 vì tách ra thì có một cửa sổ mà hai luồng có thể ghi đè lên nhau. Ai đó đã gặp sự cố đó, đã sửa, và cách sửa là xoá đi ranh giới mà spec vẽ ra.
+
+Trang wiki mô tả cái thế giới _đáng lẽ_ phải vận hành. Code mô tả cái thế giới _thật sự_ vận hành. Khoảng cách giữa hai cái là **bản ghi của những chỗ hiện thực đẩy ngược lại ý định**, và đó chính xác là danh sách những chỗ khó nhất trong hệ thống.
+
+Từ lúc hiểu ra điều đó, tôi đổi cách onboard vào một module mới. Không đọc wiki rồi đọc code để xác nhận. Đọc cả hai để **tìm chỗ chúng cãi nhau**, rồi đào vào đúng những chỗ đó. Mỗi chỗ lệch là một cái sẹo. Và sẹo thì kể chuyện chính xác hơn tài liệu, vì không ai bịa ra sẹo.
+
+---
+
+## Chỗ tôi có thể sai
+
+Cách đọc này ngốn thời gian, và nó không scale. Nó hợp với người có vài tháng để hiểu sâu một module, không hợp với người phải chạm vào mười hệ thống trong một quý.
+
+Nó cũng có một giả định ngầm: rằng lịch sử git còn nguyên và có nghĩa. Nếu repo của bạn đầy những commit "fix" và "update", hoặc mọi thứ bị squash thành một commit mỗi release, thì cái đoạn phim tôi vừa nói không tồn tại. Lúc đó bạn chỉ còn code và những người còn ở lại.
+
+Và nói cho công bằng: có những nơi tài liệu thật sự tốt. Tôi chưa làm ở nơi nào như vậy, nên tôi không biết họ trả giá bằng gì.
+
+---
+
+Điều tôi giữ lại từ chuyện này không phải là hoài nghi tài liệu. Là hiểu rằng thứ mình đang tìm chưa bao giờ nằm trên trang wiki.
+
+Cái theory ấy nằm trong đầu người ta. Khi họ chuyển team, nó không được bàn giao, nó biến mất. Và cái mà chúng ta gọi là "tài liệu lỗi thời" thật ra là dấu vết còn lại của một hiểu biết đã đi khỏi toà nhà.
+
+Nên câu hỏi đúng khi vào một hệ thống lớn không phải _"tài liệu ở đâu"_.
+
+Là _"ai còn nhớ vì sao"_.
+
+---
+
+## Tham khảo
+
+- Peter Naur, _Programming as Theory Building_ (1985) - [đọc bản PDF](https://pages.cs.wisc.edu/~remzi/Naur.pdf)

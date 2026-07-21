@@ -8,9 +8,8 @@ audience: ["life"]
 featured: false
 draft: false
 ogImage: "/image/three-crosses-monument.png"
+toc: true
 ---
-
-## Table of contents
 
 ## Xác suất khắp nơi
 

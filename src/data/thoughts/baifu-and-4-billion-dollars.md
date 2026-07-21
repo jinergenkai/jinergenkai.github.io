@@ -8,14 +8,13 @@ audience: ["tech", "business"]
 featured: true
 draft: false
 ogImage: "/image/baifu.png"
+toc: true
 ---
 # Một cậu sinh viên, Cursor, và 4 triệu USD: Câu chuyện "làm giàu không khó" (với người khác)
 
 *Hôm nay tôi lướt feed và thấy cùng một bài post 4 lần. Nội dung gần như giống hệt nhau: một sinh viên Trung Quốc tên BaiFu, vibecoding bằng Cursor, đạt 60k stars trên GitHub, được tỷ phú Chen Tianqiao rót 4 triệu USD. Câu chuyện ngọt đến mức ai cũng muốn share.*
 
 *Tôi là một backend engineer ở môi trường enterprise. Thay vì share tiếp, tôi quyết định đào sâu xem 2 cái repo đó thực sự làm gì - và phát hiện ra câu chuyện thú vị hơn nhiều so với cái tiêu đề clickbait.*
-
-## Table of contents
 
 ## Bên trong 2 repo "khủng"
 

@@ -7,7 +7,7 @@ tags:
   - triet-hoc
   - mental-models
 featured: false
-draft: false
+draft: true
 lang: "vi"
 audience: ["life", "learning"]
 ---
@@ -54,4 +54,4 @@ Không chọn cũng là một lựa chọn. Chỉ là lựa chọn đứng yên.
 
 ---
 
-*Ghi chú ngày 27/01/2026*
+_Ghi chú ngày 27/01/2026_

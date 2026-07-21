@@ -8,9 +8,9 @@ audience: ["life"]
 featured: false
 draft: false
 ogImage: "/image/tien-tien.jpg"
+toc: true
+coverSide: "right"
 ---
-
-## Table of contents
 
 Con mèo của tôi không đọc sách kinh tế, nhưng nó đếm giỏi hơn tôi nhiều.
 

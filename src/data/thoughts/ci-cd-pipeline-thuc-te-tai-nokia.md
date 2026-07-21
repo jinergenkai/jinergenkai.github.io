@@ -1,7 +1,7 @@
 ---
 title: "CI/CD Pipeline thực tế: Những gì tôi học được khi quản lý pipeline cho hệ thống viễn thông"
 description: "Từ kinh nghiệm thực tế quản lý CI/CD pipeline tại Nokia FNMS - những bài học, sai lầm và best practices khi deploy phần mềm telecom."
-pubDatetime: 2026-02-10T09:00:00.000+07:00
+pubDatetime: 2025-02-18T09:00:00.000+07:00
 tags:
   - devops
   - ci-cd
@@ -9,17 +9,16 @@ tags:
   - java
   - thuc-te
 featured: true
-draft: false
+draft: true
 lang: "vi"
 audience: ["tech"]
 ogImage: "/image/dog2.jpg"
+toc: true
 ---
 
 Khi tôi tiếp quản CI/CD pipeline tại Nokia FNMS, thứ tôi nhận được là một đống Jenkins jobs chồng chất, build time 45 phút, và tỷ lệ flaky test khoảng 15%. Sau 6 tháng, chúng tôi đưa build time xuống còn 18 phút và flaky test về dưới 2%.
 
 Đây là những gì tôi học được.
-
-## Table of contents
 
 ## Bối cảnh: Hệ thống FNMS là gì?
 

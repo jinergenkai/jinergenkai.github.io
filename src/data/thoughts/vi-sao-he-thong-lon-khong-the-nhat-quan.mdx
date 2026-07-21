@@ -1,0 +1,162 @@
+---
+title: "Vì sao hệ thống lớn không thể nhất quán"
+pubDatetime: 2025-09-24T09:00:00.000+07:00
+description: "Mỗi domain viết một kiểu. Ai cũng khó chịu, ai cũng muốn dọn. Nhưng sự lệch ấy không phải lỗi - nó là cái giá của việc còn sống sau mười năm."
+tags: [enterprise, ci-cd, architecture, engineering-culture]
+lang: "vi"
+audience: ["tech"]
+featured: false
+draft: false
+ogImage: "/image/vietnam-alley-houses.webp"
+toc: true
+---
+
+Có một buổi chiều tôi phải lần theo một luồng dữ liệu đi xuyên qua năm domain khác nhau của Altiplano. Tôi mở năm repo, mỗi cái một tab.
+
+Repo thứ nhất: package chia theo tầng - `controller`, `service`, `repository`. Kiểu Spring sách giáo khoa.
+
+Repo thứ hai: chia theo tính năng, mỗi thư mục là một use case, bên trong tự đủ. Không có chữ `service` nào.
+
+Repo thứ ba: hai tầng, một đống class tên kết thúc bằng `Manager`, và một thư mục `util` chứa hai nghìn dòng.
+
+Repo thứ tư dùng tab. Repo thứ năm dùng bốn dấu cách, trừ một module dùng hai - và module đó thì có `.editorconfig` riêng.
+
+Cùng một ngôn ngữ. Cùng một sản phẩm. Cùng một công ty.
+
+Phản xạ đầu tiên của tôi khá là ngạo mạn: _chỗ này không ai quan tâm tới chuẩn cả._
+
+Tôi sai. Và mất khá lâu mới hiểu mình sai ở đâu.
+
+---
+
+## Cái lệch ấy có tên, và nó có từ năm 1968
+
+Năm 1968, Melvin Conway viết một câu mà bây giờ ai cũng trích: tổ chức thiết kế hệ thống sẽ cho ra thiết kế phản chiếu chính cấu trúc giao tiếp của tổ chức đó.
+
+Nghe như một câu triết lý. Nhưng nó là một quan sát cực kỳ vật lý.
+
+Một quy ước code chỉ tồn tại được ở nơi mà **cuộc trò chuyện đủ rẻ**. Bốn người ngồi chung một phòng thì không cần tài liệu chuẩn code - họ nhìn màn hình của nhau, họ review PR của nhau trong mười phút, và quy ước hình thành trong hai tuần mà không ai phải viết ra.
+
+Bây giờ lấy con số thật của một hệ thống như Altiplano: gần một trăm repo, các đội ở Việt Nam, Ấn Độ, Trung Quốc, Hy Lạp, Phần Lan. Chênh nhau tới sáu bảy múi giờ. Một câu hỏi gửi đi buổi chiều thì hôm sau mới có trả lời.
+
+Trong điều kiện đó, cuộc trò chuyện không còn rẻ nữa. Nó thành thứ đắt nhất trong dự án.
+
+Nên mỗi đội làm cái hợp lý nhất với họ: tối ưu phần của mình, theo quy ước của mình, vì đi hỏi mười bốn đội còn lại để thống nhất một cách đặt tên thư mục là chuyện không đáng. Có người mô tả tình trạng này rất chính xác - _mạnh ai nấy làm ngay trong cùng một codebase_. Nghe như lời chê. Thật ra nó là mô tả một cân bằng kinh tế.
+
+Và ở đây có một điều tôi nghĩ nhiều người bỏ qua: **các repo lệch nhau không phải vì hệ thống được viết ẩu, mà vì hệ thống đủ già.** Chúng lệch theo thời gian. Repo viết năm 2014 mang theo cách nghĩ của năm 2014. Repo viết năm 2021 mang theo cách nghĩ của năm 2021. Sự lệch ấy là **vân gỗ** - nó ghi lại tuổi của từng phần.
+
+Cái tôi tưởng là dấu hiệu của một hệ thống bừa bộn, thật ra là dấu hiệu của một hệ thống đã sống lâu hơn tất cả những quy ước từng cố áp lên nó.
+
+{/*
+IMAGE 2 - SƠ ĐỒ (tự vẽ, excalidraw hoặc SVG)
+Nội dung: cái phễu. Bên trái ~8 hình chữ nhật nhỏ, mỗi cái vẽ hơi khác nhau (khác màu, khác
+kiểu viền, một cái bo góc, một cái vuông) - ghi "repo · mỗi đội một quy ước".
+Ở giữa: một ống hẹp ghi "CI/CD pipeline".
+Bên phải: đúng MỘT hộp ghi "artifact + helm chart".
+Chú thích dưới hình: "Chỗ duy nhất hệ thống tồn tại như một thứ."
+*/}
+
+## Vậy sự nhất quán nằm ở đâu?
+
+Không nằm trong code. Đó là kết luận tôi mất một thời gian mới chấp nhận.
+
+Nó nằm ở **chỗ các mảnh chạm nhau**.
+
+Gần một trăm repo ấy, dù viết theo bao nhiêu kiểu, cuối cùng đều chảy vào cùng một đường ống: build, test, đóng gói thành artifact, gói tiếp thành helm chart để khách hàng deploy lên hệ thống của họ. Khách hàng không nhận về một trăm repo. Họ nhận về một thứ.
+
+Cái đường ống đó là nơi duy nhất mà "hệ thống" tồn tại như một danh từ số ít.
+
+Từ lúc nhìn ra điều đó, tôi ngừng khó chịu vì chuyện tab với space. Nó không quan trọng. Nó chưa bao giờ quan trọng. Cái quan trọng là: khi một trăm mảnh gặp nhau trong một lần build, chúng có ăn khớp không?
+
+Và câu trả lời, hoá ra, là không phải lúc nào cũng.
+
+---
+
+## Cái lệch thật sự không nằm trong không gian. Nó nằm trong thời gian.
+
+Đây là chỗ tôi bị bất ngờ nhất.
+
+Hình dung một lần build. Đường ống đi lấy code từ nhiều repo. Repo A vừa được merge một thay đổi lúc 10 giờ 12. Repo B - repo phụ thuộc vào A - có thay đổi tương ứng, nhưng nó được merge lúc 10 giờ 47.
+
+Build chạy lúc 10 giờ 30.
+
+Kết quả là một artifact chứa **A mới và B cũ**. Một tổ hợp mà chưa từng có ai kiểm thử, chưa từng tồn tại trên máy của bất kỳ lập trình viên nào, và về mặt ý định thì chưa từng tồn tại. Nó chỉ tồn tại vì cái đồng hồ.
+
+Nó build xanh. Test đơn vị xanh, vì test đơn vị không biết gì về repo bên cạnh. Nó chỉ vỡ khi có ai đó cài bản đó lên một môi trường thật và chạm đúng vào cái đường đi qua ranh giới giữa A và B.
+
+Cái này có tên chính thức: **version skew**.
+
+Và điều làm tôi ngồi thẳng lưng lên khi đọc về nó là: đây không phải vấn đề riêng của một hệ thống viễn thông cồng kềnh nào đó. Đây là vấn đề của mọi hệ thống được ghép từ nhiều phần deploy độc lập.
+
+Trang web bạn vừa deploy phiên bản mới, nhưng có người dùng đang mở tab từ hôm qua - client cũ gọi vào API mới. Đó là version skew. Ứng dụng di động không bật tự động cập nhật, người dùng ba tháng không update - đó là version skew. Kubernetes có hẳn một tài liệu chính thức quy định control plane và kubelet được phép lệch nhau tối đa bao nhiêu phiên bản.
+
+Để ý cách Kubernetes xử lý nó. Họ **không cố xoá bỏ** version skew. Họ công bố một **chính sách dung sai**: lệch trong khoảng này thì được, ra ngoài thì không đảm bảo.
+
+Đó mới là thái độ trưởng thành. Không phải "làm sao để mọi thứ luôn đồng bộ" - mà là "chúng ta chịu được lệch bao nhiêu, và làm sao để biết mình đã vượt ngưỡng".
+
+{/*
+IMAGE 3 - SƠ ĐỒ (tự vẽ)
+Nội dung: trục thời gian ngang. Hai hàng: "repo A" và "repo B".
+Trên repo A: một chấm ở 10:12 (commit mới). Trên repo B: một chấm ở 10:47 (commit tương ứng).
+Một đường dọc đứt nét cắt qua ở 10:30, ghi "build".
+Tô đỏ vùng giữa 10:12 và 10:47, ghi "cửa sổ mà tổ hợp này chưa từng tồn tại".
+Chú thích dưới hình: "Build xanh. Không có nghĩa là đúng."
+*/}
+
+## Bản kê khai xanh
+
+Cách chúng tôi sống chung với nó không có gì cao siêu, nhưng nó đúng.
+
+Một lần build thành công không được coi là "code mới nhất". Nó được coi là **một bản kê khai** - một danh sách ghi rõ từng thành phần ở đúng phiên bản nào. Bản kê khai đó, khi đã đi qua đủ tầng kiểm thử tích hợp, được đóng băng lại và lưu giữ.
+
+Từ đó về sau, mọi thứ đi tiếp đều tham chiếu tới **bản kê khai**, không tham chiếu tới nhánh. Nhánh thì luôn động. Bản kê khai thì đứng yên. Khi có sự cố, bạn không quay về "code hôm thứ Ba" - bạn quay về một tổ hợp cụ thể đã từng được chứng minh là chạy được cùng nhau.
+
+Google mô tả cùng một ý tưởng ở quy mô của họ với tên gọi _release candidate_: không phát hành mã nguồn, mà phát hành một ứng viên đã được ghim phiên bản, rồi thăng cấp ứng viên đó qua từng môi trường. Version skew bị bắt trong quá trình thăng cấp ấy, chứ không bị bắt lúc code.
+
+Cùng một logic. Khác quy mô. Và nó nói lên rằng cái vấn đề bạn đang vật lộn trong một công ty viễn thông thì Google cũng đang vật lộn - chỉ là họ đặt cho nó một cái tên đẹp hơn.
+
+---
+
+## Ba loại nhất quán, và chỉ một loại đáng đánh nhau
+
+Nếu phải rút gọn tất cả những gì tôi học được từ chuyện này thành một thứ dùng được, thì là cái bảng phân loại này:
+
+**Nhất quán hình thức** - thụt lề, đặt tên biến, thứ tự import. Rẻ để ép (cắm formatter vào pipeline là xong), và gần như không có giá trị kỹ thuật. Đừng tranh luận về nó. Cắm cái máy vào rồi quên đi.
+
+**Nhất quán cấu trúc** - chia package thế nào, tầng kiến trúc ra sao, đặt file ở đâu. Đắt kinh khủng để ép trên một hệ thống đã già, vì ép nghĩa là refactor code đang chạy. Giá trị thì trung bình: nó làm người mới đọc nhanh hơn, nhưng không ngăn được lỗi nào. **Đây là chỗ hầu hết mọi người tiêu năng lượng, và là chỗ đáng tiêu ít nhất.**
+
+**Nhất quán ở hợp đồng** - chữ ký API, schema sự kiện, phiên bản nào chạy được với phiên bản nào. Đây là loại duy nhất mà lệch thì hệ thống hỏng. Và đây là loại duy nhất **bắt buộc phải để máy kiểm tra**, vì con người không nhìn ra nó - nó không hiện lên trong diff, nó chỉ hiện ra khi hai thứ gặp nhau lúc chạy.
+
+Biết xếp hạng ba loại này chính là công việc kiến trúc. Nhiều hơn là biết vẽ sơ đồ.
+
+---
+
+## Chỗ tôi có thể sai
+
+Cái cách làm ở trên có một cái giá mà tôi phải nói ra.
+
+Khi bạn ghim mọi thứ vào một bản kê khai và phát hành chúng cùng nhau, bạn đã đánh đổi mất chính cái mà việc tách repo mang lại: khả năng deploy độc lập. Một trăm repo, nhưng phát hành như một khối. Về mặt kỹ thuật, đó là một monolith được phân tán ra - với thêm chi phí vận hành.
+
+Với sản phẩm đóng gói giao cho nhà mạng, đánh đổi đó hợp lý: khách hàng cài trong trung tâm dữ liệu của họ, họ cần một thứ đã được kiểm chứng nguyên khối, họ không quan tâm nội bộ bạn có bao nhiêu repo. Nhưng nếu bạn đang chạy dịch vụ của chính mình và cần đẩy hai chục lần một ngày, cách này sẽ bóp cổ bạn.
+
+Và tôi cũng chưa từng làm ở nơi nào ép được nhất quán cấu trúc thành công trên quy mô lớn. Có thể có. Tôi chỉ không biết họ trả giá bằng gì.
+
+---
+
+Cái tôi giữ lại: hệ thống lớn không nhất quán, và điều đó không phải bằng chứng của sự cẩu thả. Nó là bằng chứng rằng nhiều người, ở nhiều nơi, trong nhiều năm, đã lần lượt cố gắng làm điều đúng nhất trong hoàn cảnh của họ.
+
+Việc của bạn không phải là dọn dẹp cái đó. Bạn sẽ không thắng, và nếu thắng thì bạn cũng vừa xoá mất vân gỗ.
+
+Việc của bạn là biết chỗ nào **được phép** lệch, và chỗ nào thì không.
+
+Chỗ không được phép lệch, hoá ra, ít hơn ta tưởng rất nhiều. Nhưng ở đúng những chỗ đó thì không có dung sai nào cả.
+
+---
+
+## Đọc thêm
+
+- **Melvin Conway, "How Do Committees Invent?" (1968)** - bản gốc. Đọc [ghi chép của Martin Fowler](https://martinfowler.com/bliki/ConwaysLaw.html) nếu muốn bản ngắn, kèm phần về _Inverse Conway Maneuver_ - đổi cấu trúc đội để lái cấu trúc hệ thống. Fowler cũng nói thẳng là nó không phải cây đũa thần.
+- **[Software Engineering at Google - chương Continuous Integration](https://abseil.io/resources/swe-book/html/ch23.html)** - chỗ mô tả release candidate và lý do version skew phải bị bắt ở khâu thăng cấp chứ không phải khâu code. Đây là tài liệu tôi thấy sát với thực tế nhất trong toàn bộ chủ đề này.
+- **[Kubernetes Version Skew Policy](https://kubernetes.io/releases/version-skew-policy/)** - ví dụ sạch nhất về việc _công bố dung sai_ thay vì _hứa hẹn đồng bộ_. Đáng đọc kể cả khi bạn không dùng Kubernetes, vì nó là một mẫu thiết kế chứ không phải một tài liệu vận hành.
+- **[Version Skew - Malte Ubl](https://www.industrialempathy.com/posts/version-skew/)** - bài ngắn, giải thích vì sao monorepo _không_ giải quyết được version skew: gộp code vào một repo không làm cho các thành phần được deploy cùng một khoảnh khắc.
+- **[Tài liệu nói một đằng, code chạy một nẻo](/thoughts/tai-lieu-mot-dang-code-chay-mot-leo)** - bài trước của tôi, về cùng một hệ thống nhìn từ góc khác: ở đó là mô tả lệch khỏi hiện thực, ở đây là hiện thực lệch khỏi chính nó.

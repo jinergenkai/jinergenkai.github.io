@@ -1,0 +1,235 @@
+---
+title: "Kafka Phần 1 - Sự phụ thuộc quá lớn"
+pubDatetime: 2026-05-20T09:00:00.000+07:00
+description: "Hàng chục service dùng chung một thư viện viết từ nhiều năm trước. Chúng tôi biết cách làm đúng hơn. Chúng tôi không làm được - và lý do không nằm ở code."
+tags: [kafka, distributed-systems, architecture, enterprise]
+lang: "vi"
+audience: ["tech"]
+featured: false
+draft: false
+ogImage: "/image/old-electrical-fuse.webp"
+coverSide: "right"
+toc: true
+---
+
+Có một hôm tôi đọc xong tài liệu về một mẫu thiết kế tên là **Outbox**, và nghĩ rằng mình vừa tìm ra câu trả lời cho một vấn đề mà hệ thống đang có.
+
+Tôi mang nó đi hỏi. Cuộc trò chuyện kết thúc trong khoảng mười phút, và không phải vì ai đó nói tôi sai.
+
+Nó kết thúc vì một phép tính.
+
+Bài này kể về phép tính đó. Nhưng để nó có nghĩa, tôi phải bắt đầu từ chỗ xa hơn.
+
+---
+
+## Trước hết: Kafka ở đây làm gì?
+
+Nếu bạn chưa từng làm với Kafka, đừng bỏ qua đoạn này - nó là nền cho mọi thứ phía sau.
+
+Hình dung hàng chục nghìn thiết bị mạng nằm rải rác ngoài đời thật: trong tủ kỹ thuật ở chung cư, trong trạm viễn thông ven đường, trong phòng máy của một nhà mạng. Mỗi cái liên tục có chuyện muốn nói: _tôi vừa mất kết nối đường lên_, _cổng số ba của tôi vừa đo được ngần này lưu lượng_, _cấu hình của tôi vừa bị đổi_.
+
+Ở trung tâm, có hàng chục dịch vụ cần nghe những chuyện đó. Dịch vụ tính chỉ số hiệu năng. Dịch vụ quản lý cảnh báo. Dịch vụ cập nhật kho thiết bị. Dịch vụ vẽ sơ đồ mạng. Mỗi dịch vụ quan tâm một phần khác nhau của cùng một dòng sự kiện.
+
+Nếu để chúng gọi thẳng nhau, bạn có một mớ bòng bong: mỗi bên gửi phải biết tất cả các bên nhận, và thêm một bên nhận mới thì phải sửa mọi bên gửi.
+
+**Kafka giải quyết chuyện này bằng cách đứng ở giữa và làm một cuốn sổ ghi chép chung.**
+
+Bên gửi ghi vào sổ, không cần biết ai sẽ đọc. Bên đọc tự đọc theo tốc độ của mình, tự nhớ mình đọc tới dòng nào.
+
+Và đây là chỗ Kafka khác với thứ mà nhiều người quen hơn - hàng đợi tin nhắn kiểu truyền thống như JMS hay RabbitMQ. Hàng đợi hoạt động như một hộp thư: một người lấy tin ra thì tin biến mất, người khác không còn gì để lấy. Kafka hoạt động như một cuốn nhật ký: bản ghi vẫn nằm nguyên đó sau khi được đọc, nhiều bên có thể đọc cùng một dòng một cách độc lập, và mỗi bên tự giữ cái bookmark của riêng mình.
+
+Sự khác biệt nghe nhỏ nhưng nó quyết định kiến trúc. Với hàng đợi, thêm một bên tiêu thụ mới là một cuộc đàm phán. Với Kafka, thêm một bên tiêu thụ mới là chuyện của riêng bên đó.
+
+Đó là lý do một hệ thống có hàng chục dịch vụ cùng cần một dòng dữ liệu sẽ chọn Kafka.
+
+---
+
+## Cái lớp bọc ở giữa
+
+Bây giờ tới phần thú vị.
+
+Ở Aikon, **không dịch vụ nào gọi thẳng vào thư viện client của Kafka.** Tất cả đều đi qua một lớp bọc nằm trong thư viện nền tảng dùng chung - cái thư viện mà hàng chục dịch vụ đều kế thừa.
+
+Quyết định đó, ở thời điểm nó được đưa ra, hoàn toàn hợp lý. Cấu hình chứng chỉ SSL, chính sách thử lại, phát metric, chuẩn log, xử lý lỗi - viết một lần, ba mươi nơi được hưởng. Nếu bạn từng thấy một tổ chức mà mỗi service tự cấu hình Kafka theo cách riêng, bạn sẽ hiểu vì sao người ta muốn tránh điều đó.
+
+Nhưng lớp bọc ấy không chỉ gom cấu hình. Nó có một cơ chế riêng, và cơ chế đó là nhân vật chính của cả ba bài.
+
+### Cầu dao
+
+Khi việc gửi tin thất bại liên tiếp vài lần với cùng một kiểu lỗi - chẳng hạn không lấy được thông tin về topic từ broker - lớp bọc không tiếp tục thử nữa. Nó **ngắt**.
+
+Cái này gọi là **circuit breaker**, và ẩn dụ trong tên nó chính là ẩn dụ đúng: cầu dao điện trong nhà bạn.
+
+Cầu dao không sửa được chập điện. Nó không làm cho dây điện tốt lên. Việc duy nhất nó làm là: khi phát hiện dòng bất thường, nó cắt - để cái hỏng cục bộ không kéo cả căn nhà cháy theo.
+
+Circuit breaker trong phần mềm có ba trạng thái:
+
+- **Đóng** - bình thường, mọi yêu cầu đi qua.
+- **Mở** - đã phát hiện hỏng, mọi yêu cầu bị chặn ngay lập tức, không thèm thử.
+- **Nửa mở** - sau một khoảng chờ, cho một ít yêu cầu đi thử. Qua được thì đóng lại, vẫn hỏng thì mở tiếp.
+
+Câu hỏi tự nhiên của người mới là: _sao không cứ thử lại? Thử lại thì có mất gì đâu?_
+
+Có. Mất nhiều là khác.
+
+Mỗi lần gửi bị treo là một luồng bị giữ lại chờ. Nếu broker đang ngắc ngoải - chưa chết hẳn nhưng phản hồi rất chậm - thì mỗi dịch vụ sẽ tích dần các luồng đang chờ, cho tới khi hết luồng để làm việc khác. Rồi nhân với ba mươi dịch vụ cùng lúc dội vào một broker đang yếu.
+
+Bạn vừa tự tấn công chính mình. Một sự cố nhỏ ở tầng hạ tầng biến thành sự cố toàn hệ thống, và nguyên nhân là do chính nỗ lực hồi phục.
+
+**Fail nhanh không phải là bỏ cuộc. Nó là cách bạn không biến một đám cháy thành một trận hoả hoạn.**
+
+### Cái đệm
+
+Nhưng ngắt rồi thì mấy cái thông báo đang muốn gửi đi đâu?
+
+Chúng không bị vứt. Chúng đi vào một hàng đợi trong bộ nhớ - vào trước ra trước, có giới hạn kích thước, mặc định khoảng mười nghìn bản ghi.
+
+Khi kết nối trở lại, cầu dao đóng, và lớp bọc xả cái đệm đó ra theo đúng thứ tự đã vào.
+
+Còn nếu đệm đầy trước khi Kafka kịp quay lại?
+
+Nó ném lỗi ngược lên cho bên gọi.
+
+Đọc qua thì tưởng là hệ thống bó tay. Nhưng ném lỗi ở đây là **tính năng**, không phải khiếm khuyết. Nó có tên: **backpressure**.
+
+Hình dung bạn cầm vòi nước hứng vào một cái xô. Xô đầy. Nếu cái xô im lặng, nước tràn ra sàn và bạn không biết cho tới khi ướt chân. Nếu cái xô kêu lên, bạn khoá vòi bớt.
+
+Backpressure là cái xô biết kêu. Khi đệm đầy, dịch vụ phía trên nhận được tín hiệu rõ ràng rằng hạ tầng phía dưới đang không tiêu thụ kịp - và nó có thể chậm lại, hoặc bỏ bớt dữ liệu ít quan trọng, hoặc báo động. Cái tệ nhất không phải là lỗi. Cái tệ nhất là mất dữ liệu trong im lặng.
+
+![Sơ đồ: luồng bình thường dịch vụ → lớp bọc → Kafka; khi cầu dao mở, tin đi vào đệm FIFO khoảng 10k bản ghi, đệm đầy thì ném lỗi backpressure ngược lên dịch vụ, và xả ra khi kết nối trở lại](/image/kafka-circuit-breaker-open.png)
+
+## Câu trả lời đúng, và phép tính giết nó
+
+Giờ quay lại chỗ tôi bắt đầu.
+
+Có một vấn đề mà cái đệm trong bộ nhớ không giải được, và nó là một trong những vấn đề kinh điển nhất của hệ phân tán: **dual write** - ghi hai nơi.
+
+Hình dung một dịch vụ phải làm hai việc mà cả hai đều phải thành công: cập nhật cơ sở dữ liệu của chính nó, và báo cho thế giới bên ngoài biết là có chuyện vừa xảy ra.
+
+Hai việc đó nằm ở hai hệ thống độc lập. Chúng không chung một transaction. Nên có hai kiểu hỏng:
+
+- Ghi DB xong, gửi Kafka hỏng → chuyện đã xảy ra thật, nhưng không ai biết.
+- Gửi Kafka xong, ghi DB hỏng → cả thế giới được báo về một chuyện chưa từng xảy ra.
+
+Và không có cách nào commit nguyên tử vào hai hệ thống độc lập nếu không dùng distributed transaction - mà distributed transaction thì chính là thứ kiến trúc microservice sinh ra để tránh.
+
+**Outbox** là câu trả lời chuẩn cho chuyện này, và nó thanh lịch ở chỗ nó không cố giải bài toán khó, nó xoá bài toán đi.
+
+Thay vì ghi hai nơi, bạn ghi một nơi. Trong cùng một transaction cục bộ với dữ liệu nghiệp vụ, bạn chèn thêm một dòng vào một cái bảng tên là `outbox`, nội dung đại ý: _"cần gửi thông báo này ra ngoài."_ Một transaction, một kết quả - hoặc cả hai cùng có, hoặc cả hai cùng không.
+
+Rồi một tiến trình riêng đọc bảng đó và gửi đi. Nếu gửi hỏng, dòng vẫn nằm đó, thử lại sau. Không mất gì.
+
+Hai lần ghi đã thành một lần ghi. Cái đảm bảo bất khả thi đã thành một đảm bảo tầm thường.
+
+Đó là lý do tôi mang nó đi hỏi.
+
+Và đây là phép tính đã giết nó:
+
+Outbox không phải một đoạn code. Nó là **một bảng trong cơ sở dữ liệu, một migration, một tiến trình relay, giám sát cho relay, và một kế hoạch cho lúc relay tụt hậu.** Đó là năm thứ mới cần vận hành.
+
+Nhân với hàng chục dịch vụ.
+
+Nhưng cái đóng đinh không phải con số nhân. Là chi tiết này:
+
+**Phần lớn những dịch vụ đó không có cơ sở dữ liệu.**
+
+Chúng là collector. Việc của chúng là mở kết nối tới thiết bị mạng, đọc số liệu, chuyển thành JSON, đẩy vào Kafka. Chúng không giữ trạng thái gì cả. Chúng không cần nhớ gì cả.
+
+Nên với chúng, "áp dụng Outbox" có nghĩa là: **thêm một cơ sở dữ liệu vào một dịch vụ vốn không cần cơ sở dữ liệu, chỉ để đảm bảo cho việc gửi tin.**
+
+Bạn vừa biến ba mươi thứ nhẹ thành ba mươi thứ nặng, thêm ba mươi thứ có thể hỏng, để giải một bài toán mà một nửa trong số chúng không thật sự có.
+
+Đệm trong bộ nhớ thắng không phải vì nó đúng hơn. Nó thắng vì nó là thứ duy nhất **triển khai được ở một chỗ và có hiệu lực ở ba mươi chỗ.**
+
+---
+
+## Nhưng đây mới là phần tôi mất lâu nhất để hiểu
+
+Phép tính ở trên là chuyện chi phí. Chi phí thì còn thương lượng được - cho tôi thêm người, thêm quý, tôi làm dần.
+
+Cái không thương lượng được nằm sâu hơn.
+
+Ba mươi dịch vụ ấy không chỉ dùng cái _hàm_ mà thư viện phơi ra. Chúng phụ thuộc vào **hành vi** của nó.
+
+Năm 2011, một kỹ sư ở Google tên Hyrum Wright, sau nhiều năm làm việc di dời các thư viện hạ tầng cấp thấp, đúc kết một quan sát mà giờ người ta gọi là **Hyrum's Law**:
+
+> Khi một interface có đủ số người dùng, việc bạn hứa gì trong hợp đồng không còn quan trọng - mọi hành vi quan sát được của hệ thống rồi sẽ có ai đó phụ thuộc vào.
+
+Đẩy tới cực đại, nó thành một câu còn lạnh hơn: **khi được dùng đủ nhiều, không tồn tại cái gọi là chi tiết triển khai riêng tư.**
+
+Tôi thích hình dung nó như những lối mòn cắt qua bãi cỏ trong công viên. Không ai thiết kế lối đó. Nó không có trên bản vẽ. Nhưng người ta đi tắt đủ nhiều lần, cỏ chết, và bây giờ nó **là** một lối đi - và nếu bạn trồng cỏ lại, sẽ có người phàn nàn.
+
+Áp vào cái lớp bọc Kafka:
+
+Con số mười nghìn bản ghi trong đệm là một chi tiết triển khai. Không tài liệu nào của thư viện hứa hẹn gì về nó. Nhưng hàng chục dịch vụ đã chạy nhiều năm với một giả định ngầm rằng _Kafka mất vài phút thì không mất dữ liệu_. Không ai viết điều đó ra. Ai cũng dựa vào nó.
+
+Cái ngưỡng vài lần lỗi mới ngắt cầu dao cũng là một con số tuỳ tiện. Nhưng có dịch vụ đã tinh chỉnh timeout ở tầng trên dựa trên đúng khoảng thời gian mà cầu dao mất để phản ứng.
+
+Nên bây giờ, thay cái lớp bọc ấy không còn là bài toán viết code. Nó là bài toán này:
+
+**Bạn có biết ba mươi dịch vụ kia đang ngầm dựa vào những gì không?**
+
+Câu trả lời là không. Vì những điều đó chưa bao giờ được viết ra - và như tôi đã kể ở [một bài trước](/thoughts/tai-lieu-mot-dang-code-chay-mot-leo), thứ nằm trong đầu người ta thì tài liệu không giữ được.
+
+Đó mới là nghĩa thật của "phụ thuộc quá lớn". Không phải nhiều dòng code phải sửa. Mà là **hợp đồng thật đã phình to hơn hợp đồng viết ra, và không ai còn đọc được toàn bộ nó nữa.**
+
+<SideImage
+  image="/image/kafka-dependency.png"
+  alt="Sơ đồ Hyrum's Law: vòng trong nét liền 'hợp đồng viết ra sendNotification()' nằm gọn trong vòng ngoài nét đứt 'hợp đồng thật'; vành giữa hai vòng chứa các hành vi ngầm như kích thước đệm, độ trễ khi ngắt, thứ tự khi xả, hành vi lúc đầy, timing của lỗi, với hàng chục dịch vụ chỉ mũi tên phụ thuộc vào"
+/>
+
+## Mặt còn lại: những cây cầu
+
+Có một nửa câu chuyện tôi chưa kể, và nó là nửa mà tôi thấy ít người viết.
+
+Kafka không đi vào một hệ thống trống. Trước khi nó tới, ở đây đã có JMS - hàng đợi tin nhắn kiểu cũ - và khách hàng đã tích hợp vào đó suốt nhiều năm. Trước đó nữa, có cả một hệ thống quản lý mạng thế hệ trước, với cách phát tín hiệu của riêng nó.
+
+Không ai xoá được mấy thứ đó. Không phải vì lười, mà vì **chúng không thuộc về bạn nữa** - khách hàng đã viết hệ thống vận hành của họ dựa trên chúng. Bạn tắt một hàng đợi JMS, bạn làm hỏng phòng điều hành mạng của một nhà mạng.
+
+Nên trong hệ thống có những dịch vụ mà toàn bộ lý do tồn tại là **dịch**: đọc từ Kafka rồi đẩy sang JMS cho các tích hợp cũ. Đọc từ hệ thống quản lý đời trước rồi đẩy vào Kafka. Không có logic nghiệp vụ nào. Chỉ là phiên dịch viên.
+
+Mẫu này có tên trong sách: **anti-corruption layer** - một lớp đệm giữ cho mô hình cũ không rò rỉ vào mô hình mới. Và chiến lược tổng quát đi kèm là **Strangler Fig** của Martin Fowler: đặt cái mới bọc quanh cái cũ, dần dần chuyển từng phần việc sang, cho tới khi cái cũ teo lại và có thể gỡ bỏ.
+
+Nhưng thực tế lệch khỏi sách ở đúng một chỗ, và đây là chỗ đáng nhớ:
+
+**Cây cầu không tạm thời.**
+
+Sách viết bridge là giai đoạn quá độ. Trong đời thật, cầu sống lâu hơn kế hoạch xây nó. Nó có người dùng. Nó có cam kết dịch vụ. Nó có ticket. Nó vào tài liệu bán hàng. Và mười năm sau nó vẫn ở đó, được duy trì bởi những người chưa từng gặp ai trong đội đã xây nó.
+
+Cái cây bóp cổ không bao giờ bóp xong.
+
+Và mỗi cây cầu như vậy lại là **một người tiêu thụ nữa** của cái thư viện chung. Bạn giải bài toán tương thích ngược bằng cách đẻ thêm một dịch vụ phải nuôi mãi mãi - và cùng lúc, làm cho cái vành "hợp đồng thật" ở hình trên dày thêm một chút.
+
+---
+
+## Chỗ tôi có thể sai
+
+Tôi không muốn kết bài như thể quyết định này là hoàn hảo. Nó không.
+
+**Đệm trong bộ nhớ không có gì đảm bảo về độ bền.** Pod bị kill không kịp dọn dẹp thì toàn bộ những gì đang nằm trong đệm biến mất, không log, không dấu vết. Chúng tôi đã thấy hệ quả của việc pod chết ngang: những nhóm tiêu thụ bị bỏ lại với offset lơ lửng, không ai còn đọc tiếp.
+
+**Không có hàng đợi thư chết.** Message thất bại sau khi cầu dao ngắt thì đi vào hư vô, chỉ còn lại một dòng log. Không có chỗ nào để xem lại, không có cơ chế nào để phát lại.
+
+**Không bật idempotence ở phía gửi**, nghĩa là khi thư viện thử lại, vẫn có khả năng cùng một thông báo được ghi hai lần. Đó là chủ đề của bài thứ ba.
+
+**Và cái lệch pha lớn nhất:** toàn bộ cơ chế cầu dao tinh vi kia, trong môi trường phát triển, ngồi trên một hạ tầng chỉ có một broker duy nhất, không nhân bản. Một cơ chế chống lỗi rất công phu ở tầng ứng dụng, đặt trên một tầng hạ tầng mà nếu chết thì không có gì cứu. Tôi vẫn nghĩ về sự lệch pha đó - nó nói lên rằng đội ngũ đã đầu tư sự cẩn thận vào đúng chỗ họ kiểm soát được, và chấp nhận rủi ro ở chỗ họ không.
+
+---
+
+Điều tôi rút ra không phải là "Outbox tốt hơn buffer" hay ngược lại. Cả hai đều đúng trong bối cảnh của nó.
+
+Điều tôi rút ra là: ở một hệ thống đủ lớn và đủ già, câu hỏi không còn là _giải pháp nào đúng_. Câu hỏi là _giải pháp nào triển khai được_.
+
+Và thứ quyết định điều đó không phải kiến trúc. Là bạn đang có bao nhiêu người tiêu thụ - và bạn còn biết được bao nhiêu phần trong số những điều họ đang ngầm dựa vào.
+
+Bài sau sẽ nói về cái đệm ấy: chuyện gì xảy ra trong chín mươi giây Kafka biến mất, và vì sao khoảnh khắc xả đệm - cái khoảnh khắc mà mọi thứ tưởng như đang được cứu - lại là chỗ sinh ra một loại lỗi mà tôi mất rất lâu mới hiểu.
+
+---
+
+## Đọc thêm
+
+- **[Hyrum's Law](https://www.hyrumslaw.com/)** - trang gốc, dài chưa tới một trang màn hình. Nếu bạn chỉ đọc một link trong bài này, đọc cái này. Nó đổi cách bạn nhìn mọi thư viện dùng chung.
+- **[Transactional outbox pattern - AWS Prescriptive Guidance](https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/transactional-outbox.html)** - mô tả gọn và trung tính nhất về dual write và cách Outbox giải nó. Không bán gì cả.
+- **[The Transactional Outbox Pattern in SQL Server](https://www.sqlserverscience.com/data-architecture/transactional-outbox-sql-server/)** - đáng đọc vì nó thành thật về mặt trái: tác giả nói thẳng rằng mẫu này nặng về vận hành, và hầu như không ai từng chạy nó lại muốn chạy lần nữa. Hiếm có bài nào chịu viết câu đó.
+- **[Lessons from Software Engineering at Google - Dependency Management](https://blog.tomaszgil.me/lessons-from-software-engineering-at-google-part-9-dependency-management)** - phần bàn về việc phụ thuộc là một _hợp đồng có hai chiều_, và vì sao semantic versioning chỉ là một ước lượng chứ không phải bằng chứng về tương thích.
+- **[Đội cảnh sát pipeline](/thoughts/doi-canh-sat-pipeline)** và **[Vì sao hệ thống lớn không thể nhất quán](/thoughts/vi-sao-he-thong-lon-khong-the-nhat-quan)** - hai bài trước về cùng hệ thống. Bài thứ hai bàn về sự lệch giữa các repo; bài này là cái giá phải trả khi bạn cố chống lại sự lệch đó bằng một thư viện dùng chung.

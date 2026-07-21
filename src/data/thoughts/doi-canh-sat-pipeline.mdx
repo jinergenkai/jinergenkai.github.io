@@ -1,0 +1,192 @@
+---
+title: "Đội cảnh sát pipeline: gác cổng CI/CD cho hai mươi kỹ sư"
+pubDatetime: 2026-01-15T09:00:00.000+07:00
+description: "Năm múi giờ, gần một trăm repo, một luật duy nhất: master luôn phải xanh. Chuyện về việc gác cổng cho người khác, và về màu vàng - cái màu không ai muốn nói tới."
+tags: [ci-cd, enterprise, testing, engineering-culture]
+lang: "vi"
+audience: ["tech"]
+featured: false
+draft: false
+ogImage: "/image/den-do.jpg"
+coverSide: "right"
+toc: true
+---
+
+Một lần đi Cần Thơ, tôi dừng xe ở ngã tư và thấy cái đèn đỏ đang hiển thị hai chữ cái: **Er**.
+
+Tôi tưởng mình nhìn nhầm. Đèn vẫn đỏ, xe vẫn dừng, nhưng chỗ đáng lẽ là số giây đếm ngược thì lại hiện ra "Er", viết tắt của error. Tò mò, tôi đứng canh qua vài nhịp đèn. Tới lúc nó nhảy về **99** rồi đếm xuống trơn tru, tôi mới hiểu ra: cái bảng đèn đó chỉ có chỗ cho hai chữ số. Khi chu kỳ đèn dài hơn chín mươi chín giây, nó cần ba chữ số để hiện một trăm mấy, mà không có chỗ. Không xử được, nó bỏ cuộc và in ra "Er".
+
+Lúc phóng đi, tôi liếc sang cái đèn xanh chiều ngược lại. Nó cũng "Er". Chỉ khác là màu xanh.
+
+Cái lỗi đó đã chạy thẳng ra tới một ngã tư thật, giữa xe cộ thật dừng và đi theo nó, mà không có ai hay cái gì chặn nó lại ở đâu đó trước. Tôi đứng cười một mình, rồi nghĩ tới công việc của mình. Vì gần như toàn bộ thời gian đi làm của tôi là để một cái "Er" như thế không bao giờ ra được tới sản xuất.
+
+Cái đèn giao thông và cái đường ống CI có chung đúng một nhiệm vụ: biến một mớ trạng thái phức tạp thành một tín hiệu đơn giản mà người ta nhìn vào rồi tin và làm theo. Và cả hai đều có thể nói dối - vẫn sáng, vẫn có màu, nhưng cái nó báo thì sai.
+
+Có một luật ở Aikon mà ai vào cũng được nghe trong tuần đầu, lặp đi lặp lại đến mức thành khẩu hiệu:
+
+**Master luôn phải xanh.**
+
+Nghe thì đơn giản như một câu khẩu hiệu dán tường. Nhưng đằng sau nó là gần một trăm repo, hai mươi kỹ sư trải trên năm múi giờ, một bộ test tự động chạy hết mất hơn hai mươi bốn tiếng, và một đường ống build mà nếu chạy tuần tự thì mất mười bốn tiếng cho một lần.
+
+Với quy mô đó, "master luôn xanh" không còn là một nguyên tắc. Nó là một bài toán vận hành. Và giải nó cần một thứ mà không tài liệu CI/CD nào chịu nói ra: **con người trực gác.**
+
+---
+
+## Không ai chạy hết mọi thứ
+
+Bắt đầu từ ràng buộc gốc, vì mọi thứ khác đều sinh ra từ nó.
+
+Nếu bạn chạy toàn bộ bộ test cho mỗi thay đổi, một dev sửa một dòng sẽ phải chờ hơn một ngày để biết mình đúng hay sai. Không ai làm việc được như vậy. Nên bạn buộc phải chia tầng.
+
+Đường ống ở Aikon xếp thành một kim tự tháp:
+
+**Tầng nền tảng** - mấy thành phần lõi mà tất cả những thứ khác đều phụ thuộc vào. Tầng này gãy thì mọi tầng trên gãy theo.
+
+**Tầng microservice** - mỗi repo tự build, tự chạy unit test, tự quét chất lượng, tự sinh image.
+
+**Tầng tích hợp** - ghép các microservice thành một sản phẩm chạy được, sinh helm chart, chạy test xuyên biên giới dịch vụ.
+
+**Tầng hồi quy** - hàng chục đường ống test dài, chạy kịch bản đầu-cuối và kịch bản tải. Chạy ban đêm, vì ban ngày không đủ thời gian.
+
+**Tầng phát hành** - sinh ra thứ giao cho khách hàng.
+
+Nhánh feature của bạn chỉ chạy một tập con. Master chạy tập lớn hơn. Hồi quy chạy tập lớn nhất, và chạy muộn nhất.
+
+Nhìn cái kim tự tháp đó một lúc thì bạn thấy điều này:
+
+> Càng lên cao, test càng giống thực tế. Nhưng càng lên cao, phản hồi càng đến muộn.
+
+Nói cách khác - **những lỗi thật nhất là những lỗi được phát hiện chậm nhất.** Đó không phải khiếm khuyết của cách triển khai. Đó là hình dạng cố hữu của mọi hệ thống CI phân tầng. Bạn không sửa được nó. Bạn chỉ chọn được sống chung với nó ở mức nào.
+
+<SideImage
+  image="/image/ci-pyramid-tiers.png"
+  alt="Kim tự tháp 5 tầng CI từ dưới lên: nền tảng, microservice, tích hợp, hồi quy, phát hành; hai mũi tên dọc ngược chiều, lên là 'càng giống thực tế', xuống là 'phản hồi càng nhanh'"
+/>
+
+## Và thế là có cảnh sát
+
+Khi một build lớn ở tầng trên chuyển đỏ, ai đó phải trả lời ba câu hỏi, nhanh:
+
+Đỏ vì cái gì? Ai gây ra? Có phải chặn đường mọi người không?
+
+Ở Aikon, việc đó rơi vào người trực đường ống. Bạn mở bảng trạng thái, dò ngược danh sách commit từ lần xanh gần nhất, khoanh vùng, rồi nhắn cho người mà bạn nghĩ là nguyên nhân. Đôi khi bạn đúng. Đôi khi bạn vừa làm phiền một người vô tội lúc mười một giờ đêm giờ họ.
+
+Lần đầu làm việc này tôi tưởng đây là một cái quy trình chắp vá của một công ty cồng kềnh. Rồi tôi đi đọc xem thế giới làm thế nào.
+
+Hoá ra đây là một **vai trò có tên chính thức ở gần như mọi dự án lớn.**
+
+Chromium gọi là _sheriff_. Họ có hẳn tài liệu hướng dẫn cách làm sheriff: theo dõi bảng trạng thái mà họ gọi là "thác nước", phân biệt build đỏ do lỗi thật với build tím do hạ tầng hỏng, đánh dấu test là chập chờn, revert lại thay đổi gây vỡ, mở bug ghi lại lý do. Có cả một kênh chat riêng chỉ để điều phối việc trực. Mozilla xây hẳn một công cụ để tương quan build đỏ với từng commit cụ thể. Google gọi vai trò này là _build cop_.
+
+Tôi thấy điều này khá là giải toả: **không có hệ thống CI lớn nào tự động hoàn toàn.** Ở đỉnh kim tự tháp, sau tất cả các lớp tự động, luôn có một con người ngồi nhìn màn hình và quyết định xem cái màu đỏ kia có đáng dừng cả đoàn tàu hay không.
+
+Tự động hoá không xoá bỏ được phán đoán. Nó chỉ dồn phán đoán lên một chỗ, và cắt cử một người ngồi ở đó.
+
+Có một chi tiết trong một cuộc thảo luận của cộng đồng Apache mà tôi nghĩ mọi tổ chức đều nên đọc: khi người ta đề xuất lập vai trò sheriff, phản biện mạnh nhất không phải về kỹ thuật, mà là **vai trò này rồi sẽ luôn rơi vào cùng vài người**. Không phải ai cũng tình nguyện được. Và một cơ chế phụ thuộc vào lòng tình nguyện thì không bền.
+
+Đúng như vậy. Tôi đã thấy nó.
+
+---
+
+## Màu vàng
+
+Đây là phần tôi nghĩ là quan trọng nhất bài, và cũng là phần ít được viết ra nhất.
+
+Ngoài xanh và đỏ, đường ống ở Aikon còn một trạng thái thứ ba: **vàng**. Vàng nghĩa là hệ thống phát hiện test chập chờn - cùng một đoạn code, chạy lần này pass, chạy lần sau fail. Vàng chặn auto-merge, buộc bạn phải nhìn vào.
+
+Và đi kèm với nó là một cơ chế nghe rất hợp lý: nếu tỉ lệ test fail nằm dưới một ngưỡng nào đó, đường ống tự chạy lại. Chạy lại mà pass thì build được đánh dấu là "không ổn định" nhưng vẫn đi tiếp.
+
+Đọc qua thì đây là một thiết kế thực dụng. Đọc kỹ hơn thì bạn thấy hệ thống vừa nói ra một câu:
+
+**Đỏ không hẳn là đỏ.**
+
+Và đây là chỗ dữ liệu bên ngoài làm tôi ngồi thẳng lưng.
+
+Nghiên cứu công bố từ hạ tầng CI của Google cho thấy khoảng một phần sáu số test của họ có biểu hiện chập chờn ở mức nào đó. Con số làm tôi sốc hơn: trong số các lần test chuyển từ pass sang fail, **khoảng tám mươi tư phần trăm là do chập chờn, không phải do code thật sự hỏng.**
+
+<SideImage
+  image="/image/pipeline-ci.png"
+  alt="Sơ đồ đường ống CI: build, unit test, quét chất lượng và quét mã nguồn mở, rồi sinh image"
+/>
+
+Tám trên mười lần build đỏ là báo động giả.
+
+Rồi nghiên cứu của Microsoft đóng nốt cái đinh cuối: lập trình viên nào từng gặp test chập chờn thì **lần sau ít có khả năng đi điều tra một lần fail hơn hẳn.**
+
+Ghép ba con số đó lại, bạn có một cơ chế hỏng hoàn chỉnh, và nó không hỏng ở tầng kỹ thuật:
+
+Test chập chờn xuất hiện → dev bấm chạy lại → xanh → đi tiếp → dev học được rằng đỏ thường không có nghĩa gì → lần sau đỏ, dev lại bấm chạy lại → và một ngày nào đó, cái màu đỏ ấy là thật.
+
+Hàng nghìn test case chạy tự động không bảo vệ bạn. Chúng chỉ tạo ra một **tín hiệu**. Cái bảo vệ bạn là việc đội ngũ còn tin tín hiệu đó hay không - và niềm tin ấy không hiện lên trên bất kỳ dashboard nào.
+
+Cái nút "chạy lại" là thứ nguy hiểm nhất trong toàn bộ đường ống, chính xác vì nó tiện.
+
+<SideImage
+  image="/image/pipeline-cd.png"
+  alt="Sơ đồ đường ống CD: đóng gói artifact, sinh helm chart, thăng cấp qua từng môi trường tới phát hành"
+/>
+
+## Chặt với máy, lỏng với người
+
+Còn một điều nữa tôi để ý, và tôi chưa thấy ai viết về nó.
+
+Khi bạn siết cổng tự động đến mức này - không được commit thẳng vào master, phải qua validation, phải qua integration, phải qua quét chất lượng và quét mã nguồn mở - thì bạn đã chuyển quyền lực đi một chỗ khác mà không ai tuyên bố.
+
+Cái cổng vào master là **bộ test**. Nên ai định nghĩa bộ test, người đó định nghĩa từ "xong".
+
+Một dev viết code hoàn hảo nhưng test suite không phủ tới đường đi đó - code lọt qua. Một dev viết code đúng nhưng test được viết trên một giả định sai - code bị chặn, và dev phải đi thuyết phục một cái test.
+
+Ở một hệ thống đủ lớn, người viết automation không còn là người _kiểm tra_ dev nữa. Họ là người **viết ra định nghĩa của sự đúng đắn** mà toàn bộ tổ chức phải đi qua.
+
+Nhưng đây mới là chỗ lệch: rất ít nơi review test case với sự nghiêm khắc ngang với review code sản phẩm. Test được xem là "code phụ trợ". Nó được merge dễ hơn, được soi ít hơn, được refactor hiếm hơn.
+
+Chúng ta siết rất chặt ở phía máy móc, và buông khá lỏng ở đúng chỗ con người ra quyết định.
+
+Nếu tôi phải chọn một thứ để sửa trong toàn bộ chuyện này, tôi sẽ không sửa đường ống. Tôi sẽ đưa test case vào cùng một chuẩn review với code sản phẩm.
+
+---
+
+## Thứ sửa được: thời gian chờ
+
+Không phải mọi thứ đều là vấn đề văn hoá. Có một thứ thuần kỹ thuật và nó cho đòn bẩy rất lớn.
+
+Build ở một số nhánh từng mất khoảng năm mươi phút, kể cả khi bạn chỉ sửa một dòng - vì mặc định là build lại toàn bộ cây phụ thuộc phía trên. Sau khi chuyển sang lấy sẵn artifact đã có từ lần build xanh gần nhất thay vì build lại, con số đó xuống còn khoảng mười ba phút.
+
+Nghe như một cải tiến về tiện nghi. Nó không phải.
+
+Thời gian chờ CI là một **vấn đề hành vi**. Chờ năm mươi phút cho một lần đẩy thì dev sẽ gộp nhiều thay đổi vào một lần đẩy - hợp lý thôi, ai lại trả giá năm mươi phút ba lần một buổi sáng. Nhưng commit càng to thì khi đỏ càng khó tìm nguyên nhân, RCA càng lâu, và người ta lại càng ngại đẩy.
+
+Vòng phản hồi dài đẻ ra commit to. Commit to đẻ ra điều tra khó. Đó là một vòng xoáy, và cắt nó ở khâu thời gian build là chỗ rẻ nhất.
+
+Nghiên cứu về hiệu năng tổ chức kỹ thuật cũng chỉ đúng vào đây: khi một đội bắt đầu đặt ra chính sách tự động chạy lại khi fail, hoặc bắt đầu bỏ qua CI cho "thay đổi nhỏ", đó là chỉ dấu sớm của một tổ chức đang xuống dốc. Cả hai hành vi ấy đều là triệu chứng của cùng một bệnh: đường ống quá chậm và quá ồn để đáng tin.
+
+---
+
+## Chỗ tôi có thể sai
+
+**Cái cơ chế "tìm người gây đỏ" có mặt tối.** Nếu người trực đi tìm _thủ phạm_ thay vì đi tìm _nguyên nhân_, bạn sẽ tạo ra một đội ngũ sợ đẩy code. Và đội ngũ sợ đẩy code thì đẩy ít hơn, gộp to hơn - đúng cái hành vi mà ta vừa nói là tệ nhất. Để ý cách Chromium mô tả công việc sheriff: revert, mở bug, đánh dấu test chập chờn. Không có chỗ nào nói tới kỷ luật ai cả. Đó là một sự lựa chọn có chủ đích, và tôi nghĩ nó đúng.
+
+**Có những thứ tôi không biết sửa thế nào.** Ở Aikon tồn tại một phụ thuộc vòng giữa hai đường ống tích hợp: A cần artifact của B để kiểm chứng, mà B lại cần thứ A sinh ra. Nó không phải phụ thuộc lúc biên dịch - nó là phụ thuộc lúc chạy, nên không phát hiện được bằng công cụ phân tích tĩnh nào. Nó chỉ hiện ra khi bạn muốn kiểm chứng một thay đổi và nhận ra không có thứ tự nào đúng.
+
+**Và cây phụ thuộc không bao giờ đầy đủ.** Hệ thống tự tính được phần lớn repo bị ảnh hưởng bởi một thay đổi, nhưng không phải toàn bộ - nên cuối cùng vẫn là con người phải chọn tay xem cần build những gì. Nghĩa là: đường ống tự động vẫn đòi hỏi người dùng phải hiểu hệ thống. Tự động hoá không xoá được tri thức. Nó chỉ đổi chỗ tri thức, từ "biết build thế nào" sang "biết chọn cái gì để build".
+
+---
+
+Tôi vào công việc này với ý nghĩ CI/CD là một bài toán kỹ thuật: làm sao build nhanh hơn, chạy song song nhiều hơn, cache thông minh hơn.
+
+Phần kỹ thuật là phần dễ. Nó có số đo, có trước và sau, có biểu đồ đi xuống đẹp đẽ.
+
+Phần khó thì không đo được: màu xanh kia thật sự có nghĩa gì, ai là người được quyền định nghĩa "xong", và đội ngũ còn dừng lại khi thấy màu đỏ hay không.
+
+Một đường ống mà không ai tin thì chỉ là một cái máy đốt tiền điện rất công phu.
+
+![Đèn giao thông lúc chạng vạng, thấy rõ cả ba bóng xanh, vàng, đỏ](/image/traffic-light-dusk.webp)
+
+---
+
+## Đọc thêm
+
+- **[Chromium Sheriffing](https://chromium.googlesource.com/chromium/src/+/80.0.3987.87/docs/sheriff.md)** - tài liệu hướng dẫn nội bộ cho người trực build của Chromium, công khai. Đáng đọc vì nó cho thấy một dự án khổng lồ vẫn cần người ngồi canh màn hình, và vì cách họ định nghĩa công việc: sửa và ghi nhận, không phải quy trách nhiệm.
+- **[Software Engineering at Google - chương Continuous Integration](https://abseil.io/resources/swe-book/html/ch23.html)** - vì sao phải chia tầng test, và cái giá của việc kiểm chứng ở tầng càng cao.
+- **[Flaky Tests in E2E Test Suites](https://wopee.io/blog/flaky-tests-complete-guide/)** - bài tổng hợp gọn về test chập chờn, có dẫn lại số liệu gốc từ Google (khoảng 16% test có biểu hiện chập chờn; 84% lần chuyển pass→fail là báo động giả) và nghiên cứu của Microsoft về việc niềm tin bị bào mòn.
+- **[Thảo luận về vai trò build sheriff - Apache KIE](https://www.mail-archive.com/dev@kie.apache.org/msg01413.html)** - ngắn, nhưng là chỗ hiếm hoi có người nói thẳng rằng mô hình trực build phụ thuộc vào lòng tình nguyện thì không bền.
+- **[Vì sao hệ thống lớn không thể nhất quán](/thoughts/vi-sao-he-thong-lon-khong-the-nhat-quan)** - bài trước, về cùng một đường ống nhìn từ phía artifact thay vì phía con người.

@@ -12,6 +12,7 @@ audience: ["life"]
 featured: false
 draft: false
 ogImage: "/image/ice-coffee.jpg"
+coverSide: "right"
 ---
 
 # Viên đá trong một tách cà phê

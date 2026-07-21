@@ -17,6 +17,8 @@ const thoughts = defineCollection({
       draft: z.boolean().optional(),
       tags: z.array(z.string()).default(["others"]),
       ogImage: z.string().optional(),
+      coverSide: z.enum(["left", "right"]).optional(),
+      toc: z.boolean().optional(),
       description: z.string(),
       canonicalURL: z.string().optional(),
       hideEditPost: z.boolean().optional(),

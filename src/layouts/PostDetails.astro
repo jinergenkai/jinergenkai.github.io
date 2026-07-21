@@ -27,6 +27,8 @@ const {
   author,
   description,
   ogImage: initOgImage,
+  coverSide,
+  toc: showToc,
   canonicalURL,
   pubDatetime,
   modDatetime,
@@ -35,7 +37,27 @@ const {
   hideEditPost,
 } = post.data;
 
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+
+// Build a nested table of contents (h2 with h3 children) from the rendered
+// headings — for posts that opt in with `toc: true`. Done here in the layout
+// (not via remark-toc) so the TOC can sit at the top without deleting the intro.
+type TocItem = { slug: string; text: string; children: { slug: string; text: string }[] };
+const tocItems: TocItem[] = [];
+if (showToc) {
+  for (const h of headings) {
+    if (h.depth === 2) {
+      tocItems.push({ slug: h.slug, text: h.text, children: [] });
+    } else if (h.depth === 3) {
+      if (tocItems.length > 0) {
+        tocItems[tocItems.length - 1].children.push({ slug: h.slug, text: h.text });
+      } else {
+        tocItems.push({ slug: h.slug, text: h.text, children: [] });
+      }
+    }
+  }
+}
+const hasToc = Boolean(showToc) && tocItems.length > 0;
 
 let ogImageUrl: string | undefined;
 
@@ -92,15 +114,7 @@ const nextPost =
     <header class="post-header relative mb-10 text-center">
       <div class="post-hero-bg"></div>
       <div class="relative z-10 overflow-hidden rounded-3xl border border-border/20 bg-muted/5 backdrop-blur-md">
-        {/* Image strip — only for explicit ogImage in frontmatter */}
-        {typeof initOgImage === "string" && (
-          <div class="post-img-strip" aria-hidden="true">
-            <img src={initOgImage} alt="" class="post-cover-img" />
-            <div class="post-cover-fade"></div>
-          </div>
-        )}
-
-        {/* Text content */}
+        {/* Text content — cover image renders standalone below the header */}
         <div class="px-6 py-8 sm:px-10 sm:py-12">
           <h1
             transition:name={slugifyStr(title.replaceAll(".", "-"))}
@@ -126,10 +140,44 @@ const nextPost =
       </div>
     </header>
 
+    {/* Standalone cover — full & uncropped. If `coverSide` is set, it floats inside the article instead (good for tall/portrait covers). */}
+    {typeof initOgImage === "string" && !coverSide && (
+      <figure class="post-cover">
+        <img src={initOgImage} alt="" class="post-cover-img" loading="eager" />
+      </figure>
+    )}
+
     <article
       id="article"
       class="app-prose mt-8 w-full max-w-app prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)"
     >
+      {hasToc && (
+        <details class="post-toc">
+          <summary>Table of contents</summary>
+          <ul>
+            {tocItems.map(item => (
+              <li>
+                <a href={`#${item.slug}`}>{item.text}</a>
+                {item.children.length > 0 && (
+                  <ul>
+                    {item.children.map(child => (
+                      <li><a href={`#${child.slug}`}>{child.text}</a></li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+      {typeof initOgImage === "string" && coverSide && (
+        <img
+          src={initOgImage}
+          alt=""
+          loading="eager"
+          class:list={["post-cover-float", { "post-cover-float-left": coverSide === "left" }]}
+        />
+      )}
       <Content components={{ GalleryEmbed, SideImage }} />
     </article>
 
@@ -378,32 +426,52 @@ const nextPost =
 </script>
 
 <style>
-  /* Image strip — sits above text, no overlap */
-  .post-img-strip {
-    position: relative;
-    width: 100%;
-    height: 220px;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-  @media (min-width: 640px) {
-    .post-img-strip { height: 280px; }
+  /* Standalone cover image — full, uncropped, below the title card */
+  .post-cover {
+    margin: 0 0 2.5rem;
+    text-align: center;
   }
   .post-cover-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
     display: block;
+    max-width: 100%;
+    max-height: 75vh;
+    width: auto;
+    height: auto;
+    margin: 0 auto;
+    border-radius: 1.25rem;
+    border: 1px solid color-mix(in srgb, var(--border) 25%, transparent);
   }
-  /* Fade bottom of image into panel background */
-  .post-cover-fade {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 60%;
-    background: linear-gradient(to bottom, transparent, var(--background));
-    pointer-events: none;
+
+  /* Floated cover (coverSide: left|right) — text wraps around it, for tall images */
+  .post-cover-float {
+    max-width: min(42%, 50%);
+    width: auto;
+    height: auto;
+    max-height: clamp(240px, 60vh, 560px);
+    border-radius: 1.25rem;
+    border: 1px solid color-mix(in srgb, var(--border) 25%, transparent);
+    float: right;
+    margin: 0.35rem 0 1.25rem 1.75rem;
+  }
+  .post-cover-float-left {
+    float: left;
+    margin: 0.35rem 1.75rem 1.25rem 0;
+  }
+  /* Bordered prose boxes (e.g. the collapsible Table of contents) must not
+     underlap a floated cover — give them their own block formatting context
+     so they sit beside the float instead of being overlapped by it. Must be
+     :global() because these elements come from <Content> (MDX) and don't carry
+     this component's scope attribute. */
+  :global(.app-prose :is(details, blockquote, pre)) {
+    display: flow-root;
+  }
+  @media (max-width: 640px) {
+    .post-cover-float {
+      float: none;
+      display: block;
+      max-width: 100%;
+      margin-inline: auto;
+    }
   }
 
   .post-title {

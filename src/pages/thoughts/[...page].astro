@@ -15,37 +15,17 @@ export const getStaticPaths = (async ({ paginate }) => {
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
-const totalPosts = page.total;
 ---
 
 <Layout title={`Thoughts | ${SITE.title}`}>
   <Header />
   <Breadcrumb />
-  <main id="main-content" class="app-layout pb-4">
-    <!-- Hero -->
-    <div class="posts-hero" data-posts-hero>
-      <div class="aurora-orb aurora-orb-1"></div>
-      <div class="aurora-orb aurora-orb-2"></div>
-      <div class="aurora-orb aurora-orb-3"></div>
-      <div class="aurora-mouse" data-posts-mouse></div>
-      <div class="relative z-10">
-        <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">
-          <span class="glow-text">Thoughts</span>
-        </h1>
-        <p class="mt-3 max-w-lg text-foreground/70 italic">
-          Suy nghĩ về tech, business, cuộc sống và những thứ đang học.
-        </p>
-        <div class="mt-4 flex flex-wrap items-center gap-2">
-          <span class="hero-badge" id="visible-count">{totalPosts} thoughts</span>
-        </div>
-      </div>
-    </div>
-
+  <main id="main-content" class="app-layout pb-4 mt-8">
     <!-- Filter bar -->
     <div class="filter-bar" id="filter-bar">
       <div class="filter-group">
-        <span class="filter-label">Audience</span>
-        <button class="filter-btn active" data-audience="all">All</button>
+        <span class="filter-label">Priority</span>
+        <button class="filter-btn active" data-audience="all">Latest</button>
         <button class="filter-btn" data-audience="tech">Tech</button>
         <button class="filter-btn" data-audience="business">Business</button>
         <button class="filter-btn" data-audience="life">Life</button>
@@ -70,9 +50,6 @@ const totalPosts = page.total;
               />
             ))}
           </ul>
-          <p class="empty-filter-msg" id="empty-filter-msg" style="display:none">
-            No thoughts match the current filter.
-          </p>
         )
       }
     </div>
@@ -82,114 +59,46 @@ const totalPosts = page.total;
 </Layout>
 
 <script>
-  function initFilters() {
+  // Soft sort: hides nothing, just floats the prioritized audience group to the top
+  // (each group keeps its chronological order). "Latest" = pure time-based sort.
+  function initSort() {
     const params = new URLSearchParams(window.location.search);
-    let activeAudience = params.get("audience") || "all";
+    let active = params.get("audience") || "all";
 
     const items = document.querySelectorAll<HTMLElement>("#thoughts-grid [data-audience]");
-    const emptyMsg = document.getElementById("empty-filter-msg");
-    const countBadge = document.getElementById("visible-count");
-    const audienceBtns = document.querySelectorAll<HTMLButtonElement>("#filter-bar [data-audience]");
+    const btns = document.querySelectorAll<HTMLButtonElement>("#filter-bar [data-audience]");
 
-    function applyFilter() {
-      let visible = 0;
+    function apply() {
       items.forEach(item => {
         const audiences: string[] = JSON.parse(item.dataset.audience || '["tech"]');
-        const show = activeAudience === "all" || audiences.includes(activeAudience);
-        item.style.display = show ? "" : "none";
-        if (show) visible++;
+        const prioritized = active !== "all" && audiences.includes(active);
+        // order 0 = prioritized (keeps source order = time), order 1 = the rest
+        item.style.order = active === "all" || prioritized ? "0" : "1";
+        item.classList.toggle("deprioritized", active !== "all" && !prioritized);
       });
 
-      if (countBadge) countBadge.textContent = `${visible} thoughts`;
-      if (emptyMsg) emptyMsg.style.display = visible === 0 ? "" : "none";
-
       const p = new URLSearchParams();
-      if (activeAudience !== "all") p.set("audience", activeAudience);
+      if (active !== "all") p.set("audience", active);
       window.history.replaceState({}, "", p.toString() ? `?${p}` : window.location.pathname);
     }
 
-    function bindGroup(
-      btns: NodeListOf<HTMLButtonElement>,
-      attr: string,
-      getter: () => string,
-      setter: (v: string) => void
-    ) {
-      btns.forEach(btn => {
-        const val = (btn.dataset as any)[attr];
-        btn.classList.toggle("active", val === getter());
-        btn.addEventListener("click", () => {
-          setter(val);
-          btns.forEach(b => b.classList.toggle("active", (b.dataset as any)[attr] === val));
-          applyFilter();
-        });
+    btns.forEach(btn => {
+      const val = btn.dataset.audience!;
+      btn.classList.toggle("active", val === active);
+      btn.addEventListener("click", () => {
+        active = val;
+        btns.forEach(b => b.classList.toggle("active", b.dataset.audience === active));
+        apply();
       });
-    }
+    });
 
-    bindGroup(audienceBtns, "audience", () => activeAudience, v => (activeAudience = v));
-    applyFilter();
+    apply();
   }
 
-  document.addEventListener("astro:page-load", initFilters);
+  document.addEventListener("astro:page-load", initSort);
 </script>
 
 <style>
-  .posts-hero {
-    position: relative;
-    overflow: hidden;
-    border-radius: 1.5rem;
-    padding: 2.5rem 2rem;
-    margin-bottom: 2rem;
-    background: color-mix(in srgb, var(--color-foreground) 3%, var(--color-background));
-    border: 1px solid color-mix(in srgb, var(--color-accent) 12%, transparent);
-  }
-  @media (min-width: 640px) { .posts-hero { padding: 3rem; } }
-
-  .aurora-orb {
-    position: absolute; border-radius: 50%; filter: blur(60px);
-    pointer-events: none; will-change: transform;
-  }
-  .aurora-orb-1 {
-    width: 300px; height: 300px; top: -30%; left: -10%;
-    background: radial-gradient(circle, color-mix(in srgb, var(--color-accent) 25%, transparent), transparent 70%);
-    animation: orb-1 7s ease-in-out infinite alternate;
-  }
-  .aurora-orb-2 {
-    width: 250px; height: 250px; top: 10%; right: -5%;
-    background: radial-gradient(circle, color-mix(in srgb, var(--color-border) 20%, transparent), transparent 70%);
-    animation: orb-2 9s ease-in-out infinite alternate;
-  }
-  .aurora-orb-3 {
-    width: 200px; height: 200px; bottom: -20%; left: 40%;
-    background: radial-gradient(circle, color-mix(in srgb, var(--color-accent) 12%, transparent), transparent 70%);
-    animation: orb-3 11s ease-in-out infinite alternate;
-  }
-  @keyframes orb-1 { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(40px,20px) scale(1.2); } }
-  @keyframes orb-2 { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(-30px,30px) scale(1.15); } }
-  @keyframes orb-3 { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(20px,-25px) scale(1.1); } }
-
-  .aurora-mouse {
-    position: absolute; width: 350px; height: 350px; border-radius: 50%;
-    background: radial-gradient(circle, color-mix(in srgb, var(--color-accent) 18%, transparent), color-mix(in srgb, var(--color-border) 8%, transparent) 40%, transparent 70%);
-    filter: blur(50px); pointer-events: none; opacity: 0; transition: opacity 0.4s ease;
-    transform: translate(calc(var(--mx, 0px) - 175px), calc(var(--my, 0px) - 175px));
-    will-change: transform; z-index: 1;
-  }
-
-  .glow-text {
-    background: linear-gradient(135deg, var(--color-foreground), var(--color-accent));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    filter: drop-shadow(0 0 25px color-mix(in srgb, var(--color-accent) 25%, transparent));
-  }
-
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 0.25rem;
-    padding: 0.3rem 0.85rem; border-radius: 999px;
-    font-size: 0.8rem; font-weight: 600; color: var(--color-accent);
-    background: color-mix(in srgb, var(--color-accent) 8%, transparent);
-    border: 1px solid color-mix(in srgb, var(--color-accent) 15%, transparent);
-    backdrop-filter: blur(8px);
-  }
-
   /* Filter bar */
   .filter-bar {
     display: flex; flex-wrap: wrap; gap: 1rem;
@@ -218,10 +127,12 @@ const totalPosts = page.total;
     background: color-mix(in srgb, var(--accent) 8%, transparent);
   }
 
-  /* Empty state for filters */
-  .empty-filter-msg {
-    text-align: center; padding: 3rem; opacity: 0.5; font-style: italic;
+  /* Posts outside the prioritized group: dim slightly, restore on hover */
+  #thoughts-grid > .deprioritized {
+    opacity: 0.55;
+    transition: opacity 0.25s ease;
   }
+  #thoughts-grid > .deprioritized:hover { opacity: 1; }
 
   /* General empty state */
   .empty-state {

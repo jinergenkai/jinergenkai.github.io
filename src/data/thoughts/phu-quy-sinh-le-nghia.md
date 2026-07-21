@@ -8,9 +8,9 @@ audience: ["life"]
 featured: false
 draft: false
 ogImage: "/image/phu-quy-sinh-le-nghia.jpg"
+toc: true
+coverSide: "right"
 ---
-
-## Table of contents
 
 # Phú quý sinh lễ nghĩa, và cái giá của việc tốt quá
 
