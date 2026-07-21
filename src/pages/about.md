@@ -3,21 +3,16 @@ layout: ../layouts/AboutLayout.astro
 title: "Về tôi"
 ---
 
-Xin chào! Tôi là **Nguyễn Mạnh Hùng** — Software Engineer, backend-focused, đang làm việc tại Nokia (Fixed Network Management System), sống và làm việc tại TP. Hồ Chí Minh.
+Xin chào! Tôi là **Nguyễn Mạnh Hùng** — Backend Engineer, tập trung vào hệ thống phân tán quy mô lớn. Hiện làm việc tại **TMA Solutions**, trong team phát triển nền tảng **Nokia Altiplano** (điều phối & giám sát thiết bị mạng viễn thông). Sống và làm việc tại TP. Hồ Chí Minh.
 
-## Tôi là ai?
+## Tôi làm được gì?
 
-Tôi bắt đầu con đường lập trình từ những ngày ngồi giải bài tập competitive programming thâu đêm ở FPT University. Từ đó đến nay, tôi đã trải qua nhiều vai trò — từ sinh viên giải ICPC, developer tại FPT Software, đến Software Engineer tại Nokia xây dựng hệ thống quản lý mạng viễn thông quy mô lớn.
+Hơn 2 năm xây dựng backend cho các hệ thống phân tán ở quy mô doanh nghiệp.
 
-Điều tôi thích nhất trong công việc: **thiết kế hệ thống có thể mở rộng**, viết code sạch, và giải quyết những bài toán khó mà người khác bỏ qua.
-
-## Tôi làm gì?
-
-- **Backend Engineering** — Java, Spring Boot, NETCONF/YANG, REST API design. Hiện tại tại Nokia FNMS.
-- **DevOps** — CI/CD với Jenkins, Docker, tự động hóa quy trình deployment.
-- **AI thực dụng** — ComfyUI, Local LLM deployment, XGBoost cho bài toán thực tế.
-- **Competitive Programming** — ICPC Asia Regional (huy chương 2019-2021), Meta Hacker Cup Top 12% (2024).
-- **MBA tại UEH** — Học thêm tư duy kinh doanh và leadership.
+- **Backend & Distributed Systems** — Java, Spring Boot, Kafka, thiết kế microservices. Tôi làm việc trực tiếp với KPI engine xử lý telemetry từ hàng nghìn thiết bị, và orchestration service cho firmware upgrade trên **5.000+ thiết bị viễn thông** trải khắp 5 quốc gia (dual-bank rollback, staggered rollout, idempotent state qua NETCONF/YANG).
+- **Infrastructure & DevOps** — Kubernetes, Helm, Docker, Jenkins CI/CD, Prometheus/Grafana. Từng làm "Build Police" cho team **14+ kỹ sư** trải 5 quốc gia (Việt Nam, Ấn Độ, Trung Quốc, Hy Lạp, Phần Lan).
+- **Data** — PostgreSQL, MariaDB, Redis, Elasticsearch (bao gồm hỗ trợ tiếng Việt cho search).
+- **AI Integration thực dụng** — FastAPI, OpenAI API, RAG, inference GPU on-premise. Tôi tích hợp AI vào hệ thống production thật, không dừng ở demo.
 
 ## Blog này
 
@@ -25,9 +20,9 @@ Tôi viết về những gì tôi thực sự làm và học:
 
 - **System Design** — Kiến trúc hệ thống, scalability, trade-offs thực tế
 - **Java & Spring Boot** — Tips, internals, best practices từ production
-- **DevOps & Automation** — CI/CD, Docker, những thứ giúp tôi ngủ ngon hơn
-- **AI & Tools** — LLM, ComfyUI, và cách tôi dùng AI để làm việc hiệu quả hơn
-- **Tư duy & Năng suất** — Triết học, mental models, và cách suy nghĩ về vấn đề phức tạp
+- **DevOps & Automation** — CI/CD, Docker, Kafka, những thứ giúp tôi ngủ ngon hơn
+- **AI & Tools** — LLM, RAG, và cách tôi dùng AI để làm việc hiệu quả hơn
+- **Tư duy & Năng suất** — Triết học, mental models, cách suy nghĩ về vấn đề phức tạp
 
 Tôi viết bằng tiếng Việt — vì tôi muốn đóng góp cho cộng đồng developer Việt Nam, và vì giải thích được một thứ bằng tiếng mẹ đẻ mới chứng tỏ bạn thực sự hiểu nó.
 
