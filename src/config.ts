@@ -26,6 +26,7 @@ export const SITE = {
     enabled: true,
     src: "/audio/intro-web.mp3",
     label: "INTRO.MP3",
-    duration: 30,
+    duration: 28,
+    autoplay: true,
   },
 } as const;

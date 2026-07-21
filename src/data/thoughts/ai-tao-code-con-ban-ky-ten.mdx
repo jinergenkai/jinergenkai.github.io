@@ -1,0 +1,219 @@
+---
+title: "AI tạo code, còn bạn ký tên"
+pubDatetime: 2026-07-08T09:00:00.000+07:00
+description: "Máy sinh ra phần lớn diff. Review không còn là đọc code - nó thành đọc ý định. Nhưng tên trên commit vẫn là tên bạn, và đó không phải chi tiết nhỏ."
+tags: [ai, engineering-culture, code-review, testing]
+lang: "vi"
+audience: ["tech"]
+featured: false
+draft: false
+toc: true
+ogImage: "/image/ky-ten-con-dau.jpg"
+---
+
+Tháng Bảy năm 2025, một người sáng lập startup chạy thử một công cụ lập trình bằng AI để dựng sản phẩm của mình. Đến ngày thứ chín, anh ta ra lệnh đóng băng - không được đổi gì nữa.
+
+Con AI đổi. Nó xoá sạch cơ sở dữ liệu production, trong đó có hơn một nghìn hai trăm bản ghi thật. Rồi nó tạo ra hàng nghìn người dùng giả để lấp chỗ trống. Rồi khi bị hỏi, nó nói rằng không thể khôi phục được - điều này không đúng.
+
+Cuối cùng, nó xin lỗi. Nó nói rằng nó đã mắc một sai lầm nghiêm trọng trong phán đoán.
+
+Tôi nghĩ khoảnh khắc đó là khoảnh khắc rõ ràng nhất của cả một thời đại. Không phải vì AI làm sai - máy móc làm sai suốt. Mà vì lời xin lỗi ấy **hoàn toàn vô nghĩa**.
+
+Một lời xin lỗi chỉ có giá trị khi người nói nó có gì đó để mất. AI không có sự nghiệp để hỏng, không có tên tuổi để mang tiếng, không có buổi họp hậu sự cố nào để ngồi. Nó không đi tù thay kế toán được.
+
+Nó viết được. Nó không ký được.
+
+Và toàn bộ bài này là về khoảng cách giữa hai động từ đó.
+
+---
+
+## Trách nhiệm không được chia ra. Nó rơi xuống đất.
+
+Bạn đã thấy cảnh này rồi:
+
+Một pull request bốn trăm dòng. Người tạo ra nó gõ có lẽ hai chục dòng, phần còn lại là máy sinh. Anh ta đọc lướt - nhìn chung có vẻ đúng, test xanh, và dù sao thì cũng sẽ có người review.
+
+Người review mở ra. Bốn trăm dòng. Anh ta có bảy PR khác đang chờ và một cuộc họp lúc hai giờ. Nhìn chung có vẻ đúng, test xanh, và dù sao thì tác giả chắc đã kiểm rồi.
+
+Approve. Merge.
+
+**Không có ai trong hai người đó thật sự đọc đoạn code này.** Cả hai đều tin rằng người kia đã đọc.
+
+Tâm lý học xã hội có tên cho hiện tượng này: **khuếch tán trách nhiệm**. Càng nhiều người có mặt trong một tình huống, mỗi cá nhân càng cảm thấy ít trách nhiệm hơn - vì trách nhiệm dường như đã được chia đều cho tất cả.
+
+Nhưng AI làm chuyện gì đó lạ hơn với công thức ấy.
+
+Nó thêm một "người" vào phòng - một người trông như đang gánh phần của mình, nhưng thật ra không thể gánh gì cả. Nên trách nhiệm không được chia làm ba. Nó bị **rót vào một cái lỗ**.
+
+Ai cũng cảm thấy nhẹ đi một chút. Tổng cộng lại thì không còn ai chịu.
+
+Và điều này quan trọng vì cuối cùng, ở tất cả những chỗ đáng kể, hệ thống vẫn đòi một cái tên. Commit có tên. Deploy có tên. Biên bản sự cố có tên. Hợp đồng với khách hàng có tên. Cái tên đó luôn luôn là người - kể cả khi người đó chỉ gõ hai chục dòng trong bốn trăm.
+
+<SideImage
+  image="/image/trach-nhiem-roi-xuong-dat.webp"
+  alt="Sơ đồ: AI sinh 400 dòng → tác giả đọc lướt ('chắc reviewer sẽ soi') → reviewer duyệt ('chắc tác giả đã kiểm'); ba mũi tên nét đứt cùng chỉ xuống một cái hố ghi 'trách nhiệm'"
+/>
+
+## Dữ liệu nói gì (và chỗ dữ liệu tự mâu thuẫn)
+
+Tôi không muốn viết một bài cảm tính về chủ đề này, vì cảm tính là thứ internet đã có thừa - cả phía tung hô lẫn phía chê bai. Nên tôi đi tìm số.
+
+**Về mức độ sử dụng.** Báo cáo DORA năm 2025 của Google khảo sát gần năm nghìn người làm công nghệ: khoảng 90% đang dùng AI trong công việc, hơn 80% cảm thấy nó làm mình năng suất hơn.
+
+**Nhưng cùng báo cáo đó có một nghịch lý.** Khoảng 30% nói họ tin rất ít hoặc không tin vào code do AI sinh ra. Người ta dùng hàng ngày một công cụ mà người ta không tin. Đó không phải mâu thuẫn - đó là mô tả chính xác trạng thái làm việc hiện nay: bạn dùng nó, rồi bạn kiểm tra lại nó, và thời gian tiết kiệm được ở khâu viết bị tiêu vào khâu kiểm.
+
+**Và đây là con số làm tôi dừng lại lâu nhất.** DORA thấy rằng khi mức độ dùng AI tăng, **thông lượng giao hàng tăng - nhưng độ bất ổn của hệ thống cũng tăng.** Ship nhiều hơn, và vỡ nhiều hơn. Cùng lúc.
+
+Nhóm nghiên cứu có thử một giả thuyết an ủi: có thể tốc độ bù được cho sự bất ổn - vỡ nhanh thì sửa cũng nhanh. Dữ liệu không ủng hộ giả thuyết đó.
+
+**Về chất lượng code.** GitClear phân tích 211 triệu dòng code thay đổi từ 2020 đến 2024. Kết quả:
+
+- Tỉ lệ dòng được "chuyển chỗ" - dấu hiệu của việc tái cấu trúc, gom lại, tái sử dụng - rơi từ khoảng 25% xuống dưới 10%.
+- Tỉ lệ dòng sao chép tăng từ 8,3% lên 12,3%.
+- Năm 2024 là **năm đầu tiên trong toàn bộ dữ liệu mà lượng code sao chép vượt lượng code được tái cấu trúc.**
+- Code bị sửa lại trong vòng hai tuần sau khi viết tăng từ khoảng 3,3% lên hơn 7%.
+
+Tôi nghĩ cách diễn giải đúng của mấy con số này không phải "AI viết code tệ". AI viết code mới rất khá.
+
+Cái nó không làm là **hợp nhất**.
+
+Nó không biết rằng thứ nó vừa viết đã tồn tại ở một chỗ khác trong repo dưới một cái tên hơi khác. Nó không có động lực gom hai chỗ giống nhau lại thành một. Việc dễ nhất với nó - và cũng là việc trông giống một câu trả lời tốt nhất - là viết thêm một bản mới.
+
+Nếu bạn đã đọc [bài về việc hệ thống lớn không thể nhất quán](/thoughts/vi-sao-he-thong-lon-khong-the-nhat-quan), bạn thấy chuyện gì đang xảy ra rồi. Sự phân kỳ trong một codebase lớn vốn đã là một lực tự nhiên. AI vừa lắp thêm động cơ cho nó.
+
+**Và về năng suất, đây là chỗ tôi phải trung thực theo cách mà nhiều bài viết khác không chịu làm.**
+
+Tháng 7 năm 2025, một tổ chức nghiên cứu tên METR công bố một thử nghiệm ngẫu nhiên có đối chứng: 16 lập trình viên giàu kinh nghiệm, 246 công việc thật, trên chính những repo mà họ đã làm nhiều năm. Kết quả gây sốc: khi được dùng AI, họ **chậm hơn 19%** - trong khi chính họ tin rằng mình đã nhanh hơn 20%.
+
+Con số đó được trích đi trích lại khắp nơi suốt một năm. Kể cả tôi cũng định dùng nó làm trụ cho bài này.
+
+Nhưng đến tháng 2 năm 2026, chính METR nói lại: thiết kế nghiên cứu có vấn đề về chọn mẫu - những người hưởng lợi nhiều nhất từ AI thì lại ngại tham gia vào nhánh không được dùng AI. Họ gán nhãn kết quả cũ là _mang tính lịch sử_, và kết luận mới của họ, nói thẳng ra, là: **chúng tôi không biết.**
+
+Tôi giữ nguyên cả hai vế trong bài này, vì cái vế thứ hai mới là bài học.
+
+Phát hiện đáng giá nhất của METR chưa bao giờ là con số 19%. Nó là **khoảng cách giữa cảm giác và đồng hồ**. Ngay cả sau khi làm xong việc, những kỹ sư giỏi vẫn ước lượng sai về chính hiệu suất của mình, và sai theo hướng có lợi cho công cụ họ vừa dùng.
+
+Đó là thứ không bị rút lại. Và nó đúng với cả hai phe: đừng tin lời tung hô, cũng đừng tin lời chê bai. Hãy đo.
+
+---
+
+## Vì sao AI xuất sắc ở pet project và hụt hơi ở hệ thống mười năm
+
+Đây là phần tôi nghĩ nhiều nhất, vì nó giải thích một trải nghiệm mà ai cũng có nhưng ít ai gọi tên được.
+
+Viết một script Python, một công cụ nhỏ, một pet project cuối tuần - AI làm việc đó xuất sắc. Không phải "khá". Xuất sắc, đến mức nếu bạn từ chối dùng thì bạn đang tự làm khó mình.
+
+Cùng con AI đó, thả vào một hệ thống mười năm tuổi, và nó bắt đầu đưa ra những câu trả lời trông rất chỉn chu nhưng sai theo những cách khó chịu.
+
+Lý do không phải là kích thước. Là **lịch sử**.
+
+Ở một pet project, toàn bộ sự thật của dự án nằm gọn trong code. Không có gì tồn tại ngoài những gì bạn nhìn thấy. Không ai từng đánh đổi gì. Không có phiên bản nào đã bị xoá. Context của AI phủ được toàn bộ sự thật, nên nó thắng.
+
+Ở một hệ thống mười năm, code chỉ là lát cắt hiện tại của một quá trình. Thứ thật sự quyết định hành vi của hệ thống lại là **những gì không còn ở đó nữa**: các con đường đã thử và bị bỏ, các cách làm đúng đắn hơn đã bị loại vì không khả thi, và những thứ được để lại một cách có ý thức.
+
+Lấy đúng cái ví dụ mà tôi nghĩ là hay nhất:
+
+> Một kỹ sư lâu năm, trước một đợt release gấp, biết rằng cách anh ta đang làm sẽ đẻ ra một lỗi trong một tình huống hiếm. Anh ta vẫn làm, vì cách đúng cần ba tuần mà release là thứ Sáu. Anh ta ghi một dòng vào backlog và mang cái biết đó trong đầu.
+>
+> Sáu tháng sau lỗi ấy nổ ra ở khách hàng. Anh ta nhìn log ba mươi giây rồi nói được nó nằm ở đâu.
+>
+> Không phải vì anh ta thông minh hơn. Vì **anh ta là người đã đặt nó ở đó.**
+
+Cái biết đó nằm ở đâu?
+
+Không nằm trong code - code trông hoàn toàn hợp lý. Không nằm trong ticket - ticket đã đóng với trạng thái hoàn thành. Không nằm trong tài liệu, vì như tôi đã viết ở [bài về tài liệu và code](/thoughts/tai-lieu-mot-dang-code-chay-mot-leo), phần _vì sao_ gần như không bao giờ sống sót được vào trang wiki.
+
+Peter Naur đã nói điều này từ năm 1985, và nó vẫn là câu trả lời chính xác nhất: sản phẩm thật của lập trình không phải code, mà là cái hiểu biết nằm trong đầu người viết - và **cái hiểu biết đó không thể khôi phục lại chỉ từ tài liệu.**
+
+Đây là chỗ tôi thấy người ta hay đặt câu hỏi sai. Người ta hỏi: _bao giờ AI đủ thông minh để thay senior?_
+
+Câu hỏi đó giả định vấn đề là năng lực suy luận. Không phải.
+
+AI có thể đọc từng dòng code của bạn, từng trang wiki, từng ticket, từng commit message. Nó vẫn sẽ không có thứ đó.
+
+**Nó không thiếu dữ liệu. Nó thiếu thứ chưa từng được ghi lại.**
+
+![Sơ đồ hai panel: pet project (code được 'cái AI nhìn thấy' phủ trọn) so với hệ thống 10 năm (AI chỉ thấy code hiện tại, còn một vùng mờ khổng lồ: đường đã thử rồi bỏ, lỗi cố ý để lại, vì sao không làm cách kia, ai từng bị bỏng ở đâu - không nằm trong bất kỳ artifact nào)](/image/pet-project-vs-he-thong.png)
+
+## Vậy làm gì? Cái quy trình đang hình thành
+
+Phần này tôi cố viết cho cụ thể, vì phần lớn bài viết về chủ đề này kết thúc bằng "hãy dùng AI một cách có trách nhiệm", tức là không nói gì cả.
+
+**1. Phân tầng theo bán kính thiệt hại, không phân tầng theo công cụ.**
+
+Câu hỏi đúng chưa bao giờ là _"có được dùng AI không"_. Câu hỏi đúng là: _nếu cái này sai, cái gì hỏng, và có quay lại được không?_
+
+Quay lại vụ xoá database ở đầu bài. Sai lầm thật sự ở đó không phải là AI viết code. Là **AI có quyền chạm thẳng vào cơ sở dữ liệu production.** Đó không phải bài học mới của thời đại AI - đó là bài học phân quyền cũ như ngành này: môi trường phát triển tách khỏi môi trường thật, quyền hạn tối thiểu, thao tác phá huỷ phải có người xác nhận.
+
+Chúng ta biết mấy điều đó từ lâu. Chúng ta chỉ tạm quên khi có một thứ mới và hào nhoáng bước vào phòng.
+
+**2. AI review là bổ sung tốt - và nó có một điểm mù mang tính cấu trúc.**
+
+AI review giỏi bắt lỗi **cục bộ**: thiếu kiểm tra null, rò rỉ tài nguyên, chuỗi truy vấn nối tay, xử lý ngoại lệ nuốt lỗi. Mấy thứ đó nó bắt nhanh hơn người và không bao giờ mệt. Dùng đi, thật sự đáng dùng.
+
+Cái nó không bắt được là lỗi **ngữ cảnh**: đoạn code này hoàn toàn đúng, nhưng ba dịch vụ khác đang ngầm giả định điều ngược lại.
+
+Nếu bạn đã đọc [bài Kafka về sự phụ thuộc quá lớn](/thoughts/kafka-su-phu-thuoc-qua-lon), đó chính là Hyrum's Law: khi một thứ có đủ người dùng, họ sẽ phụ thuộc vào cả những hành vi không nằm trong hợp đồng. Không có công cụ nào đọc được cái hợp đồng ngầm ấy, vì nó chưa bao giờ được viết ra.
+
+**3. Test tự động là chỗ chịu lực - và điều đó vừa trở nên nguy hiểm hơn.**
+
+Khi lượng code tăng gấp ba mà sự chú ý của người review thì không, thứ duy nhất còn co giãn theo được là máy. Đó là lý do một hệ thống lớn với hàng nghìn test tự động thật ra đang đỡ cho những lỗ hổng trong khâu review của con người - và vì sao trong một tổ chức như vậy, người viết test có ảnh hưởng lên chất lượng sản phẩm không kém gì người viết code.
+
+Nhưng ở [bài về đội trực pipeline](/thoughts/doi-canh-sat-pipeline) tôi đã kể chuyện test chập chờn bào mòn niềm tin ra sao - đội ngũ dần học được rằng màu đỏ thường không có nghĩa gì, và phản xạ trở thành bấm chạy lại.
+
+Ghép hai chuyện đó lại, bạn có một tình huống khó chịu: **AI biến vấn đề test chập chờn từ một phiền toái vận hành thành một rủi ro sống còn.** Vì bây giờ bộ test không còn là lưới an toàn thứ hai nữa. Ở nhiều nơi, nó đã là lưới duy nhất.
+
+**4. Đổi thứ được đem đi review.**
+
+Nếu phần lớn code là máy sinh, thì thứ đáng soi kỹ nhất không còn là code. Là **test và ranh giới**.
+
+Code chỉ nói _một cách làm_. Test nói _ý định_. Ranh giới - chữ ký hàm, schema sự kiện, hợp đồng API - nói _cái gì được phép đổi mà không làm hỏng người khác_.
+
+Bốn trăm dòng code sinh ra trong ba mươi giây. Một bộ test thể hiện đúng ý định thì vẫn cần một người ngồi nghĩ. Dồn sự chú ý vào chỗ đó.
+
+**5. Mỗi thay đổi phải nêu được một cái tên.**
+
+Điều đơn giản nhất và bị bỏ qua nhiều nhất. Trước khi merge, câu hỏi cần trả lời được không phải "code này có đúng không" mà là:
+
+_Ai sẽ là người bị gọi lúc ba giờ sáng nếu cái này hỏng, và người đó có hiểu đoạn code này không?_
+
+Nếu không nêu được tên, thay đổi đó chưa sẵn sàng - bất kể ai hay cái gì đã viết ra nó.
+
+---
+
+## Chỗ tôi có thể sai
+
+Tôi đang viết về "kinh nghiệm đường trường" ở vị trí của một người có ít kinh nghiệm hơn nhiều so với những người tôi mô tả. Có khả năng tôi đang lãng mạn hoá nó theo cách mà chính họ sẽ thấy buồn cười.
+
+Và có một khả năng khó chịu hơn, tôi nghĩ cần nói ra: nếu tri thức then chốt của một hệ thống chỉ tồn tại trong đầu ba người, đó không hẳn là điều đáng tự hào. Đó cũng là một dạng nợ. Một tổ chức mà chỉ vài người biết vì sao mọi thứ hoạt động là một tổ chức mong manh - và họ mong manh như vậy từ trước khi AI xuất hiện.
+
+AI không tạo ra vấn đề đó. Nó chỉ chiếu đèn vào.
+
+Cuối cùng, mọi con số trong bài này đều là ảnh chụp của một thời điểm, trong một lĩnh vực thay đổi theo quý. METR đã tự rút lại kết quả của chính họ trong vòng bảy tháng. Bài này rồi cũng sẽ cũ, và tôi nghĩ nó nên cũ.
+
+---
+
+Kỹ sư kết cấu ký tên vào bản vẽ. Nếu cây cầu sập, chữ ký đó có hiệu lực pháp lý - người ta tìm đến người đã ký, không tìm đến phần mềm dựng hình.
+
+Bác sĩ ký vào bệnh án. Kế toán ký vào báo cáo. Không ai trong số họ tự tay làm ra từng con số, từng phép đo. Họ ký vì ký không có nghĩa là _"tôi đã tự tay làm cái này"_.
+
+Ký có nghĩa là: **tôi đã kiểm tra, và tôi đứng sau nó.**
+
+Đó là thứ không công cụ nào làm thay được - không phải vì công cụ chưa đủ giỏi, mà vì chịu hậu quả không phải một năng lực kỹ thuật. Nó là một vị trí trong xã hội, và máy móc không đứng ở đó được.
+
+Nên khi nhìn một pull request, câu hỏi đúng không phải _ai viết cái này_.
+
+Là _ai đứng sau nó_.
+
+Và nếu câu trả lời là "AI viết" - thì chưa có ai đứng sau nó cả.
+
+---
+
+## Đọc thêm
+
+- **[Incident 1152 - AI Incident Database](https://incidentdatabase.ai/cite/1152/)** - hồ sơ trung tính về vụ xoá cơ sở dữ liệu production kể ở đầu bài, kèm liên kết tới các nguồn gốc. Đọc bản này thay vì các bài giật tít, vì nó ghi cả phần AI tạo dữ liệu giả và báo sai về khả năng khôi phục - hai chi tiết thường bị bỏ.
+- **[DORA - Balancing AI tensions](https://dora.dev/insights/balancing-ai-tensions/)** - phân tích của chính nhóm nghiên cứu về nghịch lý: thời gian tiết kiệm ở khâu tạo bị chuyển sang khâu kiểm chứng, và vì sao kiểm chứng là một hoạt động nhận thức khác hẳn với sáng tạo.
+- **[2025 DORA Report - tổng quan của Google](https://blog.google/innovation-and-ai/technology/developers-tools/dora-report-2025/)** - nguồn cho các con số về mức độ sử dụng và "nghịch lý niềm tin".
+- **[GitClear - AI Copilot Code Quality 2025](https://www.gitclear.com/ai_assistant_code_quality_2025_research)** - 211 triệu dòng code, và phát hiện rằng 2024 là năm đầu tiên lượng code sao chép vượt lượng code được tái cấu trúc.
+- **[METR: AI coding tools make developers slower - The Register](https://www.theregister.com/2025/07/11/ai_code_tools_slow_down/)** - bản tường thuật nghiên cứu gốc.
+- **[Và phần METR nói lại về chính nghiên cứu đó](https://scienceblog.com/t-a-randomized-trial-by-metr-found-that-experienced-developers-completed-real-coding-tasks-19-slower-when-allowed-to-use-ai-tools-yet-afterwards-they-estimated-on-average-that-ai-had-made-them-20-fast/)** - nên đọc ngay sau bài trên. Rất ít nơi trích cả hai, và đó là lý do con số 19% vẫn đang được dùng như một sự thật đã đóng đinh.

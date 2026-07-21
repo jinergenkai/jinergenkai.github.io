@@ -5,7 +5,7 @@ description: "Mọi mối quan hệ đều là giao dịch, chỉ khác loại t
 tags: [life, philosophy, psychology, relationships]
 lang: "vi"
 audience: ["life"]
-featured: false
+featured: true
 draft: false
 ogImage: "/image/tien-tien.jpg"
 toc: true

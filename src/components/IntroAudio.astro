@@ -8,15 +8,22 @@ interface Props {
   src: string;
   label?: string;
   duration?: number;
+  autoplay?: boolean;
 }
 
-const { src, label = "INTRO.MP3", duration = 30 } = Astro.props;
+const {
+  src,
+  label = "INTRO.MP3",
+  duration = 30,
+  autoplay = false,
+} = Astro.props;
 ---
 
 <div
   id="intro-audio-player"
   class="intro-audio-wrap"
   aria-label="Reproductor de audio intro"
+  data-autoplay={autoplay ? "1" : undefined}
 >
   <!-- Indicador de tipo terminal -->
   <span class="intro-audio-prefix" aria-hidden="true">$</span>
@@ -357,6 +364,32 @@ const { src, label = "INTRO.MP3", duration = 30 } = Astro.props;
         audio.currentTime = ratio * total;
       }
     });
+
+    // Auto-reproducción al entrar, UNA SOLA VEZ por persona (persistente en
+    // localStorage): esperar ~2.5s e intentar reproducir, o arrancar en la
+    // primera interacción del usuario, lo que ocurra primero.
+    const PLAYED_KEY = "introAudioPlayed";
+    if (wrap.dataset.autoplay === "1" && !localStorage.getItem(PLAYED_KEY)) {
+      let timer = 0;
+      const gestures = ["pointerdown", "keydown", "touchstart", "wheel"];
+      const start = () => audio.play().catch(() => {});
+      const onGesture = (e: Event) => {
+        // Dejar que el botón play/pausa se gestione solo
+        if (e.target instanceof Node && btn.contains(e.target)) return;
+        start();
+      };
+      const disarm = () => {
+        localStorage.setItem(PLAYED_KEY, "1");
+        clearTimeout(timer);
+        gestures.forEach(ev => window.removeEventListener(ev, onGesture));
+      };
+      // Al empezar (por cualquier vía) marcar como visto y dejar de intentar
+      audio.addEventListener("play", disarm, { once: true });
+      gestures.forEach(ev =>
+        window.addEventListener(ev, onGesture, { passive: true })
+      );
+      timer = window.setTimeout(start, 2500);
+    }
   }
 
   // Compatible con View Transitions de Astro

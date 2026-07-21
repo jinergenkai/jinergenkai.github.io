@@ -5,16 +5,17 @@ description: "Tôi đào sâu vào 2 repo 60k stars của BaiFu - sinh viên Tru
 tags: [ai, startup, llm, agent, vibecoding]
 lang: "vi"
 audience: ["tech", "business"]
-featured: true
+featured: false
 draft: false
 ogImage: "/image/baifu.png"
 toc: true
 ---
+
 # Một cậu sinh viên, Cursor, và 4 triệu USD: Câu chuyện "làm giàu không khó" (với người khác)
 
-*Hôm nay tôi lướt feed và thấy cùng một bài post 4 lần. Nội dung gần như giống hệt nhau: một sinh viên Trung Quốc tên BaiFu, vibecoding bằng Cursor, đạt 60k stars trên GitHub, được tỷ phú Chen Tianqiao rót 4 triệu USD. Câu chuyện ngọt đến mức ai cũng muốn share.*
+_Hôm nay tôi lướt feed và thấy cùng một bài post 4 lần. Nội dung gần như giống hệt nhau: một sinh viên Trung Quốc tên BaiFu, vibecoding bằng Cursor, đạt 60k stars trên GitHub, được tỷ phú Chen Tianqiao rót 4 triệu USD. Câu chuyện ngọt đến mức ai cũng muốn share._
 
-*Tôi là một backend engineer ở môi trường enterprise. Thay vì share tiếp, tôi quyết định đào sâu xem 2 cái repo đó thực sự làm gì - và phát hiện ra câu chuyện thú vị hơn nhiều so với cái tiêu đề clickbait.*
+_Tôi là một backend engineer ở môi trường enterprise. Thay vì share tiếp, tôi quyết định đào sâu xem 2 cái repo đó thực sự làm gì - và phát hiện ra câu chuyện thú vị hơn nhiều so với cái tiêu đề clickbait._
 
 ## Bên trong 2 repo "khủng"
 
@@ -102,7 +103,7 @@ Cùng một stack (LLM + agent + RAG), giá trị không nằm ở code. Giá tr
 - **Product thinking** - nhìn thấy bài toán thực tế và thiết kế pipeline end-to-end
 - **Execution speed** - ship trong 10 ngày, đủ polish để demo
 - **Timing** - multi-agent đang là narrative nóng nhất, ship đúng lúc market đói
-- **Narrative** - "sinh viên năm cuối, 10 ngày, vibecoding, tỷ phú rót tiền" - câu chuyện mà ai cũng *muốn* tin và *muốn* share
+- **Narrative** - "sinh viên năm cuối, 10 ngày, vibecoding, tỷ phú rót tiền" - câu chuyện mà ai cũng _muốn_ tin và _muốn_ share
 
 Concept "simulated society" của MiroFish không mới - Stanford đã publish paper "Generative Agents" từ tháng 4/2023 về 25 agent sống trong thị trấn ảo. Nhưng năm 2023 chưa ai quan tâm vì còn là "academic curiosity." BaiFu productize cái academic concept đó đúng thời điểm market sẵn sàng.
 
